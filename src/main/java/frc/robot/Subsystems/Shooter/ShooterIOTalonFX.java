@@ -13,7 +13,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Subsystems.Shooter.ShooterIO.ShooterIOInputs;
 
-public class ShooterIOTalonFX {
+public class ShooterIOTalonFX implements ShooterIO {
+    private final TalonFX handoff;
     private final TalonFX leftShooter;
     private final TalonFX rightShooter;
     private TalonFXConfiguration leftShooterConfigs;
@@ -21,6 +22,7 @@ public class ShooterIOTalonFX {
     private TalonFXConfigurator leftShooterConfigurator;
     private TalonFXConfigurator rightShooterConfigurator;
 
+    private VoltageOut handoffRequest = new VoltageOut(0).withEnableFOC(true);
     private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
     private MotionMagicVelocityVoltage shootRequestMotionMagic = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 
@@ -32,21 +34,30 @@ public class ShooterIOTalonFX {
     LoggedTunableNumber kMotionAcceleration = new LoggedTunableNumber("Shooter/kMotionAcceleration", 0.0);
     LoggedTunableNumber kMotionJerk = new LoggedTunableNumber("Shooter/kMotionJerk", 0.0);
 
-    public ShooterIOTalonFX(int leftShooterMotorID, int rightShooterMotorID) {
+    public ShooterIOTalonFX(int handoffMotorID, int leftShooterMotorID, int rightShooterMotorID) {
+        handoff = new TalonFX(handoffMotorID);
         leftShooter = new TalonFX(leftShooterMotorID);
         rightShooter = new TalonFX(rightShooterMotorID);
+
+        TalonFXConfiguration handoffConfigs = new TalonFXConfiguration();
         TalonFXConfiguration leftShooterConfigs = new TalonFXConfiguration();
         TalonFXConfiguration rightShooterConfigs = new TalonFXConfiguration();
         TalonFXConfigurator leftShooterConfigurator = leftShooter.getConfigurator();
         TalonFXConfigurator rightShooterConfigurator = rightShooter.getConfigurator();
+
+        handoffConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        handoff.getConfigurator().apply(handoffConfigs);
     }
 
     public void updateInputs(ShooterIOInputs shooterInputs) {
+        shooterInputs.handoffAppliedVolts = handoffRequest.Output;
+        shooterInputs.handoffSpeedRPS = handoff.getRotorVelocity().getValue();
+
         shooterInputs.appliedVolts = shootRequestVoltage.Output;
         shooterInputs.currentAmps = new double[] { leftShooter.getStatorCurrent().getValue(),
-                rightShooter.getStatorCurrent().getValue() };
+                rightShooter.getStatorCurrent().getValue(), handoff.getStatorCurrent().getValue()};
         shooterInputs.tempFahrenheit = new double[] { leftShooter.getDeviceTemp().getValue(),
-                rightShooter.getDeviceTemp().getValue() };
+                rightShooter.getDeviceTemp().getValue(), handoff.getDeviceTemp().getValue() };
         shooterInputs.shooterSpeedRPS = new double[] { leftShooter.getRotorVelocity().getValue(),
                 rightShooter.getRotorVelocity().getValue() };
     }
@@ -61,6 +72,10 @@ public class ShooterIOTalonFX {
                 kMotionJerk.hasChanged(kMotionJerk.hashCode())){
             shooterConfiguration();
         }
+    }
+
+    public void setHandoffVoltage(double volts){
+        handoff.setControl(handoffRequest.withOutput(volts));
     }
 
     public void setVoltage(double volts) {

@@ -9,8 +9,11 @@ public interface ElevatorIO {
         public double appliedVolts = 0.0;
         public double setPoint = 0;
         public double elevatorHeightMeters = 0;
+         
         public double[] currentAmps = new double[] {};
         public double[] tempFahrenheit = new double[] {};
+        public double[] rotorVelocityRPS = new double[] {};
+        
 
     }
 
@@ -23,11 +26,11 @@ public default void setHeight(double setPoint){}
 
 public default void testOutput(){}
 
-public default void setOutput(double output){}
+public default void setVoltage(double output){}
 
 public default void setElevator(double setPointMeters){}
 
-public default void homing(){}
+public default void resetHeight() {}
 
 public default void elevatorConfiguration(){}
 }

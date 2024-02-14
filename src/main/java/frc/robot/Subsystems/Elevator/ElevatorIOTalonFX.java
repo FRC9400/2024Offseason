@@ -28,10 +28,6 @@ public class ElevatorIOTalonFX implements ElevatorIO{
     private MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0).withEnableFOC(true); 
     private MotionMagicExpoVoltage motionMagicExpoRequest = new MotionMagicExpoVoltage(0).withEnableFOC(true);
     private VoltageOut voltageOutRequest =  new VoltageOut(0).withEnableFOC(true);
-    
-    private double startTime;
-    double setPoint;
-    
 
     LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 0.0);
     LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.0);
@@ -53,19 +49,16 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorConfigurator = leftMotor.getConfigurator();
         rightMotorConfigurator = rightMotor.getConfigurator();
         leftMotorConfigs = new TalonFXConfiguration();
-        rightMotorConfigs = new TalonFXConfiguration();
-     ;
-        startTime = 0;
-        setPoint = 0;  
+        rightMotorConfigs = new TalonFXConfiguration(); 
 
     }
     
     public void updateInputs(ElevatorIOInputs elevatorInputs){
         elevatorInputs.appliedVolts = voltageOutRequest.Output;
-        elevatorInputs.setPoint = setPoint;
         elevatorInputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftMotor.getRotorPosition().getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
         elevatorInputs.currentAmps = new double[] {leftMotor.getStatorCurrent().getValue(), rightMotor.getStatorCurrent().getValue()};
         elevatorInputs.tempFahrenheit = new double[] {leftMotor.getDeviceTemp().getValue(), rightMotor.getDeviceTemp().getValue()};
+        elevatorInputs.rotorVelocityRPS = new double[] {leftMotor.getRotorVelocity().getValue(), rightMotor.getRotorVelocity().getValue()};
         
     }
 
@@ -86,15 +79,13 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         }
       }
 
-    public void setHeight(double desiredHeight){
-        setPoint = desiredHeight;
-    }
+
 
     public void testOutput(){
         leftMotor.setControl(voltageOutRequest.withOutput(elevatorVolts.get()));
     }
 
-    public void setOutput(double output){
+    public void setVoltage(double output){
         leftMotor.setControl(voltageOutRequest.withOutput(output));
     }
 
@@ -102,18 +93,10 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(motionMagicRequest.withPosition(setPointMeters)); 
         //leftMotor.setControl(motionMagicExpoRequest.withPosition(setPointMeters));
     }
-    /* 
-    public void homing(){
-        startTime = Timer.getFPGATimestamp();
-        leftMotor.setControl(dutyCycleRequest.withOutput(Constants.Elevator.homingOutput));
-        if(((Timer.getFPGATimestamp()-startTime) < 2) && leftMotor.getRotorVelocity().getValue() < 0.1){
-            leftMotor.setControl(dutyCycleRequest.withOutput(0));
-            //leftMotorConfigs.Feedback.FeedbackRotorOffset = Constants.Elevator.minHeightInRotations;
-            leftMotor.setRotorPosition(Constants.Elevator.minHeightInRotations);
-            leftMotorConfigurator.apply(leftMotorConfigs);
-        }
-    }*/
 
+    public void resetHeight(){
+        leftMotor.setPosition(0);
+    }
 
     public void elevatorConfiguration(){
         var leftMotorOuputConfigs = leftMotorConfigs.MotorOutput;
@@ -121,6 +104,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorOuputConfigs.NeutralMode = NeutralModeValue.Brake;
         leftMotorOuputConfigs.Inverted = InvertedValue.Clockwise_Positive;
         rightMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+        //rightMotorOutputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         
         var slot0Configs = leftMotorConfigs.Slot0;
         slot0Configs.kP = kP.get();
