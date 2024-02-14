@@ -11,6 +11,7 @@ public interface ShooterIO {
         public double[] currentAmps = new double[] {};
         public double[] tempFahrenheit = new double[] {};
 
+
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {

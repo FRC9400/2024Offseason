@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
-import frc.robot.Subsystems.Swerve.GyroIO.GyroIOInputs;
-import frc.robot.Subsystems.Swerve.ModuleIO.ModuleIOInputs;
+
+
 
 public class Swerve extends SubsystemBase{
     private final GyroIO gyroIO;

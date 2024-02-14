@@ -18,11 +18,11 @@ public class IntakeIOTalonFX implements IntakeIO {
         intake.getConfigurator().apply(intakeConfigs);
     }
 
-    public void updateInputs(IntakeIOInputs intakeInputs) {
-        intakeInputs.appliedVolts = intakeRequest.Output;
-        intakeInputs.currentAmps = intake.getStatorCurrent().getValue();
-        intakeInputs.tempFahrenheit = intake.getDeviceTemp().getValue();
-        intakeInputs.intakeSpeedRPS = intake.getRotorVelocity().getValue();
+    public void updateInputs(IntakeIOInputs inputs) {
+        inputs.appliedVolts = intakeRequest.Output;
+        inputs.currentAmps = intake.getStatorCurrent().getValue();
+        inputs.tempFahrenheit = intake.getDeviceTemp().getValue();
+        inputs.intakeSpeedRPS = intake.getRotorVelocity().getValue();
     }
 
     public void setVoltage(double output) {

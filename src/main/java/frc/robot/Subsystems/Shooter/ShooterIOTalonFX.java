@@ -41,13 +41,13 @@ public class ShooterIOTalonFX {
         TalonFXConfigurator rightShooterConfigurator = rightShooter.getConfigurator();
     }
 
-    public void updateInputs(ShooterIOInputs shooterInputs) {
-        shooterInputs.appliedVolts = shootRequestVoltage.Output;
-        shooterInputs.currentAmps = new double[] { leftShooter.getStatorCurrent().getValue(),
+    public void updateInputs(ShooterIOInputs inputs) {
+        inputs.appliedVolts = shootRequestVoltage.Output;
+        inputs.currentAmps = new double[] { leftShooter.getStatorCurrent().getValue(),
                 rightShooter.getStatorCurrent().getValue() };
-        shooterInputs.tempFahrenheit = new double[] { leftShooter.getDeviceTemp().getValue(),
+        inputs.tempFahrenheit = new double[] { leftShooter.getDeviceTemp().getValue(),
                 rightShooter.getDeviceTemp().getValue() };
-        shooterInputs.shooterSpeedRPS = new double[] { leftShooter.getRotorVelocity().getValue(),
+        inputs.shooterSpeedRPS = new double[] { leftShooter.getRotorVelocity().getValue(),
                 rightShooter.getRotorVelocity().getValue() };
     }
 

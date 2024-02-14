@@ -54,18 +54,17 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         rightMotorConfigurator = rightMotor.getConfigurator();
         leftMotorConfigs = new TalonFXConfiguration();
         rightMotorConfigs = new TalonFXConfiguration();
-     ;
         startTime = 0;
         setPoint = 0;  
 
     }
     
-    public void updateInputs(ElevatorIOInputs elevatorInputs){
-        elevatorInputs.appliedVolts = voltageOutRequest.Output;
-        elevatorInputs.setPoint = setPoint;
-        elevatorInputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftMotor.getRotorPosition().getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
-        elevatorInputs.currentAmps = new double[] {leftMotor.getStatorCurrent().getValue(), rightMotor.getStatorCurrent().getValue()};
-        elevatorInputs.tempFahrenheit = new double[] {leftMotor.getDeviceTemp().getValue(), rightMotor.getDeviceTemp().getValue()};
+    public void updateInputs(ElevatorIOInputs inputs){
+        inputs.appliedVolts = voltageOutRequest.Output;
+        inputs.setPoint = setPoint;
+        inputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftMotor.getRotorPosition().getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
+        inputs.currentAmps = new double[] {leftMotor.getStatorCurrent().getValue(), rightMotor.getStatorCurrent().getValue()};
+        inputs.tempFahrenheit = new double[] {leftMotor.getDeviceTemp().getValue(), rightMotor.getDeviceTemp().getValue()};
         
     }
 
@@ -102,6 +101,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(motionMagicRequest.withPosition(setPointMeters)); 
         //leftMotor.setControl(motionMagicExpoRequest.withPosition(setPointMeters));
     }
+
     /* 
     public void homing(){
         startTime = Timer.getFPGATimestamp();
