@@ -6,15 +6,6 @@ public class Elevator extends SubsystemBase{
     private final ElevatorIO elevatorIO;
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-    private ElevatorState elevatorState = ElevatorState.IDLE;
-
-    public enum ElevatorState{
-        IDLE,
-        HOMING,
-        JOG,
-        SETPOINT,
-        CLIMB
-    }
 
     @Override
     public void periodic(){

@@ -16,10 +16,17 @@ public class Shooter extends SubsystemBase{
         shooterIO.setVoltage(volts);
     }
 
-    public void shootVelocity(double velocityRPS){
-        shooterIO.setVelocity(velocityRPS);
+    public void shootVelocity(){
+        shooterIO.setVelocity();
     }
 
+    public void zeroVelocity(){
+        shooterIO.zeroVelocity();
+    }
+
+    public void shooterConfiguration(){
+        shooterIO.shooterConfiguration();
+    }
 
     @Override
     public void periodic(){

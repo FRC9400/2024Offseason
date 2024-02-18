@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 
 import frc.commons.Conversions;
+import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.elevatorConstants;
 import frc.commons.LoggedTunableNumber;
 
@@ -47,9 +48,9 @@ public class ElevatorIOTalonFX implements ElevatorIO{
 
 
 
-    public ElevatorIOTalonFX(int leftMotorID, int rightMotorID){
-        leftMotor = new TalonFX(leftMotorID);
-        rightMotor = new TalonFX(rightMotorID);
+    public ElevatorIOTalonFX(){
+        leftMotor = new TalonFX(canIDConstants.leftElevatorMotor);
+        rightMotor = new TalonFX(canIDConstants.rightElevatorMotor);
         leftMotorConfigurator = leftMotor.getConfigurator();
         rightMotorConfigurator = rightMotor.getConfigurator();
         leftMotorConfigs = new TalonFXConfiguration();
@@ -98,6 +99,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
     }
 
     public void setElevator(double setPointMeters){
+        setPoint = setPointMeters;
         leftMotor.setControl(motionMagicRequest.withPosition(setPointMeters)); 
         //leftMotor.setControl(motionMagicExpoRequest.withPosition(setPointMeters));
     }
@@ -119,7 +121,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         var leftMotorOuputConfigs = leftMotorConfigs.MotorOutput;
         var rightMotorOutputConfigs = rightMotorConfigs.MotorOutput;
         leftMotorOuputConfigs.NeutralMode = NeutralModeValue.Brake;
-        leftMotorOuputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        leftMotorOuputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         rightMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
         
         var slot0Configs = leftMotorConfigs.Slot0;
