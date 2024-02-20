@@ -10,10 +10,12 @@ import frc.robot.Subsystems.Shooter.Shooter;
 
 public class shootVelocity extends Command {
   private final Shooter Shooter;
+  boolean zero;
 
   /** Creates a new runIntake. */
-  public shootVelocity(Shooter Shooter) {
+  public shootVelocity(Shooter Shooter, boolean zero) {
     this.Shooter = Shooter;
+    this.zero = zero;
 
 
     addRequirements(Shooter);
@@ -27,7 +29,12 @@ public class shootVelocity extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(zero){
+      Shooter.zeroVelocity();
+    }
+    else{
     Shooter.shootVelocity();
+    }
   }
 
   // Called once the command ends or is interrupted.

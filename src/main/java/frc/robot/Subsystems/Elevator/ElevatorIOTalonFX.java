@@ -49,8 +49,8 @@ public class ElevatorIOTalonFX implements ElevatorIO{
 
 
     public ElevatorIOTalonFX(){
-        leftMotor = new TalonFX(canIDConstants.leftElevatorMotor);
-        rightMotor = new TalonFX(canIDConstants.rightElevatorMotor);
+        leftMotor = new TalonFX(canIDConstants.leftElevatorMotor, "canivore");
+        rightMotor = new TalonFX(canIDConstants.rightElevatorMotor, "canivore");
         leftMotorConfigurator = leftMotor.getConfigurator();
         rightMotorConfigurator = rightMotor.getConfigurator();
         leftMotorConfigs = new TalonFXConfiguration();

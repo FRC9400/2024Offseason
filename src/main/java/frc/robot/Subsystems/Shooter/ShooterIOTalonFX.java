@@ -35,24 +35,24 @@ public class ShooterIOTalonFX implements ShooterIO{
     private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
     private MotionMagicVelocityVoltage shootRequestMotionMagic = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
 
-    LoggedTunableNumber speedRatioTune = new LoggedTunableNumber("Shooter/speedRatio", 0.7);
-    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 5);
+    LoggedTunableNumber speedRatioTune = new LoggedTunableNumber("Shooter/speedRatio", 1);
+    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 15);
 
-    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.0);
+    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.068419);
     LoggedTunableNumber kD = new LoggedTunableNumber("Shooter/kD", 0.0);
-    LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.0);
-    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.0);
+    LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.16488);
+    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.11167);
     LoggedTunableNumber kMotionCruiseVelocity = new LoggedTunableNumber("Shooter/kMotionCruiseVelocity", 0.0);
     LoggedTunableNumber kMotionAcceleration = new LoggedTunableNumber("Shooter/kMotionAcceleration", 0.0);
     LoggedTunableNumber kMotionJerk = new LoggedTunableNumber("Shooter/kMotionJerk", 0.0);
 
     public ShooterIOTalonFX() {
-        leftShooter = new TalonFX(canIDConstants.leftShooterMotor);
-        rightShooter = new TalonFX(canIDConstants.rightShooterMotor);
-        TalonFXConfiguration leftShooterConfigs = new TalonFXConfiguration();
-        TalonFXConfiguration rightShooterConfigs = new TalonFXConfiguration();
-        TalonFXConfigurator leftShooterConfigurator = leftShooter.getConfigurator();
-        TalonFXConfigurator rightShooterConfigurator = rightShooter.getConfigurator();
+        leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "canivore");
+        rightShooter = new TalonFX(canIDConstants.rightShooterMotor, "canivore");
+        this.leftShooterConfigs = new TalonFXConfiguration();
+        this.rightShooterConfigs = new TalonFXConfiguration();
+        this.leftShooterConfigurator = leftShooter.getConfigurator();
+        this.rightShooterConfigurator = rightShooter.getConfigurator();
     }
 
     public void updateInputs(ShooterIOInputs inputs) {
@@ -102,14 +102,16 @@ public class ShooterIOTalonFX implements ShooterIO{
     }
 
     public void shooterConfiguration() {
-        var leftShooterMotorConfigs = leftShooterConfigs.MotorOutput;
+         
+      var leftShooterMotorConfigs = leftShooterConfigs.MotorOutput;
         var rightShooterMotorConfigs = rightShooterConfigs.MotorOutput;
+    
         leftShooterMotorConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         leftShooterMotorConfigs.PeakForwardDutyCycle = 1.0;
         leftShooterMotorConfigs.PeakReverseDutyCycle = -1.0;
         leftShooterMotorConfigs.NeutralMode = NeutralModeValue.Coast;
-        leftShooterMotorConfigs.Inverted = InvertedValue.Clockwise_Positive;
 
+        rightShooterMotorConfigs.Inverted = InvertedValue.Clockwise_Positive;
         rightShooterMotorConfigs.PeakForwardDutyCycle = 1.0;
         rightShooterMotorConfigs.PeakReverseDutyCycle = -1.0;
         rightShooterMotorConfigs.NeutralMode = NeutralModeValue.Coast;
@@ -128,6 +130,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         leftSlot0Configs.kD = kD.get();
         leftSlot0Configs.kS = kS.get();
         leftSlot0Configs.kV = kV.get();
+        leftSlot0Configs.kA = 0.0077173;
 
         var rightSlot0Configs = rightShooterConfigs.Slot0;
         rightSlot0Configs.kP = kP.get();
@@ -135,6 +138,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightSlot0Configs.kD = kD.get();
         rightSlot0Configs.kS = kS.get();
         rightSlot0Configs.kV = kV.get();
+        rightSlot0Configs.kA = 0.0077173;
 
         var leftShooterMotionMagicConfigs = leftShooterConfigs.MotionMagic;
         leftShooterMotionMagicConfigs.MotionMagicCruiseVelocity = 0.0;
