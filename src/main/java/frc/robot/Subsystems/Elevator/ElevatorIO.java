@@ -24,7 +24,7 @@ public default void testOutput(){}
 
 public default void setOutput(double output){}
 
-public default void setElevator(double setPointMeters){}
+public default void setElevator(double setPointMeters, boolean climb){}
 
 public default void homing(){}
 

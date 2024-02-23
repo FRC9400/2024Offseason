@@ -5,23 +5,19 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Intake.Intake;
-import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Elevator.Elevator;
 
-public class shootVelocity extends Command {
-  private final Shooter Shooter;
-  private final Intake handoff;
-  boolean zero;
+public class setElevator extends Command {
+  private final Elevator Elevator;
+  private double setpointMeters;
+  private boolean climb;
+  /** Creates a new JogElevator. */
+  public setElevator(Elevator Elevator, double setPointMeters, boolean climb) {
+    this.Elevator = Elevator;
+    this.setpointMeters = setPointMeters;
 
-  /** Creates a new runIntake. */
-  public shootVelocity(Shooter Shooter, Intake handoff, boolean zero) {
-    this.Shooter = Shooter;
-    this.handoff = handoff;
-    this.zero = zero;
-
-
-    addRequirements(Shooter, handoff);
-
+    addRequirements(Elevator);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -31,14 +27,8 @@ public class shootVelocity extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(zero){
-      Shooter.zeroVelocity();
-      handoff.spinIntake(0);
-    }
-    else{
-    Shooter.shootVelocity();
-    handoff.spinIntake(2);
-    }
+    Elevator.setHeight(setpointMeters);
+    Elevator.setElevator(setpointMeters, climb);
   }
 
   // Called once the command ends or is interrupted.
@@ -51,5 +41,4 @@ public class shootVelocity extends Command {
     return true;
   }
 }
-
 

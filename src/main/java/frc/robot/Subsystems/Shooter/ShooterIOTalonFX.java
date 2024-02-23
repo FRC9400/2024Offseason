@@ -31,21 +31,18 @@ public class ShooterIOTalonFX implements ShooterIO{
     private double rightShooterSetpointMPS = 0;
 
     private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
-    private VelocityVoltage leftShootRequesetVelocity = new VelocityVoltage(0).withEnableFOC(true);
-    private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
-    private MotionMagicVelocityVoltage shootRequestMotionMagic = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
+    private VelocityVoltage leftShootRequesetVelocity = new VelocityVoltage(0).withEnableFOC(false);
+    private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(false);
+   
 
     LoggedTunableNumber speedRatioTune = new LoggedTunableNumber("Shooter/speedRatio", 1);
-    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 15);
+    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 7);
 
-    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.068419);
+    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.068419); //0.068419
     LoggedTunableNumber kD = new LoggedTunableNumber("Shooter/kD", 0.0);
     LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.16488);
-    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.11167);
-    LoggedTunableNumber kMotionCruiseVelocity = new LoggedTunableNumber("Shooter/kMotionCruiseVelocity", 0.0);
-    LoggedTunableNumber kMotionAcceleration = new LoggedTunableNumber("Shooter/kMotionAcceleration", 0.0);
-    LoggedTunableNumber kMotionJerk = new LoggedTunableNumber("Shooter/kMotionJerk", 0.0);
-
+    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.11689);
+    
     public ShooterIOTalonFX() {
         leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "canivore");
         rightShooter = new TalonFX(canIDConstants.rightShooterMotor, "canivore");
@@ -74,9 +71,6 @@ public class ShooterIOTalonFX implements ShooterIO{
                 kD.hasChanged(kD.hashCode()) ||
                 kS.hasChanged(kS.hashCode()) ||
                 kV.hasChanged(kV.hashCode()) ||
-                kMotionCruiseVelocity.hasChanged((kMotionCruiseVelocity.hashCode())) ||
-                kMotionAcceleration.hasChanged(kMotionAcceleration.hashCode())  ||
-                kMotionJerk.hasChanged(kMotionJerk.hashCode())||
                 speedRatioTune.hasChanged(speedRatioTune.hashCode())||
                 leftShooterSpeedMPS.hasChanged(leftShooterSpeedMPS.hashCode()) 
                 ){
@@ -139,11 +133,6 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightSlot0Configs.kS = kS.get();
         rightSlot0Configs.kV = kV.get();
         rightSlot0Configs.kA = 0.0077173;
-
-        var leftShooterMotionMagicConfigs = leftShooterConfigs.MotionMagic;
-        leftShooterMotionMagicConfigs.MotionMagicCruiseVelocity = 0.0;
-        leftShooterMotionMagicConfigs.MotionMagicAcceleration = 0.0;
-        leftShooterMotionMagicConfigs.MotionMagicJerk = 0.0;
 
         leftShooterConfigurator.apply(leftShooterConfigs);
         rightShooterConfigurator.apply(rightShooterConfigs);

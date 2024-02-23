@@ -34,14 +34,14 @@ public class ElevatorIOTalonFX implements ElevatorIO{
     double setPoint;
     
 
-    LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 0.0);
-    LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.0);
-    LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.0);
-    LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 0.0);
-    LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.0);
-    LoggedTunableNumber kMotionCruiseVelocity = new LoggedTunableNumber( "Elevator/kMotionCruiseVelocity",0.0);
-    LoggedTunableNumber kMotionAcceleration = new LoggedTunableNumber( "Elevator/kMotionAcceleration",0.0);
-    LoggedTunableNumber kMotionJerk = new LoggedTunableNumber("Elevator/kMotionJerk",0.0);
+    LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 8.413);
+    LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.0030141);
+    LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.058684);
+    LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 0.0044);
+    LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG",0.0662029); //0.0662029
+    LoggedTunableNumber kMotionCruiseVelocity = new LoggedTunableNumber( "Elevator/kMotionCruiseVelocity",10); //48
+    LoggedTunableNumber kMotionAcceleration = new LoggedTunableNumber( "Elevator/kMotionAcceleration",20); //96
+    LoggedTunableNumber kMotionJerk = new LoggedTunableNumber("Elevator/kMotionJerk",10000);
     LoggedTunableNumber kMotionExpokV = new LoggedTunableNumber("Elevator/kMotionExpokV",0.0);
     LoggedTunableNumber kMotionExpokA = new LoggedTunableNumber("Elevator/kMotionExpokA",0.0);
     LoggedTunableNumber elevatorVolts = new LoggedTunableNumber("Elevator/ElevatorVolts", 2);
@@ -98,9 +98,16 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(voltageOutRequest.withOutput(output));
     }
 
-    public void setElevator(double setPointMeters){
-        setPoint = setPointMeters;
-        leftMotor.setControl(motionMagicRequest.withPosition(setPointMeters)); 
+    public void setElevator(double setPointMeters, boolean climb){
+        double setPointRotations = Conversions.metersToRotations(setPointMeters, elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
+        if(climb){
+            motionMagicRequest.withSlot(1);
+            leftMotor.setControl(motionMagicRequest.withPosition(setPointRotations));
+        }
+        else{
+            motionMagicRequest.withSlot(0);
+            leftMotor.setControl(motionMagicRequest.withPosition(setPointRotations)); 
+        }
         //leftMotor.setControl(motionMagicExpoRequest.withPosition(setPointMeters));
     }
 
@@ -132,13 +139,22 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         slot0Configs.kV = kV.get();
         slot0Configs.kG = kG.get();
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
+
+        var slot1Configs = leftMotorConfigs.Slot1;
+        slot1Configs.kP = 0;
+        slot1Configs.kI = 0.0;
+        slot1Configs.kD = 0;
+        slot1Configs.kS = 0.058684;
+        slot1Configs.kV = 0.0044;
+        slot1Configs.kG = 0;
+        
         
         var motionMagicConfigs = leftMotorConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = kMotionCruiseVelocity.get();
         motionMagicConfigs.MotionMagicAcceleration = kMotionAcceleration.get();
         motionMagicConfigs.MotionMagicJerk = kMotionJerk.get();
-        motionMagicConfigs.MotionMagicExpo_kV = kMotionExpokV.get();
-        motionMagicConfigs.MotionMagicExpo_kA = kMotionExpokA.get();
+        //motionMagicConfigs.MotionMagicExpo_kV = kMotionExpokV.get();
+        //motionMagicConfigs.MotionMagicExpo_kA = kMotionExpokA.get();
 
         var feedbackConfigs = leftMotorConfigs.Feedback;
         feedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;

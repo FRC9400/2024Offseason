@@ -19,7 +19,7 @@ public class canIDConstants {
 
     /* Intake */
     public static final int intakeMotor = 15;
-    public static final int handoverMotor = 16;
+    public static final int handoffMotor = 16;
 
     /* Shooter */
     public static final int leftShooterMotor = 17;

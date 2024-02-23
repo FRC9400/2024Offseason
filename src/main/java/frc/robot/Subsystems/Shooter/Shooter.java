@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase{
     private final SysIdRoutine shooterRoutine;
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
-        shooterRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(3),null, (state) -> SignalLogger.writeString("state", state.toString())), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.setVoltage(volts.in(Volts)), null, this));
+        shooterRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(6),null, (state) -> SignalLogger.writeString("state", state.toString())), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.setVoltage(volts.in(Volts)), null, this));
       }
     
     public Command shooterSysIdCmd(){
@@ -29,12 +29,12 @@ public class Shooter extends SubsystemBase{
             this.runOnce(() -> SignalLogger.start()),
             shooterRoutine
                 .quasistatic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 15),
+                .until(() -> inputs.shooterSpeedMPS[0] > 30),
                 this.runOnce(() -> shooterIO.setVoltage(0)),
                 Commands.waitSeconds(1),
             shooterRoutine
                 .quasistatic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -15),
+                .until(() -> inputs.shooterSpeedMPS[0] < -30),
                 this.runOnce(() -> shooterIO.setVoltage(0)),
                 Commands.waitSeconds(1),  
 

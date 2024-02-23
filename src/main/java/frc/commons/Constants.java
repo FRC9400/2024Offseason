@@ -1,4 +1,4 @@
-// Copyright (c) 2023 FRC 6328
+// Copyright (c) 2024 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by an MIT-style
@@ -8,63 +8,55 @@
 package frc.commons;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import java.util.Map;
+import frc.commons.Alert;
 import frc.commons.Alert.AlertType;
 
+/**
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
+ * globally (i.e. public static). Do not put anything functional in this class.
+ *
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * constants are needed, to reduce verbosity.
+ */
 public final class Constants {
-  private static final RobotType robot = RobotType.ROBOT_2023C;
-  public static final double loopPeriodSecs = 0.02;
+  public static final int loopPeriodMs = 20;
+  private static RobotType robotType = RobotType.DEVBOT;
   public static final boolean tuningMode = true;
 
-  public static boolean invalidRobotAlertSent = false;
-
   public static RobotType getRobot() {
-    if (!disableHAL && RobotBase.isReal()) {
-      if (robot == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
-        if (!invalidRobotAlertSent) {
-          new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
-              .set(true);
-          invalidRobotAlertSent = true;
-        }
-        return RobotType.ROBOT_2023C;
-      } else {
-        return robot;
-      }
-    } else {
-      return robot;
+    if (!disableHAL && RobotBase.isReal() && robotType == RobotType.SIMBOT) {
+      new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
+          .set(true);
+      robotType = RobotType.COMPBOT;
     }
+    return robotType;
   }
 
   public static Mode getMode() {
-    switch (getRobot()) {
-      case ROBOT_2023C:
-      case ROBOT_2023P:
-        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
-
-      case ROBOT_SIMBOT:
-        return Mode.SIM;
-
-      default:
-        return Mode.REAL;
-    }
+    return switch (robotType) {
+      case DEVBOT, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+      case SIMBOT -> Mode.SIM;
+    };
   }
 
-  public static final Map<RobotType, String> logFolders =
-      Map.of(RobotType.ROBOT_2023C, "/media/sda2/");
-
-  public static enum RobotType {
-    ROBOT_2023C,
-    ROBOT_2023P,
-    ROBOT_SIMBOT
-  }
-
-  public static enum Mode {
+  public enum Mode {
+    /** Running on a real robot. */
     REAL,
-    REPLAY,
-    SIM
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
   }
 
-  // Function to disable HAL interaction when running without native libs
+  public enum RobotType {
+    SIMBOT,
+    DEVBOT,
+    COMPBOT
+  }
+
   public static boolean disableHAL = false;
 
   public static void disableHAL() {
@@ -73,10 +65,9 @@ public final class Constants {
 
   /** Checks whether the robot the correct robot is selected when deploying. */
   public static void main(String... args) {
-    if (robot == RobotType.ROBOT_SIMBOT) {
-      System.err.println("Cannot deploy, invalid robot selected: " + robot.toString());
+    if (robotType == RobotType.SIMBOT) {
+      System.err.println("Cannot deploy, invalid robot selected: " + robotType.toString());
       System.exit(1);
     }
   }
 }
-
