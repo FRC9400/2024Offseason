@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
+
 import static edu.wpi.first.units.Units.Volts;
 import frc.robot.Constants.elevatorConstants;
 
@@ -18,13 +20,49 @@ public class Elevator extends SubsystemBase {
     private final ElevatorIO elevatorIO;
     private final SysIdRoutine elevatorRoutine;
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+    private ElevatorState state = ElevatorState.IDLE;
+    private double elevatorSetpoints[] = {0, 0}; //stow setpoint, setpoint
+    private double startTime = 0;
+
+    public enum ElevatorState{
+        IDLE,
+        HOMING, 
+        JOG,
+        SETPOINT,
+        STOW,
+        CLIMB
+    }
 
     @Override
     public void periodic() {
-
         elevatorIO.updateInputs(inputs);
         elevatorIO.updateTunableNumbers();
         Logger.processInputs("Elevator", inputs);
+
+        switch(state){
+            case IDLE:
+                elevatorIO.setOutput(0);
+                break;
+            case HOMING:
+                elevatorIO.setOutput(-4);
+                if(RobotController.getFPGATime()/1.0E6 - 0 > 0.5 && Math.abs(inputs.elevatorVelMPS) < 0.1){
+                    elevatorIO.zeroSensor();
+                    setState(ElevatorState.IDLE);
+                }
+                break;
+            case JOG:
+                break;
+            case SETPOINT:
+                break;
+            case STOW:
+                break;
+            case CLIMB:
+                break;
+        }
+    }
+
+    public void setState(ElevatorState nextState){
+
     }
 
     public Elevator(ElevatorIO elevatorIO) {
@@ -35,8 +73,6 @@ public class Elevator extends SubsystemBase {
                 new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> elevatorIO.setOutput(volts.in(Volts)), null,
                         this));
     }
-
-
 
     public Command runSysIdCmd() {
         return Commands.sequence(
@@ -65,28 +101,19 @@ public class Elevator extends SubsystemBase {
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
     }
-    public void setHeight(double setPoint) {
-        elevatorIO.setHeight(setPoint);
-    }
-
-    public void testOutput() {
-        elevatorIO.testOutput();
-    }
 
     public void setOutput(double output) {
         elevatorIO.setOutput(output);
     }
 
-    public void setElevator(double x, boolean climb) {
-        elevatorIO.setElevator(x, climb);
-    }
-
-    public void homing() {
-        elevatorIO.homing();
+    public void driveElevator(double x, boolean climb) {
+        elevatorIO.driveElevator(x, climb);
     }
 
     public void elevatorConfiguration() {
         elevatorIO.elevatorConfiguration();
     }
+
+
 
 }

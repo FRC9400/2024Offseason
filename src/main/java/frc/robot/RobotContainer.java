@@ -48,11 +48,11 @@ public class RobotContainer {
     operator.x().onTrue(new JogElevator(s_elevator, -1.5));
     operator.a().onTrue(new JogElevator(s_elevator, 0));
     */
-     
+    /* 
     operator.b().onTrue(new setElevator(s_elevator, 0.2, false));
     operator.a().onTrue(new setElevator(s_elevator, 0, false));
     operator.x().onTrue(new setElevator(s_elevator, 0.45, false));
-
+    */
     
     //operator.y().onTrue(s_shooter.shooterSysIdCmd());
 
@@ -63,8 +63,16 @@ public class RobotContainer {
 
     //operator.rightBumper().onTrue(new shootVoltage(s_shooter, 3));
     //operator.rightTrigger().onTrue(new shootVoltage(s_shooter, 0));
-    operator.rightBumper().onTrue(new shootVelocity(s_shooter, s_handoff, false));
-    operator.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, true));
+    //operator.rightBumper().onTrue(new shootVelocity(s_shooter, s_handoff, false));
+    //operator.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, true));
+    //operator.a().onTrue(s_shooter.shootVelocity());
+    if (operator.a().getAsBoolean() == true){
+      s_shooter.shootVelocity();
+    }
+    else{
+      s_shooter.zeroVelocity();
+    }
+    
     //operator.a().onTrue(new zeroVelocity(s_shooter));
 
   }

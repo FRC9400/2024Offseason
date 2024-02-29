@@ -31,17 +31,17 @@ public class ShooterIOTalonFX implements ShooterIO{
     private double rightShooterSetpointMPS = 0;
 
     private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
-    private VelocityVoltage leftShootRequesetVelocity = new VelocityVoltage(0).withEnableFOC(false);
-    private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(false);
+    private VelocityVoltage leftShootRequesetVelocity = new VelocityVoltage(0).withEnableFOC(true);
+    private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
    
 
     LoggedTunableNumber speedRatioTune = new LoggedTunableNumber("Shooter/speedRatio", 1);
-    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 7);
+    LoggedTunableNumber leftShooterSpeedMPS = new LoggedTunableNumber("Shooter/shooterSpeedMPS", 20);
 
-    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.068419); //0.068419
-    LoggedTunableNumber kD = new LoggedTunableNumber("Shooter/kD", 0.0);
-    LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.16488);
-    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.11689);
+    LoggedTunableNumber kP = new LoggedTunableNumber("Shooter/kP", 0.085019); //0.068419
+    LoggedTunableNumber kD = new LoggedTunableNumber("Shooter/kD", 0.0); //0
+    LoggedTunableNumber kS = new LoggedTunableNumber("Shooter/kS", 0.2231); //0.16488
+    LoggedTunableNumber kV = new LoggedTunableNumber("Shooter/kV", 0.118); //0.11689 0.1121
     
     public ShooterIOTalonFX() {
         leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "canivore");
@@ -84,8 +84,10 @@ public class ShooterIOTalonFX implements ShooterIO{
     }
 
     public void setVelocity(){
-        leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
-        rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
+        leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(20, shooterConstants.wheelCircumferenceMeters, 1)));
+        rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(20, shooterConstants.wheelCircumferenceMeters, 1)));
+        //leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
+        //rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
         //leftShooter.setControl(shootRequestMotionMagic.withVelocity(velocityRPS));
     }
 
@@ -124,7 +126,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         leftSlot0Configs.kD = kD.get();
         leftSlot0Configs.kS = kS.get();
         leftSlot0Configs.kV = kV.get();
-        leftSlot0Configs.kA = 0.0077173;
+        leftSlot0Configs.kA = 0.0085063;
 
         var rightSlot0Configs = rightShooterConfigs.Slot0;
         rightSlot0Configs.kP = kP.get();
@@ -132,7 +134,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightSlot0Configs.kD = kD.get();
         rightSlot0Configs.kS = kS.get();
         rightSlot0Configs.kV = kV.get();
-        rightSlot0Configs.kA = 0.0077173;
+        rightSlot0Configs.kA = 0.0085063;
 
         leftShooterConfigurator.apply(leftShooterConfigs);
         rightShooterConfigurator.apply(rightShooterConfigs);
