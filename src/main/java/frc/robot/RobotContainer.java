@@ -30,8 +30,8 @@ import frc.robot.Constants.canIDConstants;
 public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  private final Intake s_intake = new Intake(new IntakeIOTalonFX(canIDConstants.intakeMotor));
-  private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX(canIDConstants.leftElevatorMotor, canIDConstants.rightElevatorMotor));
+  private final Intake s_intake = new Intake(new IntakeIOTalonFX());
+  private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX());
   private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX(canIDConstants.handoverMotor, canIDConstants.leftShooterMotor, canIDConstants.rightShooterMotor));
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {

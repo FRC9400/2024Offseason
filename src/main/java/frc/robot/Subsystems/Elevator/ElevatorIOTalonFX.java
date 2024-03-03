@@ -4,6 +4,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,12 +22,19 @@ import frc.robot.Constants.elevatorConstants;
 import frc.commons.LoggedTunableNumber;
 
 public class ElevatorIOTalonFX implements ElevatorIO{
-    private final TalonFX leftMotor;
-    private final TalonFX rightMotor;
+    private final TalonFX leftMotor = new TalonFX(canIDConstants.leftElevatorMotor, "canivore");
+    private final TalonFX rightMotor = new TalonFX(canIDConstants.rightElevatorMotor, "canivore");
     private final TalonFXConfiguration leftMotorConfigs;
     private final TalonFXConfiguration rightMotorConfigs;
     private final TalonFXConfigurator leftMotorConfigurator;
     private final TalonFXConfigurator rightMotorConfigurator;
+
+    private final StatusSignal<Double> leftElevatorCurrent = leftMotor.getStatorCurrent();
+    private final StatusSignal<Double> rightElevatorCurrent = rightMotor.getStatorCurrent();
+    private final StatusSignal<Double> leftElevatorTemp = leftMotor.getDeviceTemp();
+    private final StatusSignal<Double> rightElevatorTemp = rightMotor.getDeviceTemp();
+    private final StatusSignal<Double> leftElevatorSpeedRPS = leftMotor.getRotorVelocity();
+    private final StatusSignal<Double> leftElevatorPos = leftMotor.getPosition();
 
     private MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0).withEnableFOC(true); 
     private VoltageOut voltageOutRequest =  new VoltageOut(0).withEnableFOC(true);
@@ -45,23 +54,41 @@ public class ElevatorIOTalonFX implements ElevatorIO{
 
 
     public ElevatorIOTalonFX(){
-        leftMotor = new TalonFX(canIDConstants.leftElevatorMotor, "canivore");
-        rightMotor = new TalonFX(canIDConstants.rightElevatorMotor, "canivore");
         leftMotorConfigurator = leftMotor.getConfigurator();
         rightMotorConfigurator = rightMotor.getConfigurator();
         leftMotorConfigs = new TalonFXConfiguration();
         rightMotorConfigs = new TalonFXConfiguration();
         setPointMeters = 0;  
 
+        BaseStatusSignal.setUpdateFrequencyForAll(
+            50,
+            leftElevatorCurrent,
+            rightElevatorCurrent,
+            leftElevatorTemp,
+            rightElevatorTemp,
+            leftElevatorSpeedRPS,
+            leftElevatorPos);
+        
+            leftMotor.optimizeBusUtilization();
+            rightMotor.optimizeBusUtilization();
     }
     
     public void updateInputs(ElevatorIOInputs inputs){
+        BaseStatusSignal.refreshAll(
+           leftElevatorCurrent,
+            rightElevatorCurrent,
+            leftElevatorTemp,
+            rightElevatorTemp,
+            leftElevatorSpeedRPS,
+            leftElevatorPos 
+        );
+
         inputs.appliedVolts = voltageOutRequest.Output;
         inputs.setPointMeters = setPointMeters;
-        inputs.elevatorVelMPS = Conversions.RPStoMPS(leftMotor.getVelocity().getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
-        inputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftMotor.getRotorPosition().getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
-        inputs.currentAmps = new double[] {leftMotor.getStatorCurrent().getValue(), rightMotor.getStatorCurrent().getValue()};
-        inputs.tempFahrenheit = new double[] {leftMotor.getDeviceTemp().getValue(), rightMotor.getDeviceTemp().getValue()};
+        inputs.elevatorVelMPS = Conversions.RPStoMPS(leftElevatorSpeedRPS.getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
+        inputs.elevatorHeightMeters = Conversions.RotationsToMeters(leftElevatorPos.getValue(), elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
+        inputs.currentAmps = new double[] {leftElevatorCurrent.getValue(), rightElevatorCurrent.getValue()};
+        inputs.tempFahrenheit = new double[] {leftElevatorTemp.getValue(), rightElevatorTemp.getValue()};
         
     }
 

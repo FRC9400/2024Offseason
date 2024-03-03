@@ -91,4 +91,8 @@ public class Intake extends SubsystemBase{
 
         holdVoltage = voltage;
     }
+    
+    public void spinIntake(double volts){
+        intakeIO.setIntakeVoltage(volts);
+    }
 }
