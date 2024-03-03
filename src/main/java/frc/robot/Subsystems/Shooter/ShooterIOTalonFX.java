@@ -5,8 +5,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,7 +15,6 @@ import frc.commons.Conversions;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.shooterConstants;
-import frc.robot.Subsystems.Shooter.ShooterIO.ShooterIOInputs;
 
 public class ShooterIOTalonFX implements ShooterIO{
     private final TalonFX leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "canivore");

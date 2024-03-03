@@ -58,8 +58,6 @@ public class ModuleIOTalonFX implements ModuleIO{
 
     LoggedTunableNumber voltage = new LoggedTunableNumber("Drive/Voltage", 0);
 
-
-
     public ModuleIOTalonFX(int driveID, int steerID, int CANcoderID, Rotation2d CANcoderOffset, InvertedValue driveInvert, InvertedValue steerInvert, SensorDirectionValue CANcoderInvert){
         driveMotor = new TalonFX(driveID);
         steerMotor = new TalonFX(steerID);
@@ -80,6 +78,8 @@ public class ModuleIOTalonFX implements ModuleIO{
         velocityVoltageRequest = new VelocityVoltage(0).withEnableFOC(true);
         voltageRequest = new VoltageOut(0).withEnableFOC(true);
 
+        driveMotor.optimizeBusUtilization();
+        steerMotor.optimizeBusUtilization();
 
         var driveMotorOutputConfigs = driveConfigs.MotorOutput;
         driveMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;

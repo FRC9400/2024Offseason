@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveControlRequestParameters;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.proto.Wpimath;
@@ -30,9 +31,9 @@ import frc.robot.Constants.canIDConstants;
 public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  private final Intake s_intake = new Intake(new IntakeIOTalonFX());
+  private final Intake s_intake = new Intake(new IntakeIOTalonFX(1, InvertedValue.Clockwise_Positive));
   private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX());
-  private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX(canIDConstants.handoverMotor, canIDConstants.leftShooterMotor, canIDConstants.rightShooterMotor));
+  private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX());
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
     configureBindings();
@@ -44,9 +45,6 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue((new InstantCommand(() -> s_intake.requestIntake(1))))
     .onFalse(new InstantCommand(() -> s_intake.requestIdle()));
-
-
-
     
 
     }

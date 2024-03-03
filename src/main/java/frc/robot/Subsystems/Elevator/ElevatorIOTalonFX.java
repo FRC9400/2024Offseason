@@ -68,7 +68,6 @@ public class ElevatorIOTalonFX implements ElevatorIO{
             rightElevatorTemp,
             leftElevatorSpeedRPS,
             leftElevatorPos);
-        
             leftMotor.optimizeBusUtilization();
             rightMotor.optimizeBusUtilization();
     }

@@ -3,7 +3,6 @@ package frc.robot.Subsystems.Shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.Commands.zeroVelocity;
 
 public interface ShooterIO {
     @AutoLog
