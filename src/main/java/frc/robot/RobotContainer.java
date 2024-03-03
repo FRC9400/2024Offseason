@@ -29,38 +29,30 @@ import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController tuner = new CommandXboxController(0);
 
   private final Intake s_intake = new Intake(new IntakeIOTalonFX(1, InvertedValue.Clockwise_Positive));
   private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX());
   private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX());
   private final Swerve s_swerve = new Swerve();
+
   public RobotContainer() {
+    s_elevator.elevatorConfiguration();
+    s_shooter.shooterConfiguration();
     configureBindings();
     configureDefaultCommands();
-
   }
 
   private void configureBindings() {
 
-    controller.leftBumper().whileTrue((new InstantCommand(() -> s_intake.requestIntake(1))))
-    .onFalse(new InstantCommand(() -> s_intake.requestIdle()));
-    
+    tuner.a().onTrue(s_elevator.runSysIdCmd());
+    tuner.b().onTrue(s_shooter.shooterSysIdCmd());
+    tuner.x().onTrue(s_swerve.steerSysIdCmd());
+    tuner.y().onTrue(s_swerve.driveSysIdCmd());
 
-    }
+  }
+
   private void configureDefaultCommands() {
-
-    s_swerve.setDefaultCommand(
-      new RunCommand(() -> {
-        double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), .05); 
-        double ySpeed = MathUtil.applyDeadband(controller.getLeftX(), .05);
-        double rot = MathUtil.applyDeadband(controller.getRightX(), 0.05);
-        xSpeed = xSpeed * Math.abs(xSpeed);
-        ySpeed = ySpeed * Math.abs(ySpeed);
-        rot = rot * Math.abs(rot);
-        s_swerve.requestVoltage(xSpeed, ySpeed, rot, true); 
-      }, s_swerve)
-    );
   } 
 
   public Command getAutonomousCommand() {
