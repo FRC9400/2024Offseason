@@ -25,6 +25,13 @@ public class elevatorConstants {
     public static final double kV = 0.0;
     public static final double kG = 0.0;
 
+    /* Climber PID Values */
+    public static final double ClimberkP = 0.0;
+    public static final double ClimberkD = 0.0;
+    public static final double ClimberkS = 0.0;
+    public static final double ClimberkV = 0.0;
+    public static final double ClimberkG = 0.0;
+
     /* MotionMagic Values */
     public static final double CruiseVelocity = 0;
     public static final double Acceleration = 0;

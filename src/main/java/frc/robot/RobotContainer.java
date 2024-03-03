@@ -4,80 +4,69 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveControlRequestParameters;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.proto.Wpimath;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
-import frc.robot.Commands.JogElevator;
-import frc.robot.Commands.runIntake;
-import frc.robot.Commands.setElevator;
-import frc.robot.Commands.shootVelocity;
-import frc.robot.Commands.shootVoltage;
-import frc.robot.Commands.zeroVelocity;
+import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
-  private final CommandXboxController operator = new CommandXboxController(0);
+  private final CommandXboxController controller = new CommandXboxController(0);
 
-  private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX());
-  private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX());
-  //private final Intake s_intake = new Intake(new IntakeIOTalonFX(15, InvertedValue.CounterClockwise_Positive));
-  private final Intake s_handoff = new Intake(new IntakeIOTalonFX(16, InvertedValue.Clockwise_Positive));
-
-  
-
+  private final Intake s_intake = new Intake(new IntakeIOTalonFX(canIDConstants.intakeMotor));
+  private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX(canIDConstants.leftElevatorMotor, canIDConstants.rightElevatorMotor));
+  private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX(canIDConstants.handoverMotor, canIDConstants.leftShooterMotor, canIDConstants.rightShooterMotor));
+  private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
-    s_elevator.elevatorConfiguration();
-    s_shooter.shooterConfiguration();
-    s_shooter.shooterSysIdCmd();
     configureBindings();
-    
+    configureDefaultCommands();
+
   }
 
   private void configureBindings() {
-    /* 
-    operator.b().onTrue(s_elevator.runSysIdCmd());
-    operator.y().onTrue(new JogElevator(s_elevator, 4));
-    operator.x().onTrue(new JogElevator(s_elevator, -1.5));
-    operator.a().onTrue(new JogElevator(s_elevator, 0));
-    */
-    /* 
-    operator.b().onTrue(new setElevator(s_elevator, 0.2, false));
-    operator.a().onTrue(new setElevator(s_elevator, 0, false));
-    operator.x().onTrue(new setElevator(s_elevator, 0.45, false));
-    */
+
+    controller.leftBumper().whileTrue((new InstantCommand(() -> s_intake.requestIntake(1))))
+    .onFalse(new InstantCommand(() -> s_intake.requestIdle()));
+
+
+
     
-    //operator.y().onTrue(s_shooter.shooterSysIdCmd());
 
-    //operator.leftBumper().whileTrue(new runIntake(s_intake, false));
-
-  
-    //operator.leftTrigger().whileTrue(new runIntake(s_handoff, true));
-
-    //operator.rightBumper().onTrue(new shootVoltage(s_shooter, 3));
-    //operator.rightTrigger().onTrue(new shootVoltage(s_shooter, 0));
-    //operator.rightBumper().onTrue(new shootVelocity(s_shooter, s_handoff, false));
-    //operator.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, true));
-    //operator.a().onTrue(s_shooter.shootVelocity());
-    if (operator.a().getAsBoolean() == true){
-      s_shooter.shootVelocity();
     }
-    else{
-      s_shooter.zeroVelocity();
-    }
-    
-    //operator.a().onTrue(new zeroVelocity(s_shooter));
+  private void configureDefaultCommands() {
 
-  }
+    s_swerve.setDefaultCommand(
+      new RunCommand(() -> {
+        double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), .05); 
+        double ySpeed = MathUtil.applyDeadband(controller.getLeftX(), .05);
+        double rot = MathUtil.applyDeadband(controller.getRightX(), 0.05);
+        xSpeed = xSpeed * Math.abs(xSpeed);
+        ySpeed = ySpeed * Math.abs(ySpeed);
+        rot = rot * Math.abs(rot);
+        s_swerve.requestPercent(xSpeed, ySpeed, rot, true); 
+      }, s_swerve)
+    );
+  } 
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
 }
+

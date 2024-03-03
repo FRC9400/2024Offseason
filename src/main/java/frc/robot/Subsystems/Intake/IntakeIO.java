@@ -6,9 +6,9 @@ public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
 
-        public double appliedVolts = 0.0;
-        public double currentAmps = 0.0;
-        public double tempFahrenheit = 0.0;
+        public double intakeAppliedVolts = 0.0;
+        public double intakeCurrentAmps = 0.0;
+        public double intakeTempFahrenheit = 0.0;
         public double intakeSpeedRPS = 0.0;
 
     }
@@ -16,7 +16,9 @@ public interface IntakeIO {
     public default void updateInputs(IntakeIOInputs inputs) {
     }
 
-    public default void setVoltage(double volts) {
+    public default void setIntakeVoltage(double volts) {
     }
+
+
 
 }
