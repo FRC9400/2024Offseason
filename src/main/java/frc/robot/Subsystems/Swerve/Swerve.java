@@ -1,27 +1,34 @@
 package frc.robot.Subsystems.Swerve;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
-import frc.robot.Subsystems.Swerve.GyroIO.GyroIOInputs;
-import frc.robot.Subsystems.Swerve.ModuleIO.ModuleIOInputs;
+
 
 public class Swerve extends SubsystemBase{
     private final GyroIO gyroIO;
@@ -48,6 +55,27 @@ public class Swerve extends SubsystemBase{
             new Rotation2d()));
 
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
+    private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
+        null, 
+        Volts.of(3), 
+        Seconds.of(4), 
+        (state) -> SignalLogger.writeString("state", state.toString())), 
+        new SysIdRoutine.Mechanism((
+            Measure<Voltage> volts) -> driveSysID(volts.in(Volts)),
+             null, 
+             this)
+    );
+
+    private final SysIdRoutine steerRoutine = new SysIdRoutine(new SysIdRoutine.Config(
+        null, 
+        Volts.of(5), 
+        Seconds.of(6), 
+        (state) -> SignalLogger.writeString("state", state.toString())), 
+        new SysIdRoutine.Mechanism((
+            Measure<Voltage> volts) -> moduleIOs[0].steerVoltage(volts.in(Volts)),
+             null, 
+             this)
+        );
 
     public Swerve() {
         gyroIO = new GyroIOPigeon2(0);
@@ -90,21 +118,7 @@ public class Swerve extends SubsystemBase{
 
     }
 
-    /* Tuning is the worst thing ive done in my life */
-    public void requestVoltage(boolean testVoltage){
-        if(testVoltage){
-            for(int i = 0; i < 4; i++){
-                moduleIOs[i].testDriveVoltage();
-            }
-         }
-        else{
-            for(int i = 0; i < 4; i++){
-                moduleIOs[i].setDriveVoltage(0);
-            }
-        }
-    }
-
-    public void requestPercent(double x_speed, double y_speed,double rot_speed, boolean fieldRelative){
+    public void requestVoltage(double x_speed, double y_speed,double rot_speed, boolean fieldRelative){
 
         Rotation2d[] steerPositions = new Rotation2d[4];
         SwerveModuleState[] desiredModuleStates = new SwerveModuleState[4];
@@ -124,7 +138,6 @@ public class Swerve extends SubsystemBase{
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i]);
             }
-
         }
     }
 
@@ -177,6 +190,61 @@ public class Swerve extends SubsystemBase{
         }
         return measuredStates;
     }
+
+    public void driveSysID(double volts){
+        Arrays.stream(moduleIOs).forEach(mod -> mod.setDriveVoltage(volts));
+        
+    }
+
+    public Command driveSysIdCmd(){
+        return Commands.sequence(
+            this.runOnce(() -> SignalLogger.start()),
+            driveRoutine
+                .quasistatic(Direction.kForward),
+                this.runOnce(() -> driveSysID(0)),
+                Commands.waitSeconds(1),
+            driveRoutine
+                .quasistatic(Direction.kReverse),
+                this.runOnce(() -> driveSysID(0)),
+                Commands.waitSeconds(1),  
+
+            driveRoutine
+                .dynamic(Direction.kForward),
+                this.runOnce(() -> driveSysID(0)),
+                Commands.waitSeconds(1),  
+
+            driveRoutine
+                .dynamic(Direction.kReverse),
+                this.runOnce(() -> driveSysID(0)),
+                Commands.waitSeconds(1), 
+            this.runOnce(() -> SignalLogger.stop())
+        );
+    }
+
+    public Command steerSysIdCmd(){
+        return Commands.sequence(
+        this.runOnce(() -> SignalLogger.start()),
+            steerRoutine
+                .quasistatic(Direction.kForward),
+                this.runOnce(() -> moduleIOs[0].steerVoltage(0)),
+                Commands.waitSeconds(1),
+            steerRoutine
+                .quasistatic(Direction.kReverse),
+                this.runOnce(() -> moduleIOs[0].steerVoltage(0)),
+                Commands.waitSeconds(1),  
+
+            steerRoutine
+                .dynamic(Direction.kForward),
+                this.runOnce(() -> moduleIOs[0].steerVoltage(0)),
+                Commands.waitSeconds(1),  
+
+            steerRoutine
+                .dynamic(Direction.kReverse),
+                this.runOnce(() -> moduleIOs[0].steerVoltage(0)),
+                Commands.waitSeconds(1), 
+            this.runOnce(() -> SignalLogger.stop())
+        );
+    }
     public SwerveModuleState[] getSetpointStates(){
         return setpointModuleStates;
     }
@@ -189,5 +257,7 @@ public class Swerve extends SubsystemBase{
         }
         Logger.recordOutput(key, dataArray.stream().mapToDouble(Double::doubleValue).toArray());
     }
+
+
 
 }

@@ -58,7 +58,7 @@ public class RobotContainer {
         xSpeed = xSpeed * Math.abs(xSpeed);
         ySpeed = ySpeed * Math.abs(ySpeed);
         rot = rot * Math.abs(rot);
-        s_swerve.requestPercent(xSpeed, ySpeed, rot, true); 
+        s_swerve.requestVoltage(xSpeed, ySpeed, rot, true); 
       }, s_swerve)
     );
   } 
