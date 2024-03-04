@@ -12,9 +12,9 @@ import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 
 public class Superstructure extends SubsystemBase {
-    private final Intake intake = new Intake(new IntakeIOTalonFX(canIDConstants.intakeMotor, InvertedValue.CounterClockwise_Positive));
+    //private final Intake intake = new Intake(new IntakeIOTalonFX(canIDConstants.intakeMotor, InvertedValue.CounterClockwise_Positive));
     private final Elevator elevator = new Elevator(new ElevatorIOTalonFX());
-    private final Intake handoff = new Intake(new IntakeIOTalonFX(canIDConstants.handoffMotor, InvertedValue.Clockwise_Positive));
+    //private final Intake handoff = new Intake(new IntakeIOTalonFX(canIDConstants.handoffMotor, InvertedValue.Clockwise_Positive));
     private final Shooter shooter = new Shooter(new ShooterIOTalonFX());
 
     

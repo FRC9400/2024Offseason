@@ -31,7 +31,7 @@ import frc.robot.Constants.swerveConstants.kinematicsConstants;
 
 
 public class Swerve extends SubsystemBase{
-    private final GyroIO gyroIO;
+    private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
     private final ModuleIOInputsAutoLogged[] moduleInputs = {
@@ -78,7 +78,6 @@ public class Swerve extends SubsystemBase{
         );
 
     public Swerve() {
-        gyroIO = new GyroIOPigeon2(0);
 
         moduleIOs[0] = new ModuleIOTalonFX(canIDConstants.driveMotor[0], canIDConstants.steerMotor[0], canIDConstants.CANcoder[0],swerveConstants.moduleConstants.CANcoderOffsets[0],
         swerveConstants.moduleConstants.driveMotorInverts[0], swerveConstants.moduleConstants.steerMotorInverts[0], swerveConstants.moduleConstants.CANcoderInverts[0]);
@@ -118,7 +117,7 @@ public class Swerve extends SubsystemBase{
 
     }
 
-    public void requestVoltage(double x_speed, double y_speed,double rot_speed, boolean fieldRelative){
+    public void requestVoltage(double x_speed, double y_speed, double rot_speed, boolean fieldRelative){
 
         Rotation2d[] steerPositions = new Rotation2d[4];
         SwerveModuleState[] desiredModuleStates = new SwerveModuleState[4];

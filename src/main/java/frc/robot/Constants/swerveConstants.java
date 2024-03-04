@@ -10,10 +10,10 @@ import edu.wpi.first.math.util.Units;
 public final class swerveConstants {
     public static final class moduleConstants {
         /* Inverts FL, FR, BL, BR */
-        public static final InvertedValue[] driveMotorInverts = {InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive};
+        public static final InvertedValue[] driveMotorInverts = {InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive};
         public static final InvertedValue[] steerMotorInverts = {InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive};
         public static final SensorDirectionValue[] CANcoderInverts = {SensorDirectionValue.Clockwise_Positive, SensorDirectionValue.Clockwise_Positive, SensorDirectionValue.Clockwise_Positive, SensorDirectionValue.Clockwise_Positive};
-        public static final Rotation2d[] CANcoderOffsets = {new Rotation2d(0), new Rotation2d(0), new Rotation2d(0), new Rotation2d(0)}; //degrees or rotations
+        public static final double[] CANcoderOffsets = {0.518311, 0.271240, 0.386230, 0.173340}; //degrees or rotations
 
         /* CANcoder Offset FL, FR, BL, BR */
         public static final double[] CANcoderOffset = {};
@@ -23,8 +23,8 @@ public final class swerveConstants {
         public static final double steerGearRatio = 10.28;
 
         /* Max Speeds */
-        public static final double maxSpeed = 0.0;
-        public static final double maxAngularVelocity = 0.0;
+        public static final double maxSpeed = 2;
+        public static final double maxAngularVelocity = 2.0;
         
         /* Current Limits */
         public static final double driveStatorCurrentLimit = 120;

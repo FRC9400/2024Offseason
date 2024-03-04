@@ -10,10 +10,10 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     private VoltageOut intakeRequest = new VoltageOut(0).withEnableFOC(true);
 
-    public IntakeIOTalonFX(int motorID, InvertedValue invert) {
-        intake = new TalonFX(motorID, "canivore");
+    public IntakeIOTalonFX() {
+        intake = new TalonFX(16, "canivore");
         var intakeConfigs = new TalonFXConfiguration();
-        intakeConfigs.MotorOutput.Inverted = invert;
+        //intakeConfigs.MotorOutput.Inverted = invert;
 
         intake.getConfigurator().apply(intakeConfigs);
     }

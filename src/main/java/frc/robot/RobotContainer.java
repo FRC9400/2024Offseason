@@ -26,41 +26,39 @@ import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  private final Intake s_intake = new Intake(new IntakeIOTalonFX(1, InvertedValue.Clockwise_Positive));
+  private final Intake s_intake = new Intake(new IntakeIOTalonFX());
   private final Elevator s_elevator = new Elevator(new ElevatorIOTalonFX());
   private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX());
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
+    s_swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_swerve, 
+                () -> -controller.getRawAxis(XboxController.Axis.kLeftY.value),
+                () -> -controller.getRawAxis(XboxController.Axis.kLeftX.value), 
+                () -> -controller.getRawAxis(XboxController.Axis.kRightX.value)
+              
+            )
+        );
+    s_swerve.zeroWheels();
+    s_swerve.zeroGyro();
     configureBindings();
     configureDefaultCommands();
 
   }
 
   private void configureBindings() {
-
-    controller.leftBumper().whileTrue((new InstantCommand(() -> s_intake.requestIntake(1))))
-    .onFalse(new InstantCommand(() -> s_intake.requestIdle()));
-    
-
+  
     }
   private void configureDefaultCommands() {
-
-    s_swerve.setDefaultCommand(
-      new RunCommand(() -> {
-        double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), .05); 
-        double ySpeed = MathUtil.applyDeadband(controller.getLeftX(), .05);
-        double rot = MathUtil.applyDeadband(controller.getRightX(), 0.05);
-        xSpeed = xSpeed * Math.abs(xSpeed);
-        ySpeed = ySpeed * Math.abs(ySpeed);
-        rot = rot * Math.abs(rot);
-        s_swerve.requestVoltage(xSpeed, ySpeed, rot, true); 
-      }, s_swerve)
-    );
+    
+   
   } 
 
   public Command getAutonomousCommand() {
