@@ -53,7 +53,6 @@ public class Shooter extends SubsystemBase{
         );
     }
 
-  
     
     public void shootVoltage(double volts){
         shooterIO.setVoltage(volts);

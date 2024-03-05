@@ -23,7 +23,9 @@ public default void zeroSensor(){}
 
 public default void setOutput(double output){}
 
-public default void driveElevator(double setPointMeters, boolean climb){}
+public default void setMotionMagicConfigs(boolean down){}
+
+public default void driveElevator(double setPointMeters){}
 
 public default void elevatorConfiguration(){}
 }

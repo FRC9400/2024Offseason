@@ -37,6 +37,8 @@ public class RobotContainer {
   private final Shooter s_shooter = new Shooter(new ShooterIOTalonFX());
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
+    s_swerve.zeroWheels();
+    s_swerve.zeroGyro();
     s_swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_swerve, 
@@ -46,8 +48,7 @@ public class RobotContainer {
               
             )
         );
-    s_swerve.zeroWheels();
-    s_swerve.zeroGyro();
+    
     configureBindings();
     configureDefaultCommands();
 

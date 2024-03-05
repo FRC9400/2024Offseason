@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -41,7 +42,6 @@ public class ElevatorIOTalonFX implements ElevatorIO{
     
     double setPointMeters;
     
-
     LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 8.413);
     LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.0030141);
     LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.058684);
@@ -113,9 +113,17 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(voltageOutRequest.withOutput(output));
     }
 
-    public void driveElevator(double setPointMeters, boolean climb){
+    public void driveElevator(double setPointMeters){
         double setPointRotations = Conversions.metersToRotations(setPointMeters, elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
         leftMotor.setControl(motionMagicRequest.withPosition(setPointRotations));     
+    }
+
+    public void setMotionMagicConfigs(boolean down){
+        MotionMagicConfigs climb = new MotionMagicConfigs();
+        climb.MotionMagicCruiseVelocity = down ? elevatorConstants.CruiseVelocityDown : elevatorConstants.CruiseVelocityUp;
+        climb.MotionMagicAcceleration = down ? elevatorConstants.AccelerationDown : elevatorConstants.AccelerationUp;
+
+        leftMotorConfigurator.apply(climb);
     }
 
      
@@ -125,6 +133,10 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorOuputConfigs.NeutralMode = NeutralModeValue.Brake;
         leftMotorOuputConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         rightMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
+
+        var leftMotorCurrentConfigs = leftMotorConfigs.CurrentLimits;
+        leftMotorCurrentConfigs.StatorCurrentLimitEnable = true;
+        leftMotorCurrentConfigs.StatorCurrentLimit = elevatorConstants.statorCurrentLimit;
         
         var slot0Configs = leftMotorConfigs.Slot0;
         slot0Configs.kP = kP.get();

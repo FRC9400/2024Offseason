@@ -106,8 +106,8 @@ public class Elevator extends SubsystemBase {
         elevatorIO.setOutput(output);
     }
 
-    public void driveElevator(double x, boolean climb) {
-        elevatorIO.driveElevator(x, climb);
+    public void driveElevator(double x) {
+        elevatorIO.driveElevator(x);
     }
 
     public void elevatorConfiguration() {
