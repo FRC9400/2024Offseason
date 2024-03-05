@@ -28,7 +28,7 @@ import frc.commons.LoggedTunableNumber;
 import frc.commons.Conversions;
 import frc.robot.Constants.swerveConstants;
 
-public class ModuleIOTalonFX implements ModuleIO{
+public class ModuleIOTalonFX implements ModuleIO {
     private final TalonFX driveMotor;
     private final TalonFX steerMotor;
     private final CANcoder angleEncoder;
@@ -46,13 +46,16 @@ public class ModuleIOTalonFX implements ModuleIO{
     private final StatusSignal<Double> steerPos;
     private final StatusSignal<Double> drivePos;
     private final StatusSignal<Double> driveVelRPS;
-
+    private final StatusSignal<Double> driveTemp;
+    private final StatusSignal<Double> steerTemp;
+    private final StatusSignal<Double> driveAmps;
+    private final StatusSignal<Double> steerAmps;
+    private final StatusSignal<Double> absolutePositionRotations;
 
     private PositionVoltage steerRequest;
     private VelocityVoltage velocityVoltageRequest;
     private VoltageOut driveVoltageRequest;
     private VoltageOut steerVoltageRequest;
-
 
     LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/kP", 0);
     LoggedTunableNumber drivekD = new LoggedTunableNumber("Drive/kD", 0);
@@ -66,7 +69,8 @@ public class ModuleIOTalonFX implements ModuleIO{
 
     LoggedTunableNumber voltage = new LoggedTunableNumber("Drive/Voltage", 0);
 
-    public ModuleIOTalonFX(int driveID, int steerID, int CANcoderID, double CANcoderOffset, InvertedValue driveInvert, InvertedValue steerInvert, SensorDirectionValue CANcoderInvert){
+    public ModuleIOTalonFX(int driveID, int steerID, int CANcoderID, double CANcoderOffset, InvertedValue driveInvert,
+            InvertedValue steerInvert, SensorDirectionValue CANcoderInvert) {
         driveMotor = new TalonFX(driveID, "canivore");
         steerMotor = new TalonFX(steerID, "canivore");
         angleEncoder = new CANcoder(CANcoderID, "canivore");
@@ -91,7 +95,7 @@ public class ModuleIOTalonFX implements ModuleIO{
 
         var driveMotorOutputConfigs = driveConfigs.MotorOutput;
         driveMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-        driveMotorOutputConfigs.Inverted = driveInvert; 
+        driveMotorOutputConfigs.Inverted = driveInvert;
         driveMotorOutputConfigs.PeakForwardDutyCycle = 1.0;
         driveMotorOutputConfigs.PeakReverseDutyCycle = -1.0;
 
@@ -100,8 +104,8 @@ public class ModuleIOTalonFX implements ModuleIO{
         driveMotor.setPosition(0);
 
         var driveCurrentLimitConfigs = driveConfigs.CurrentLimits;
-        driveCurrentLimitConfigs.StatorCurrentLimitEnable = false;
-        driveCurrentLimitConfigs.StatorCurrentLimit = 0;
+        driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
+        driveCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.driveStatorCurrentLimit;
 
         var driveSlot0Configs = driveConfigs.Slot0;
         driveSlot0Configs.kP = drivekP.get();
@@ -110,7 +114,7 @@ public class ModuleIOTalonFX implements ModuleIO{
         driveSlot0Configs.kS = drivekS.get();
         driveSlot0Configs.kV = drivekV.get();
 
-        //STEER
+        // STEER
 
         var steerMotorOutputConfigs = steerConfigs.MotorOutput;
         steerMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
@@ -118,10 +122,11 @@ public class ModuleIOTalonFX implements ModuleIO{
 
         var steerFeedbackConfigs = steerConfigs.Feedback;
         steerFeedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        //steerFeedbackConfigs.FeedbackRemoteSensorID = CANcoderID;
-        //steerFeedbackConfigs.RotorToSensorRatio = swerveConstants.moduleConstants.steerGearRatio;
-        //steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
-        //steerFeedbackConfigs.FeedbackRotorOffset = 0;
+        // steerFeedbackConfigs.FeedbackRemoteSensorID = CANcoderID;
+        // steerFeedbackConfigs.RotorToSensorRatio =
+        // swerveConstants.moduleConstants.steerGearRatio;
+        // steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
+        // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
         var steerSlot0Configs = steerConfigs.Slot0;
         steerSlot0Configs.kP = steerkP.get();
@@ -132,14 +137,13 @@ public class ModuleIOTalonFX implements ModuleIO{
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
-        steerCurrentLimitConfigs.StatorCurrentLimit = 50;
+        steerCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.steerStatorCurrentLimit;
 
         // CANcoder
         var magnetSensorConfigs = angleEncoderConfigs.MagnetSensor;
         magnetSensorConfigs.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         magnetSensorConfigs.MagnetOffset = 0;
         magnetSensorConfigs.SensorDirection = CANcoderInvert;
-
 
         driveConfigurator.apply(driveConfigs);
         steerConfigurator.apply(steerConfigs);
@@ -148,111 +152,124 @@ public class ModuleIOTalonFX implements ModuleIO{
         steerPos = steerMotor.getRotorPosition();
         drivePos = driveMotor.getRotorPosition();
         driveVelRPS = driveMotor.getRotorVelocity();
+        driveTemp = driveMotor.getDeviceTemp();
+        steerTemp = steerMotor.getDeviceTemp();
+        driveAmps = driveMotor.getStatorCurrent();
+        steerAmps = steerMotor.getStatorCurrent();
+        absolutePositionRotations = angleEncoder.getAbsolutePosition();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100,
-            steerPos,
-            drivePos,
-            driveVelRPS
-        );
+                100,
+                steerPos,
+                drivePos,
+                driveVelRPS,
+                driveTemp,
+                steerTemp,
+                driveAmps,
+                steerAmps);
 
         driveMotor.optimizeBusUtilization();
         steerMotor.optimizeBusUtilization();
-
-
-
     }
 
     @Override
-    public void updateInputs(ModuleIOInputs inputs){
+    public void updateInputs(ModuleIOInputs inputs) {
         BaseStatusSignal.refreshAll(
-            steerPos,
-            drivePos,
-            driveVelRPS
-        );
+                steerPos,
+                drivePos,
+                driveVelRPS,
+                driveTemp,
+                steerTemp,
+                driveAmps,
+                steerAmps);
 
-        inputs.driveVelocityMetersPerSec = Conversions.RPStoMPS(driveVelRPS.getValue(), swerveConstants.moduleConstants.wheelCircumferenceMeters, swerveConstants.moduleConstants.driveGearRatio);
+        inputs.driveVelocityMetersPerSec = Conversions.RPStoMPS(driveVelRPS.getValue(),
+                swerveConstants.moduleConstants.wheelCircumferenceMeters,
+                swerveConstants.moduleConstants.driveGearRatio);
         inputs.driveAppliedVolts = driveVoltageRequest.Output;
-        inputs.driveCurrentAmps = driveMotor.getStatorCurrent().getValue();
-        inputs.driveTempCelcius = driveMotor.getDeviceTemp().getValue();
-        inputs.driveDistanceMeters = Conversions.RotationsToMeters(drivePos.getValue(), swerveConstants.moduleConstants.wheelCircumferenceMeters, swerveConstants.moduleConstants.driveGearRatio);
+        inputs.driveCurrentAmps = driveAmps.getValue();
+        inputs.driveTempCelcius = driveTemp.getValue();
+        inputs.driveDistanceMeters = Conversions.RotationsToMeters(drivePos.getValue(),
+                swerveConstants.moduleConstants.wheelCircumferenceMeters,
+                swerveConstants.moduleConstants.driveGearRatio);
         inputs.driveOutputPercent = driveMotor.get();
         inputs.rawDriveRPS = driveVelRPS.getValue();
 
-        inputs.moduleAngleRads = Units.degreesToRadians(Conversions.RotationsToDegrees(steerPos.getValue(), swerveConstants.moduleConstants.steerGearRatio));
-        inputs.moduleAngleDegs = Conversions.RotationsToDegrees(steerPos.getValue(), swerveConstants.moduleConstants.steerGearRatio);
-        inputs.rawAbsolutePositionRotations = angleEncoder.getAbsolutePosition().getValue();
-        inputs.absolutePositionRadians = angleEncoder.getAbsolutePosition().getValue() * 2 * Math.PI;
-        inputs.absolutePositionDegrees = angleEncoder.getAbsolutePosition().getValue() * 360;
+        inputs.moduleAngleRads = Units.degreesToRadians(
+                Conversions.RotationsToDegrees(steerPos.getValue(), swerveConstants.moduleConstants.steerGearRatio));
+        inputs.moduleAngleDegs = Conversions.RotationsToDegrees(steerPos.getValue(),
+                swerveConstants.moduleConstants.steerGearRatio);
+        inputs.rawAbsolutePositionRotations = absolutePositionRotations.getValue();
+        inputs.absolutePositionRadians = absolutePositionRotations.getValue() * 2 * Math.PI;
+        inputs.absolutePositionDegrees = absolutePositionRotations.getValue() * 360;
         inputs.turnAppliedVolts = steerVoltageRequest.Output;
-        inputs.turnCurrentAmps = steerMotor.getStatorCurrent().getValue();
-        inputs.turnTempCelcius = steerMotor.getDeviceTemp().getValue();
+        inputs.turnCurrentAmps = steerAmps.getValue();
+        inputs.turnTempCelcius = steerTemp.getValue();
     }
 
     @Override
-    public void updateTunableNumbers(){
-        if (
-        drivekD.hasChanged(drivekD.hashCode()) ||
-        drivekS.hasChanged(drivekS.hashCode()) ||
-        drivekP.hasChanged(drivekP.hashCode()) ||
-        drivekV.hasChanged(drivekV.hashCode())
-        ) {
-        var driveSlot0Configs = new Slot0Configs();
-        driveSlot0Configs.kP = drivekP.get();
-        driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = drivekD.get();
-        driveSlot0Configs.kS = drivekS.get();
-        driveSlot0Configs.kV = drivekV.get();
+    public void updateTunableNumbers() {
+        if (drivekD.hasChanged(drivekD.hashCode()) ||
+                drivekS.hasChanged(drivekS.hashCode()) ||
+                drivekP.hasChanged(drivekP.hashCode()) ||
+                drivekV.hasChanged(drivekV.hashCode())) {
+            var driveSlot0Configs = new Slot0Configs();
+            driveSlot0Configs.kP = drivekP.get();
+            driveSlot0Configs.kI = 0.0;
+            driveSlot0Configs.kD = drivekD.get();
+            driveSlot0Configs.kS = drivekS.get();
+            driveSlot0Configs.kV = drivekV.get();
 
-        driveConfigurator.apply(driveSlot0Configs);
+            driveConfigurator.apply(driveSlot0Configs);
         }
 
-        if (
-        steerkD.hasChanged(steerkD.hashCode()) ||
-        steerkS.hasChanged(steerkS.hashCode()) ||
-        steerkP.hasChanged(steerkP.hashCode()) ||
-        steerkV.hasChanged(steerkV.hashCode())
-        ){
-        var steerSlot0Configs = new Slot0Configs();
-        steerSlot0Configs.kP = steerkP.get();
-        steerSlot0Configs.kI = 0.0;
-        steerSlot0Configs.kD = steerkD.get();
-        steerSlot0Configs.kS = steerkS.get();
-        steerSlot0Configs.kV = steerkV.get();
+        if (steerkD.hasChanged(steerkD.hashCode()) ||
+                steerkS.hasChanged(steerkS.hashCode()) ||
+                steerkP.hasChanged(steerkP.hashCode()) ||
+                steerkV.hasChanged(steerkV.hashCode())) {
+            var steerSlot0Configs = new Slot0Configs();
+            steerSlot0Configs.kP = steerkP.get();
+            steerSlot0Configs.kI = 0.0;
+            steerSlot0Configs.kD = steerkD.get();
+            steerSlot0Configs.kS = steerkS.get();
+            steerSlot0Configs.kV = steerkV.get();
 
-        steerConfigurator.apply(steerSlot0Configs);
+            steerConfigurator.apply(steerSlot0Configs);
         }
     }
 
-    public void setDesiredState(SwerveModuleState optimizedDesiredStates){
-        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed) * 12;
+    public void setDesiredState(SwerveModuleState optimizedDesiredStates) {
+        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed)
+                * 12;
         double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
         setDriveVoltage(driveVoltage);
         setTurnAngle(angleDeg);
     }
 
-    public void setDriveVoltage(double volts){
+    public void setDriveVoltage(double volts) {
         driveMotor.setControl(driveVoltageRequest.withOutput(volts));
     }
-    
-    public void steerVoltage(double volts){
+
+    public void steerVoltage(double volts) {
         steerMotor.setControl(steerVoltageRequest.withOutput(volts));
     }
 
-    public void setTurnAngle(double angleDeg){
-        steerMotor.setControl(steerRequest.withPosition(Conversions.DegreesToRotations(angleDeg, swerveConstants.moduleConstants.steerGearRatio)));
+    public void setTurnAngle(double angleDeg) {
+        steerMotor.setControl(steerRequest.withPosition(
+                Conversions.DegreesToRotations(angleDeg, swerveConstants.moduleConstants.steerGearRatio)));
     }
-    
-    public void resetToAbsolute(){
+
+    public void resetToAbsolute() {
         double absolutePositionRotations = angleEncoder.getAbsolutePosition().getValue() - CANcoderOffset;
         steerMotor.setPosition(absolutePositionRotations);
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond, boolean auto) {
-        velocityVoltageRequest.Velocity = Conversions.MPStoRPS(velocityMetersPerSecond, swerveConstants.moduleConstants.wheelCircumferenceMeters, swerveConstants.moduleConstants.driveGearRatio);
+        velocityVoltageRequest.Velocity = Conversions.MPStoRPS(velocityMetersPerSecond,
+                swerveConstants.moduleConstants.wheelCircumferenceMeters,
+                swerveConstants.moduleConstants.driveGearRatio);
         driveMotor.setControl(velocityVoltageRequest);
     }
 
-    
 }
