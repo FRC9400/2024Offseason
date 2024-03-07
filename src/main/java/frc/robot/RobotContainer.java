@@ -36,6 +36,7 @@ import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   private final Intake s_intake = new Intake(new IntakeIOTalonFX());
   private final Handoff s_handoff = new Handoff(new HandoffIOTalonFX());
@@ -63,15 +64,15 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    controller.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 3, 1)); // shoot amp
-    controller.leftTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, true, 0, 0)); // zero
+    operator.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 3, 1)); // shoot amp
+    operator.leftTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, true, 0, 0)); // zero
 
-    controller.x().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.5));
-    controller.y().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.7));
-    controller.b().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 10, 2));
+    operator.x().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.5));
+    operator.y().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.7));
+    operator.b().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 10, 2));
 
-   controller.rightBumper().whileTrue(new runIntake(s_intake, false));
-   controller.leftBumper().whileTrue(new runIntake(s_intake, true));
+   operator.rightBumper().whileTrue(new runIntake(s_intake, false));
+   operator.leftBumper().whileTrue(new runIntake(s_intake, true));
 
    //controller.x().onTrue(new setElevator(s_elevator, 0.45, false));
    //controller.y().onTrue(new setElevator(s_elevator, 0, false));
