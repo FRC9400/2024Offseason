@@ -107,6 +107,8 @@ public class ShooterIOTalonFX implements ShooterIO{
     }
 
     public void setVelocity(double velocity, double ratio){
+        leftShooterSetpointMPS = velocity;
+        rightShooterSetpointMPS = velocity * ratio;
         leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(velocity, shooterConstants.wheelCircumferenceMeters, 1)));
         rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(velocity * ratio, shooterConstants.wheelCircumferenceMeters, 1)));
         //leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
@@ -115,6 +117,8 @@ public class ShooterIOTalonFX implements ShooterIO{
     }
 
     public void zeroVelocity(){
+        leftShooterSetpointMPS = 0;
+        rightShooterSetpointMPS = 0;
         leftShooter.setControl(leftShootRequesetVelocity.withVelocity(0));
         rightShooter.setControl(rightShootRequestVelocity.withVelocity(0));
 
@@ -161,9 +165,10 @@ public class ShooterIOTalonFX implements ShooterIO{
 
         leftShooterConfigurator.apply(leftShooterConfigs);
         rightShooterConfigurator.apply(rightShooterConfigs);
-
+        /* 
         leftShooterSetpointMPS = leftShooterSpeedMPS.get();
         speedRatio = speedRatioTune.get();
         rightShooterSetpointMPS = leftShooterSetpointMPS * speedRatio;
+        */
     }
 }

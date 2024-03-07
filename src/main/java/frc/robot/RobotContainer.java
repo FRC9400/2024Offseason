@@ -74,8 +74,8 @@ public class RobotContainer {
    operator.rightBumper().whileTrue(new runIntake(s_intake, false));
    operator.leftBumper().whileTrue(new runIntake(s_intake, true));
 
-   //controller.x().onTrue(new setElevator(s_elevator, 0.45, false));
-   //controller.y().onTrue(new setElevator(s_elevator, 0, false));
+   controller.x().onTrue(new setElevator(s_elevator, 0.45, false));
+   controller.y().onTrue(new setElevator(s_elevator, 0, false));
   }
   private void configureDefaultCommands() {
     

@@ -15,6 +15,7 @@ public class setElevator extends Command {
   public setElevator(Elevator Elevator, double setPointMeters, boolean climb) {
     this.Elevator = Elevator;
     this.setpointMeters = setPointMeters;
+    this.climb = climb;
 
     addRequirements(Elevator);
     // Use addRequirements() here to declare subsystem dependencies.
