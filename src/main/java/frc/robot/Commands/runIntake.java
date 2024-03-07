@@ -21,7 +21,7 @@ public class runIntake extends Command{
 
     @Override
     public void execute(){
-        double output = 3;
+        double output = 5;
         if(intakeOutake){
   
             output *= -1;

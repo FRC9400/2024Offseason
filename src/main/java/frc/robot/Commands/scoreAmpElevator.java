@@ -1,33 +1,28 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Elevator.Elevator;
+import frc.robot.Subsystems.Intake.Intake;
 
-public class setElevator extends Command {
-  private final Elevator Elevator;
-  private double setpointMeters;
-  private boolean climb;
-  /** Creates a new JogElevator. */
-  public setElevator(Elevator Elevator, double setPointMeters, boolean climb) {
+public class scoreAmpElevator extends Command {
+    Elevator Elevator;
+    Intake Intake;
+    public scoreAmpElevator(Elevator Elevator, Intake Intake) {
     this.Elevator = Elevator;
-    this.setpointMeters = setPointMeters;
+    this.Intake = Intake;
 
-    addRequirements(Elevator);
+    addRequirements(Elevator, Intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Elevator.driveElevator(setpointMeters);
+    Elevator.driveElevator(0.45);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -39,5 +34,5 @@ public class setElevator extends Command {
   public boolean isFinished() {
     return true;
   }
+    
 }
-

@@ -101,7 +101,7 @@ public class Elevator extends SubsystemBase {
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
     }
-
+    
     public void setOutput(double output) {
         elevatorIO.setOutput(output);
     }

@@ -106,9 +106,9 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
     }
 
-    public void setVelocity(){
-        leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(20, shooterConstants.wheelCircumferenceMeters, 1)));
-        rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(20, shooterConstants.wheelCircumferenceMeters, 1)));
+    public void setVelocity(double velocity, double ratio){
+        leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(velocity, shooterConstants.wheelCircumferenceMeters, 1)));
+        rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(velocity * ratio, shooterConstants.wheelCircumferenceMeters, 1)));
         //leftShooter.setControl(leftShootRequesetVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
         //rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, 1)));
         //leftShooter.setControl(shootRequestMotionMagic.withVelocity(velocityRPS));
@@ -136,12 +136,12 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightShooterMotorConfigs.NeutralMode = NeutralModeValue.Coast;
 
         var leftShooterCurrentConfigs = leftShooterConfigs.CurrentLimits;
-        leftShooterCurrentConfigs.StatorCurrentLimitEnable = false;
-        leftShooterCurrentConfigs.StatorCurrentLimit = 0;
+        leftShooterCurrentConfigs.StatorCurrentLimitEnable = true;
+        leftShooterCurrentConfigs.StatorCurrentLimit = 50;
 
         var rightShooterCurrentConfigs = rightShooterConfigs.CurrentLimits;
-        rightShooterCurrentConfigs.StatorCurrentLimitEnable = false;
-        leftShooterCurrentConfigs.StatorCurrentLimit = 0;
+        rightShooterCurrentConfigs.StatorCurrentLimitEnable = true;
+        leftShooterCurrentConfigs.StatorCurrentLimit = 50;
 
         var leftSlot0Configs = leftShooterConfigs.Slot0;
         leftSlot0Configs.kP = kP.get();

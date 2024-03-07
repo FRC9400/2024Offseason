@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
 import frc.commons.LoggedTunableNumber;
 import frc.commons.Conversions;
 import frc.robot.Constants.swerveConstants;
+import frc.robot.Constants.swerveConstants.moduleConstants;
 
 public class ModuleIOTalonFX implements ModuleIO {
     private final TalonFX driveMotor;
@@ -262,7 +263,8 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     public void resetToAbsolute() {
         double absolutePositionRotations = angleEncoder.getAbsolutePosition().getValue() - CANcoderOffset;
-        steerMotor.setPosition(absolutePositionRotations);
+        double absolutePositionSteerRotations = absolutePositionRotations * moduleConstants.steerGearRatio;
+        steerMotor.setPosition(absolutePositionSteerRotations);
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond, boolean auto) {

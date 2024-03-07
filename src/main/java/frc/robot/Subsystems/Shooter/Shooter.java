@@ -58,8 +58,8 @@ public class Shooter extends SubsystemBase{
         shooterIO.setVoltage(volts);
     }
 
-    public void shootVelocity(){
-        shooterIO.setVelocity();
+    public void shootVelocity(double velocity, double ratio){
+        shooterIO.setVelocity( velocity, ratio);
     }
 
     public void zeroVelocity(){

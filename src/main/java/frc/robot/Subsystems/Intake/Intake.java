@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Intake;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -35,6 +36,7 @@ public class Intake extends SubsystemBase{
         Logger.recordOutput("IntakeState", systemState.toString());
         Logger.recordOutput("IntakeVoltageSetpoint", intakeVoltage);
         Logger.recordOutput("IntakeHoldVoltage", holdVoltage);
+        /* 
 
         if (systemState == IntakeStates.IDLE){
             intakeIO.setIntakeVoltage(0);
@@ -67,7 +69,7 @@ public class Intake extends SubsystemBase{
 
         if (systemState!=nextSystemState){
             systemState = nextSystemState;
-        }
+        }*/
     }
 
     public void requestIdle(){
@@ -95,4 +97,6 @@ public class Intake extends SubsystemBase{
     public void spinIntake(double volts){
         intakeIO.setIntakeVoltage(volts);
     }
+
+    
 }

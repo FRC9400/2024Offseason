@@ -5,22 +5,29 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Subsystems.Handoff.Handoff;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 
 public class shootVelocity extends Command {
   private final Shooter Shooter;
-  private final Intake handoff;
+  private final Handoff handoff;
+  private final Intake intake;
   boolean zero;
+  double velocity;
+  double ratio;
+  
 
   /** Creates a new runIntake. */
-  public shootVelocity(Shooter Shooter, Intake handoff, boolean zero) {
+  public shootVelocity(Shooter Shooter, Handoff handoff, Intake intake, boolean zero, double velocity, double ratio) {
     this.Shooter = Shooter;
     this.handoff = handoff;
+    this.intake = intake;
     this.zero = zero;
+    this.velocity = velocity;
+    this.ratio = ratio;
 
-
-    addRequirements(Shooter, handoff);
+    addRequirements(Shooter, handoff, intake);
 
   }
 
@@ -33,11 +40,13 @@ public class shootVelocity extends Command {
   public void execute() {
     if(zero){
       Shooter.zeroVelocity();
-      handoff.spinIntake(0);
+      handoff.spinHandoff(0);
+      intake.spinIntake(0);
     }
     else{
-    Shooter.shootVelocity();
-    handoff.spinIntake(2);
+    Shooter.shootVelocity(velocity, ratio);
+    handoff.spinHandoff(3);
+    intake.spinIntake(2);
     }
   }
 
