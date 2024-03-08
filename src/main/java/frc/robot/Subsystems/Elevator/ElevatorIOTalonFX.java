@@ -113,7 +113,8 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(voltageOutRequest.withOutput(output));
     }
 
-    public void driveElevator(double setPointMeters){
+    public void goToSetpoint(double setPointMeters){
+        this.setPointMeters = setPointMeters;
         double setPointRotations = Conversions.metersToRotations(setPointMeters, elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
         leftMotor.setControl(motionMagicRequest.withPosition(setPointRotations));     
     }

@@ -51,7 +51,7 @@ public class HandoffIOTalonFX implements HandoffIO {
         inputs.handoffSpeedRPS = RPS.getValue();
     }
 
-    public void setHandoffVoltage(double output) {
+    public void setOutput(double output) {
         handoff.setControl(handoffRequest.withOutput(output));
     }
 

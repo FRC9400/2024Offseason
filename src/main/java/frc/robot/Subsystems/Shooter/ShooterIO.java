@@ -24,7 +24,7 @@ public interface ShooterIO {
     public default void updateTunableNumbers() {
     }
 
-    public default void setVoltage(double volts) {
+    public default void setOutput(double volts) {
     }
 
     public default void setVelocity(double velocity, double ratio) {

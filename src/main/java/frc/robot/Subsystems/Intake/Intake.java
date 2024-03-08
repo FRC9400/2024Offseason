@@ -3,26 +3,25 @@ package frc.robot.Subsystems.Intake;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Subsystems.Elevator.Elevator.ElevatorState;
 
 
 public class Intake extends SubsystemBase{
     private final IntakeIO intakeIO;
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    private double intakeVoltage = 0.0;
-    private double holdVoltage = 0.0;
+    private double[] voltage = {0.0, 0.0, 0.0}; //intake, outake, handoff
 
-    private IntakeStates systemState = IntakeStates.IDLE;
-    private IntakeStates nextSystemState = systemState;
-    private boolean requestIdle = true;
-    private boolean requestIntake = false;
-    private boolean requestHold = false;
+    private IntakeStates state = IntakeStates.IDLE;
+
     
     public enum IntakeStates{
         IDLE,
         INTAKE,
-        HOLD
+        OUTAKE,
+        HANDOFF
     }
 
     public Intake(IntakeIO intakeIO) {
@@ -33,70 +32,49 @@ public class Intake extends SubsystemBase{
     public void periodic(){
         intakeIO.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
-        Logger.recordOutput("IntakeState", systemState.toString());
-        Logger.recordOutput("IntakeVoltageSetpoint", intakeVoltage);
-        Logger.recordOutput("IntakeHoldVoltage", holdVoltage);
-        /* 
+        Logger.recordOutput("IntakeState", state.toString());
 
-        if (systemState == IntakeStates.IDLE){
-            intakeIO.setIntakeVoltage(0);
-
-            if(requestIntake){
-                nextSystemState = IntakeStates.INTAKE;
-            }
-            else if(requestHold){
-                nextSystemState = IntakeStates.HOLD;
-            }
-        }
-        else if (systemState == IntakeStates.INTAKE){
-            intakeIO.setIntakeVoltage(intakeVoltage);
-
-            if (requestIdle){
-                nextSystemState = IntakeStates.IDLE;
-            }
-            else if(requestHold){
-                nextSystemState = IntakeStates.HOLD;
+        switch(state){
+            case IDLE:
+                intakeIO.setOutput(0);
+                break;
+            case INTAKE:
+                intakeIO.setOutput(voltage[0]);
+                break;
+            case OUTAKE:
+                intakeIO.setOutput(voltage[1]);
+                break;
+            case HANDOFF:
+                intakeIO.setOutput(voltage[2]);
+                break;
+            default:
+                break;
             }
         }
-        else if (systemState == IntakeStates.HOLD){
-            intakeIO.setIntakeVoltage(intakeVoltage);
-
-            if (requestIdle) {
-                nextSystemState = IntakeStates.IDLE;
-            }
-
+        public void requestIntake(double voltage){
+            this.voltage[0] = voltage;
+            setState(IntakeStates.INTAKE);
         }
 
-        if (systemState!=nextSystemState){
-            systemState = nextSystemState;
-        }*/
-    }
+        public void requestOutake(double voltage){
+            this.voltage[1] = voltage;
+            setState(IntakeStates.OUTAKE);
+        }
 
-    public void requestIdle(){
-        requestIdle = true;
-        requestIntake = false;
-        requestHold = false;  
-    }
+        public void requestHandoff(double voltage){
+            this.voltage[2] = voltage;
+            setState(IntakeStates.HANDOFF);
+        }
 
-    public void requestIntake(double voltage){
-        requestIdle = false;
-        requestIntake = true;
-        requestHold = false;
+        public void setState(IntakeStates nextState){
+            this.state = nextState;
+        }
+
         
-        intakeVoltage = voltage;
-    }
-
-    public void requestHold(double voltage){
-        requestIdle = false;
-        requestIntake = false;
-        requestHold = true;  
-
-        holdVoltage = voltage;
-    }
-    
-    public void spinIntake(double volts){
-        intakeIO.setIntakeVoltage(volts);
     }
 
     
-}
+   
+
+
+    

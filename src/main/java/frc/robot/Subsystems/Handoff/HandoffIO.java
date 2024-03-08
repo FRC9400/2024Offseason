@@ -16,7 +16,7 @@ public interface HandoffIO {
     public default void updateInputs(HandoffIOInputs inputs) {
     }
 
-    public default void setHandoffVoltage(double volts) {
+    public default void setOutput(double volts) {
     }
 
 

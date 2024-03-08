@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
@@ -22,7 +23,7 @@ public class Elevator extends SubsystemBase {
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private ElevatorState state = ElevatorState.IDLE;
     private double elevatorSetpoints[] = {0, 0}; //stow setpoint, setpoint
-    private double startTime = 0;
+    private double jogInput = 0.0;
 
     public enum ElevatorState{
         IDLE,
@@ -51,20 +52,38 @@ public class Elevator extends SubsystemBase {
                 }
                 break;
             case JOG:
+                elevatorIO.setOutput(jogInput);
                 break;
             case SETPOINT:
+                elevatorIO.goToSetpoint(elevatorSetpoints[1]);
                 break;
             case STOW:
+                elevatorIO.goToSetpoint(elevatorSetpoints[0]);
                 break;
             case CLIMB:
                 break;
+            default:
+                break;
         }
+    }
+    public void requestElevatorHeight(double height){
+        elevatorSetpoints[1] = height;
+        setState(ElevatorState.SETPOINT);
+    }
+
+    public void requestJog(double jogInput){
+        this.jogInput = jogInput;
+        setState(ElevatorState.JOG);
     }
 
     public void setState(ElevatorState nextState){
-
+        this.state = nextState;
     }
 
+    public boolean atElevatorSetpoint(double height){
+        return Math.abs(inputs.elevatorHeightMeters - height) < Units.inchesToMeters(1);
+    }
+     
     public Elevator(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
         elevatorRoutine = new SysIdRoutine(
@@ -100,14 +119,6 @@ public class Elevator extends SubsystemBase {
                 this.runOnce(() -> elevatorIO.setOutput(0)),
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
-    }
-    
-    public void setOutput(double output) {
-        elevatorIO.setOutput(output);
-    }
-
-    public void driveElevator(double x) {
-        elevatorIO.driveElevator(x);
     }
 
     public void elevatorConfiguration() {

@@ -29,9 +29,6 @@ import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Commands.runIntake;
-import frc.robot.Commands.setElevator;
-import frc.robot.Commands.shootVelocity;
 import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
@@ -64,21 +61,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    operator.rightTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 3, 1)); // shoot amp
-    operator.leftTrigger().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, true, 0, 0)); // zero
-
-    operator.x().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.5));
-    operator.y().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 20, 0.7));
-    operator.b().onTrue(new shootVelocity(s_shooter, s_handoff, s_intake, false, 10, 2));
-
-   operator.rightBumper().whileTrue(new runIntake(s_intake, false));
-   operator.leftBumper().whileTrue(new runIntake(s_intake, true));
-
-   controller.x().onTrue(new setElevator(s_elevator, 0.45, false));
-   controller.y().onTrue(new setElevator(s_elevator, 0, false));
+    
   }
   private void configureDefaultCommands() {
-    
    
   } 
 

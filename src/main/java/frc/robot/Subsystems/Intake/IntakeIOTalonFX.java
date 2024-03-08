@@ -49,7 +49,7 @@ public class IntakeIOTalonFX implements IntakeIO {
         inputs.intakeSpeedRPS = RPS.getValue();
     }
 
-    public void setIntakeVoltage(double output) {
+    public void setOutput(double output) {
         intake.setControl(intakeRequest.withOutput(output));
     }
 

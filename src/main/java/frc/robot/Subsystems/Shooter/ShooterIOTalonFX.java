@@ -101,7 +101,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         }
     }
 
-    public void setVoltage(double volts) {
+    public void setOutput(double volts) {
         leftShooter.setControl(shootRequestVoltage.withOutput(volts));
         rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
     }
