@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
     private final SysIdRoutine elevatorRoutine;
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private ElevatorState state = ElevatorState.IDLE;
-    private double elevatorSetpoints[] = {0, 0}; //stow setpoint, setpoint
+    private double elevatorSetpoints = 0; 
     private double jogInput = 0.0;
 
     public enum ElevatorState{
@@ -30,7 +30,6 @@ public class Elevator extends SubsystemBase {
         HOMING, 
         JOG,
         SETPOINT,
-        STOW,
         CLIMB
     }
 
@@ -55,10 +54,7 @@ public class Elevator extends SubsystemBase {
                 elevatorIO.setOutput(jogInput);
                 break;
             case SETPOINT:
-                elevatorIO.goToSetpoint(elevatorSetpoints[1]);
-                break;
-            case STOW:
-                elevatorIO.goToSetpoint(elevatorSetpoints[0]);
+                elevatorIO.goToSetpoint(elevatorSetpoints);
                 break;
             case CLIMB:
                 break;
@@ -67,7 +63,7 @@ public class Elevator extends SubsystemBase {
         }
     }
     public void requestElevatorHeight(double height){
-        elevatorSetpoints[1] = height;
+        elevatorSetpoints = height;
         setState(ElevatorState.SETPOINT);
     }
 
@@ -123,6 +119,10 @@ public class Elevator extends SubsystemBase {
 
     public void elevatorConfiguration() {
         elevatorIO.elevatorConfiguration();
+    }
+
+    public ElevatorState getState(){
+        return this.state;
     }
 
 
