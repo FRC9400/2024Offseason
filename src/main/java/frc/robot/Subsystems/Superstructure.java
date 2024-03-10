@@ -87,22 +87,21 @@ public class Superstructure extends SubsystemBase {
             case INTAKE:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
-                s_intake.requestIntake(4);
-                s_handoff.setState(HandoffStates.IDLE);
+                s_intake.requestIntake(3.6);
+                s_handoff.requestHandoff(1);
 
-                if(s_intake.isPastCurrentThreshold() && !intakeCurrentTriggerTimerStarted){
+                if(s_intake.getStatorCurrent() > 40 && !intakeCurrentTriggerTimerStarted){
                     intakeCurrentTriggerTimer.reset();
                     intakeCurrentTriggerTimer.start();
                     intakeCurrentTriggerTimerStarted = true;
                 }
 
-                if(!s_intake.isPastCurrentThreshold()){
+                if(s_intake.getStatorCurrent() < 40){
                     intakeCurrentTriggerTimer.stop();
-                    intakeCurrentTriggerTimer.reset();
                     intakeCurrentTriggerTimerStarted = false;
                 }
 
-                if(intakeCurrentTriggerTimer.get() > 0.5 && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25){
+                if(s_intake.isPastCurrentThreshold() && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25 && intakeCurrentTriggerTimer.get() > 0.05){
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -110,8 +109,8 @@ public class Superstructure extends SubsystemBase {
             case AMP_SHOOTER:  
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(3, 1);
-                s_intake.setState(IntakeStates.HANDOFF);
-                s_handoff.setState(HandoffStates.HANDOFF);
+                s_intake.requestHandoff(2);
+                s_handoff.requestHandoff(2);
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -121,8 +120,8 @@ public class Superstructure extends SubsystemBase {
             case SHOOT_RIGHT:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(10, 2);
-                s_intake.setState(IntakeStates.HANDOFF);
-                s_handoff.setState(HandoffStates.HANDOFF);  
+                s_intake.requestHandoff(2);
+                s_handoff.requestHandoff(2);  
                 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -131,8 +130,8 @@ public class Superstructure extends SubsystemBase {
             case SHOOT_MID:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(20, 0.7);
-                s_intake.setState(IntakeStates.HANDOFF);
-                s_handoff.setState(HandoffStates.HANDOFF);
+                s_intake.requestHandoff(2);
+                s_handoff.requestHandoff(2);
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -141,8 +140,8 @@ public class Superstructure extends SubsystemBase {
             case SHOOT_LEFT:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(20, 0.5);
-                s_intake.setState(IntakeStates.HANDOFF);
-                s_handoff.setState(HandoffStates.HANDOFF);
+                s_intake.requestHandoff(2);
+                s_handoff.requestHandoff(2);
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -161,8 +160,8 @@ public class Superstructure extends SubsystemBase {
             case AMP_ELEVATOR:
                 s_elevator.requestElevatorHeight(0.45, false);
                 s_shooter.requestVelocity(0, 0);
-                s_intake.setState(IntakeStates.OUTAKE);
-                s_handoff.setState(HandoffStates.IDLE);
+                s_intake.requestHandoff(0);
+                s_handoff.requestHandoff(0);
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -187,6 +186,6 @@ public class Superstructure extends SubsystemBase {
   
   public void setState(SuperstructureStates nextState){
     this.systemState = nextState;
-    stateStartTime = RobotController.getFPGATime();
+    stateStartTime = RobotController.getFPGATime()/1E6;
   } 
 }

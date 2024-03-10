@@ -50,7 +50,7 @@ public class RobotContainer {
   private final Superstructure superstructure = new Superstructure(s_intake, s_handoff, s_elevator, s_shooter);
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
-    s_elevator.elevatorConfiguration();
+    //s_elevator.elevatorConfiguration();
     s_shooter.shooterConfiguration();
     s_swerve.zeroWheels();
     s_swerve.zeroGyro();

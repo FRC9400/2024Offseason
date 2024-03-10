@@ -44,7 +44,7 @@ public class Shooter{
             case VOLTAGE:
                 shooterIO.setOutput(shooterVolts);
             case VELOCITY:
-                shooterIO.setVelocity(shooterVelocity[1], shooterVelocity[2]);
+                shooterIO.setVelocity(shooterVelocity[0], shooterVelocity[1]);
                 break;
             default:
                 break;

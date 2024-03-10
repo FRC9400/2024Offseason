@@ -78,6 +78,10 @@ public class Intake{
             return this.state;
         }
 
+        public double getStatorCurrent(){
+            return inputs.currentAmps;
+        }
+
         
     }
 
