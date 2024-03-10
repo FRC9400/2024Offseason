@@ -5,7 +5,9 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Subsystems.Elevator.Elevator;
 import frc.robot.Subsystems.Elevator.ElevatorIO;
@@ -31,6 +33,10 @@ public class Superstructure extends SubsystemBase {
   private Elevator s_elevator;
   private Shooter s_shooter;
   private SuperstructureStates systemState = SuperstructureStates.IDLE;
+
+  private Timer intakeCurrentTriggerTimer = new Timer();
+  private boolean intakeCurrentTriggerTimerStarted = false;
+  private double stateStartTime = 0;
 
   public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter) {
     this.s_intake = new Intake(intake);
@@ -60,7 +66,7 @@ public class Superstructure extends SubsystemBase {
     s_elevator.Loop();
     s_handoff.Loop();
     s_shooter.Loop();
-    
+
     Logger.recordOutput("SuperstructureState", systemState);
     switch(systemState){
             case IDLE: 
@@ -84,9 +90,19 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestIntake(4);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                //needs work
+                if(s_intake.isPastCurrentThreshold() && !intakeCurrentTriggerTimerStarted){
+                    intakeCurrentTriggerTimer.reset();
+                    intakeCurrentTriggerTimer.start();
+                    intakeCurrentTriggerTimerStarted = true;
+                }
 
-                if(currentlimit){
+                if(!s_intake.isPastCurrentThreshold()){
+                    intakeCurrentTriggerTimer.stop();
+                    intakeCurrentTriggerTimer.reset();
+                    intakeCurrentTriggerTimerStarted = false;
+                }
+
+                if(intakeCurrentTriggerTimer.get() > 0.5 && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25){
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -97,7 +113,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.HANDOFF);
                 s_handoff.setState(HandoffStates.HANDOFF);
 
-                if(s_shooter.currentlimit wtv){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -108,7 +124,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.HANDOFF);
                 s_handoff.setState(HandoffStates.HANDOFF);  
                 
-                if(s_shooter.currentlimit wtv){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -118,7 +134,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.HANDOFF);
                 s_handoff.setState(HandoffStates.HANDOFF);
 
-                if(s_shooter.currentlimit wtv){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -128,7 +144,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.HANDOFF);
                 s_handoff.setState(HandoffStates.HANDOFF);
 
-                if(s_shooter.currentlimit wtv){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
                 break; 
@@ -148,7 +164,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.OUTAKE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if(current limit thing){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -171,5 +187,6 @@ public class Superstructure extends SubsystemBase {
   
   public void setState(SuperstructureStates nextState){
     this.systemState = nextState;
+    stateStartTime = RobotController.getFPGATime();
   } 
 }

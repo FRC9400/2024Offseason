@@ -12,6 +12,7 @@ import frc.robot.Subsystems.Elevator.Elevator.ElevatorState;
 public class Intake{
     private final IntakeIO intakeIO;
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+    private double currentThreshold = 40;
     private double[] voltage = {0.0, 0.0, 0.0}; //intake, outake, handoff
 
     private IntakeStates state = IntakeStates.IDLE;
@@ -67,6 +68,10 @@ public class Intake{
 
         public void setState(IntakeStates nextState){
             this.state = nextState;
+        }
+
+        public boolean isPastCurrentThreshold(){
+            return inputs.currentAmps > currentThreshold;
         }
 
         public IntakeStates getState(){
