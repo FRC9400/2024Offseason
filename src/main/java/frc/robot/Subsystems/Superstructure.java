@@ -8,16 +8,21 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Subsystems.Elevator.Elevator;
+import frc.robot.Subsystems.Elevator.ElevatorIO;
 import frc.robot.Subsystems.Elevator.Elevator.ElevatorState;
 import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
 import frc.robot.Subsystems.Handoff.Handoff;
+import frc.robot.Subsystems.Handoff.HandoffIO;
 import frc.robot.Subsystems.Handoff.HandoffIOTalonFX;
 import frc.robot.Subsystems.Handoff.Handoff.HandoffStates;
 import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake.IntakeStates;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
+import frc.robot.Subsystems.Shooter.Shooter.ShooterStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class Superstructure extends SubsystemBase {
@@ -27,24 +32,11 @@ public class Superstructure extends SubsystemBase {
   private Shooter s_shooter;
   private SuperstructureStates systemState = SuperstructureStates.IDLE;
 
-  private boolean idle = true;
-  private boolean homing = false;
-  private boolean intake = false;
-  private boolean amp_shooter = false;
-  private boolean shoot_right = false;
-  private boolean shoot_left = false;
-  private boolean shoot_mid = false;
-  private boolean prepare_amp_elevator = false;
-  private boolean amp_elevator = false;
-  private boolean exit_amp_elevator = false;
-  private boolean climb_up = false;
-  private boolean climb_down = false;
-
-  public Superstructure(Intake s_intake, Handoff s_handoff, Elevator s_elevator, Shooter s_shooter) {
-    this.s_intake = s_intake;
-    this.s_handoff = s_handoff;
-    this.s_shooter = s_shooter;
-    this.s_elevator = s_elevator;
+  public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter) {
+    this.s_intake = new Intake(intake);
+    this.s_handoff = new Handoff(handoff);
+    this.s_elevator = new Elevator(elevator);
+    this.s_shooter = new Shooter(shooter);
   }
 
   public enum SuperstructureStates{
@@ -64,39 +56,18 @@ public class Superstructure extends SubsystemBase {
   
   @Override
   public void periodic(){
+    s_intake.Loop();
+    s_elevator.Loop();
+    s_handoff.Loop();
+    s_shooter.Loop();
+    
     Logger.recordOutput("SuperstructureState", systemState);
     switch(systemState){
             case IDLE: 
-                s_elevator.requestElevatorHeight(0);
+                s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
-                
-                if(homing){
-                    setState(SuperstructureStates.HOMING);
-                }
-                else if(intake){
-                    setState(SuperstructureStates.INTAKE);
-                }
-                else if(amp_shooter){
-                    setState(SuperstructureStates.AMP_SHOOTER);
-                }
-                else if(shoot_right){
-                    setState(SuperstructureStates.SHOOT_RIGHT);
-                }
-                else if(shoot_left){
-                    setState(SuperstructureStates.SHOOT_LEFT);
-                }
-                else if(shoot_mid){
-                    setState(SuperstructureStates.SHOOT_MID);
-                }
-                else if (prepare_amp_elevator){
-                    setState(SuperstructureStates.PREPARE_AMP_ELEVATOR);
-                }
-                else if(climb_up){
-                    setState(SuperstructureStates.CLIMB_UP);
-                }
-
 
                 break;
             case HOMING: 
@@ -108,28 +79,90 @@ public class Superstructure extends SubsystemBase {
 
                 break;
             case INTAKE:
-                s_elevator.requestElevatorHeight(0);
+                s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
-                s_intake.setState(IntakeStates.INTAKE);
+                s_intake.requestIntake(4);
                 s_handoff.setState(HandoffStates.IDLE);
 
+                //needs work
+
+                if(currentlimit){
+                    setState(SuperstructureStates.IDLE);
+                }
+
+                break;
+            case AMP_SHOOTER:  
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(3, 1);
+                s_intake.setState(IntakeStates.HANDOFF);
+                s_handoff.setState(HandoffStates.HANDOFF);
+
+                if(s_shooter.currentlimit wtv){
+                    setState(SuperstructureStates.IDLE);
+                }
+
+                break;
+            case SHOOT_RIGHT:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(10, 2);
+                s_intake.setState(IntakeStates.HANDOFF);
+                s_handoff.setState(HandoffStates.HANDOFF);  
                 
-                break;
-            case AMP_SHOOTER:    
-                break;
-            case SHOOT_RIGHT:        
+                if(s_shooter.currentlimit wtv){
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case SHOOT_MID:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(20, 0.7);
+                s_intake.setState(IntakeStates.HANDOFF);
+                s_handoff.setState(HandoffStates.HANDOFF);
+
+                if(s_shooter.currentlimit wtv){
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case SHOOT_LEFT:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(20, 0.5);
+                s_intake.setState(IntakeStates.HANDOFF);
+                s_handoff.setState(HandoffStates.HANDOFF);
+
+                if(s_shooter.currentlimit wtv){
+                    setState(SuperstructureStates.IDLE);
+                }
                 break; 
             case PREPARE_AMP_ELEVATOR:
+                s_elevator.requestElevatorHeight(0.45, false);
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                if(s_elevator.atElevatorSetpoint(0.45)){
+                    setState(SuperstructureStates.AMP_ELEVATOR);
+                }              
                 break;
             case AMP_ELEVATOR:
+                s_elevator.requestElevatorHeight(0.45, false);
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.OUTAKE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                if(current limit thing){
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case CLIMB_UP:
+                s_elevator.requestElevatorHeight(0.45, false);
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);  
                 break;
             case CLIMB_DOWN:
+                s_elevator.requestElevatorHeight(0, true);
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
                 break;
             default:
                 break;
@@ -138,7 +171,5 @@ public class Superstructure extends SubsystemBase {
   
   public void setState(SuperstructureStates nextState){
     this.systemState = nextState;
-  }
-  
-    
+  } 
 }

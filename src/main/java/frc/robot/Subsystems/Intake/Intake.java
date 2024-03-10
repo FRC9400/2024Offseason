@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.Elevator.Elevator.ElevatorState;
 
 
-public class Intake extends SubsystemBase{
+public class Intake{
     private final IntakeIO intakeIO;
     private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
     private double[] voltage = {0.0, 0.0, 0.0}; //intake, outake, handoff
@@ -28,8 +28,7 @@ public class Intake extends SubsystemBase{
         this.intakeIO = intakeIO;
       }
     
-    @Override
-    public void periodic(){
+    public void Loop(){
         intakeIO.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
         Logger.recordOutput("IntakeState", state.toString());
@@ -68,6 +67,10 @@ public class Intake extends SubsystemBase{
 
         public void setState(IntakeStates nextState){
             this.state = nextState;
+        }
+
+        public IntakeStates getState(){
+            return this.state;
         }
 
         

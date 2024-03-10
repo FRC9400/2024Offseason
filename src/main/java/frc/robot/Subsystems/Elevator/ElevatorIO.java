@@ -23,7 +23,7 @@ public default void zeroSensor(){}
 
 public default void setOutput(double output){}
 
-public default void setMotionMagicConfigs(boolean down){}
+public default void setMotionMagicConfigs(boolean climb){}
 
 public default void goToSetpoint(double setPointMeters){}
 

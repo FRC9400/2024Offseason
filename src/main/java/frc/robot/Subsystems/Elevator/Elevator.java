@@ -17,9 +17,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import static edu.wpi.first.units.Units.Volts;
 import frc.robot.Constants.elevatorConstants;
 
-public class Elevator extends SubsystemBase {
+public class Elevator {
     private final ElevatorIO elevatorIO;
-    private final SysIdRoutine elevatorRoutine;
     private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private ElevatorState state = ElevatorState.IDLE;
     private double elevatorSetpoints = 0; 
@@ -33,8 +32,7 @@ public class Elevator extends SubsystemBase {
         CLIMB
     }
 
-    @Override
-    public void periodic() {
+    public void Loop() {
         elevatorIO.updateInputs(inputs);
         elevatorIO.updateTunableNumbers();
         Logger.processInputs("Elevator", inputs);
@@ -56,14 +54,13 @@ public class Elevator extends SubsystemBase {
             case SETPOINT:
                 elevatorIO.goToSetpoint(elevatorSetpoints);
                 break;
-            case CLIMB:
-                break;
             default:
                 break;
         }
     }
-    public void requestElevatorHeight(double height){
+    public void requestElevatorHeight(double height, boolean climb){
         elevatorSetpoints = height;
+        elevatorIO.setMotionMagicConfigs(climb);
         setState(ElevatorState.SETPOINT);
     }
 
@@ -82,39 +79,7 @@ public class Elevator extends SubsystemBase {
      
     public Elevator(ElevatorIO elevatorIO) {
         this.elevatorIO = elevatorIO;
-        elevatorRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(null, Volts.of(4), null,
-                        (state) -> SignalLogger.writeString("state", state.toString())),
-                new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> elevatorIO.setOutput(volts.in(Volts)), null,
-                        this));
-    }
-
-    public Command runSysIdCmd() {
-        return Commands.sequence(
-                this.runOnce(() -> SignalLogger.start()),
-                elevatorRoutine
-                        .quasistatic(Direction.kForward)
-                        .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters - 0.02),
-                this.runOnce(() -> elevatorIO.setOutput(0)),
-                Commands.waitSeconds(1),
-                elevatorRoutine
-                        .quasistatic(Direction.kReverse)
-                        .until(() -> inputs.elevatorHeightMeters < 0.02),
-                this.runOnce(() -> elevatorIO.setOutput(0)),
-                Commands.waitSeconds(1),
-
-                elevatorRoutine
-                        .dynamic(Direction.kForward)
-                        .until(() -> inputs.elevatorHeightMeters > elevatorConstants.maxHeightMeters - 0.02),
-                this.runOnce(() -> elevatorIO.setOutput(0)),
-                Commands.waitSeconds(1),
-
-                elevatorRoutine
-                        .dynamic(Direction.kReverse)
-                        .until(() -> inputs.elevatorHeightMeters < 0.02),
-                this.runOnce(() -> elevatorIO.setOutput(0)),
-                Commands.waitSeconds(1),
-                this.runOnce(() -> SignalLogger.stop()));
+        
     }
 
     public void elevatorConfiguration() {

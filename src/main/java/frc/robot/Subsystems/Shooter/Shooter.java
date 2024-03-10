@@ -18,10 +18,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import static edu.wpi.first.units.Units.Volts;
 
 
-public class Shooter extends SubsystemBase{
+public class Shooter{
     private final ShooterIO shooterIO;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-    private final SysIdRoutine shooterRoutine;
     private ShooterStates state = ShooterStates.IDLE;
     private double shooterVolts = 0.0;
     private double[] shooterVelocity = {0, 0}; //vel, ratio
@@ -32,8 +31,8 @@ public class Shooter extends SubsystemBase{
         VELOCITY
     }
 
-    @Override
-    public void periodic(){
+
+    public void Loop(){
         shooterIO.updateInputs(inputs);
         Logger.processInputs("Shooter", inputs);
         Logger.recordOutput("ShooterState", state);
@@ -46,6 +45,9 @@ public class Shooter extends SubsystemBase{
                 shooterIO.setOutput(shooterVolts);
             case VELOCITY:
                 shooterIO.setVelocity(shooterVelocity[1], shooterVelocity[2]);
+
+                //transition
+
                 break;
             default:
                 break;
@@ -71,40 +73,14 @@ public class Shooter extends SubsystemBase{
 
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
-        shooterRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4),null, (state) -> SignalLogger.writeString("state", state.toString())), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.setOutput(volts.in(Volts)), null, this));
       }
 
     public void shooterConfiguration(){
         shooterIO.shooterConfiguration();
     }
     
-    public Command shooterSysIdCmd(){
-        return Commands.sequence(
-            this.runOnce(() -> SignalLogger.start()),
-            shooterRoutine
-                .quasistatic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 15),
-                this.runOnce(() -> shooterIO.setOutput(0)),
-                Commands.waitSeconds(1),
-            shooterRoutine
-                .quasistatic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -15),
-                this.runOnce(() -> shooterIO.setOutput(0)),
-                Commands.waitSeconds(1),  
-
-            shooterRoutine
-                .dynamic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 15),
-                this.runOnce(() -> shooterIO.setOutput(0)),
-                Commands.waitSeconds(1),  
-
-            shooterRoutine
-                .dynamic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -15),
-                this.runOnce(() -> shooterIO.setOutput(0)),
-                Commands.waitSeconds(1), 
-            this.runOnce(() -> SignalLogger.stop())
-        );
+    public ShooterStates getState(){
+        return this.state;
     }
 
 }

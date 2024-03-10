@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystems.Elevator.Elevator.ElevatorState;
 
 
-public class Handoff extends SubsystemBase{
+public class Handoff{
     private final HandoffIO handoffIO;
     private HandoffIOInputsAutoLogged inputs = new HandoffIOInputsAutoLogged();
     private double handoffVoltage = 0.0;
@@ -26,8 +26,8 @@ public class Handoff extends SubsystemBase{
         this.handoffIO = handoffIO;
       }
     
-    @Override
-    public void periodic(){
+    
+    public void Loop(){
         handoffIO.updateInputs(inputs);
         Logger.processInputs("Handoff", inputs);
         Logger.recordOutput("HandoffState", state);
