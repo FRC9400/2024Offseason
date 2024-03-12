@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Robot;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Subsystems.Elevator.Elevator;
@@ -37,6 +38,21 @@ public class Superstructure extends SubsystemBase {
   private Timer intakeCurrentTriggerTimer = new Timer();
   private boolean intakeCurrentTriggerTimerStarted = false;
   private double stateStartTime = 0;
+
+  LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffShooterVoltage", 3);
+  LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
+  LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 3.6);
+  LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -2);
+  LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
+  LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
+  LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 10);
+  LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel",20); 
+  LoggedTunableNumber midRatio = new LoggedTunableNumber( "Superstructure/MIDratio",0.7); 
+  LoggedTunableNumber rightRatio = new LoggedTunableNumber( "Superstructure/RIGHTratio",2); 
+  LoggedTunableNumber leftRatio = new LoggedTunableNumber("Superstructure/LEFTratio",0.5);
+  LoggedTunableNumber climbUpHeight = new LoggedTunableNumber("Superstructure/climbUpHeight", 0.45);
+  LoggedTunableNumber climbDownHeight = new LoggedTunableNumber("Superstructure/climbDownHeight", 0);
+
 
   public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter) {
     this.s_intake = new Intake(intake);
@@ -87,8 +103,8 @@ public class Superstructure extends SubsystemBase {
             case INTAKE:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
-                s_intake.requestIntake(3.6);
-                s_handoff.requestHandoff(1);
+                s_intake.requestIntake(intakeVoltage.get());
+                s_handoff.requestHandoff(handoffIntakeVoltage.get());
 
                 if(s_intake.getStatorCurrent() > 40 && !intakeCurrentTriggerTimerStarted){
                     intakeCurrentTriggerTimer.reset();
@@ -108,9 +124,9 @@ public class Superstructure extends SubsystemBase {
                 break;
             case AMP_SHOOTER:  
                 s_elevator.requestElevatorHeight(0, false);
-                s_shooter.requestVelocity(3.2, 1);
-                s_intake.requestHandoff(3);
-                s_handoff.requestHandoff(3);
+                s_shooter.requestVelocity(ampShooterVel.get(), 1);
+                s_intake.requestHandoff(handoffShooterVoltage.get());
+                s_handoff.requestHandoff(handoffShooterVoltage.get());
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -119,9 +135,9 @@ public class Superstructure extends SubsystemBase {
                 break;
             case SHOOT_RIGHT:
                 s_elevator.requestElevatorHeight(0, false);
-                s_shooter.requestVelocity(10, 2);
-                s_intake.requestHandoff(2);
-                s_handoff.requestHandoff(2);  
+                s_shooter.requestVelocity(shootRightVel.get(), rightRatio.get());
+                s_intake.requestHandoff(handoffShooterVoltage.get());
+                s_handoff.requestHandoff(handoffShooterVoltage.get());  
                 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -130,8 +146,8 @@ public class Superstructure extends SubsystemBase {
             case SHOOT_MID:
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(20, 0.7);
-                s_intake.requestHandoff(2);
-                s_handoff.requestHandoff(2);
+                s_intake.requestHandoff(handoffShooterVoltage.get());
+                s_handoff.requestHandoff(handoffShooterVoltage.get());
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -139,9 +155,9 @@ public class Superstructure extends SubsystemBase {
                 break;
             case SHOOT_LEFT:
                 s_elevator.requestElevatorHeight(0, false);
-                s_shooter.requestVelocity(20, 0.5);
-                s_intake.requestHandoff(2);
-                s_handoff.requestHandoff(2);
+                s_shooter.requestVelocity(shootLeftVel.get(), leftRatio.get());
+                s_intake.requestHandoff(handoffShooterVoltage.get());
+                s_handoff.requestHandoff(handoffShooterVoltage.get());
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
                     setState(SuperstructureStates.IDLE);
@@ -160,7 +176,7 @@ public class Superstructure extends SubsystemBase {
             case AMP_ELEVATOR:
                 s_elevator.requestElevatorHeight(0.45, false);
                 s_shooter.requestVelocity(0, 0);
-                s_intake.requestHandoff(0);
+                s_intake.requestOutake(outakeVoltage.get());
                 s_handoff.requestHandoff(0);
 
                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.75){
@@ -168,13 +184,13 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case CLIMB_UP:
-                s_elevator.requestElevatorHeight(0.45, false);
+                s_elevator.requestElevatorHeight(climbUpHeight.get(), false);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);  
                 break;
             case CLIMB_DOWN:
-                s_elevator.requestElevatorHeight(0, true);
+                s_elevator.requestElevatorHeight(climbDownHeight.get(), true);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);

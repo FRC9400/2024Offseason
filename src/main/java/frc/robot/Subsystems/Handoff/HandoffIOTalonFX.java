@@ -17,11 +17,12 @@ public class HandoffIOTalonFX implements HandoffIO {
     private VoltageOut handoffRequest = new VoltageOut(0).withEnableFOC(true);
     private final StatusSignal<Double> current = handoff.getStatorCurrent();
     private final StatusSignal<Double> temp = handoff.getDeviceTemp();
-    private final StatusSignal<Double> RPS = handoff.getRotorVelocity();;
+    private final StatusSignal<Double> RPS = handoff.getRotorVelocity();
+
+    private double setpointVolts;
 
     public HandoffIOTalonFX() {
-        var handoffConfigs = new TalonFXConfiguration()
-        ;
+        var handoffConfigs = new TalonFXConfiguration();
         var handoffCurrentLimitConfigs = handoffConfigs.CurrentLimits;
         handoffCurrentLimitConfigs.StatorCurrentLimit = handoffConstants.statorCurrentLimit;
         handoffCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -46,12 +47,14 @@ public class HandoffIOTalonFX implements HandoffIO {
             RPS
         );
         inputs.appliedVolts = handoffRequest.Output;
+        inputs.setpointVolts = this.setpointVolts;
         inputs.currentAmps = current.getValue();
         inputs.tempFahrenheit = temp.getValue();
         inputs.handoffSpeedRPS = RPS.getValue();
     }
 
     public void setOutput(double output) {
+        this.setpointVolts = output;
         handoff.setControl(handoffRequest.withOutput(output));
     }
 

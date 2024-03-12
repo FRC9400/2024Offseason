@@ -7,6 +7,7 @@ public interface HandoffIO {
     public static class HandoffIOInputs {
 
         public double appliedVolts = 0.0;
+        public double setpointVolts = 0.0;
         public double currentAmps = 0.0;
         public double tempFahrenheit = 0.0;
         public double handoffSpeedRPS = 0.0;

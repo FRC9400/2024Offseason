@@ -87,6 +87,8 @@ public class RobotContainer {
     new JoystickButton(controller, XboxController.Button.kX.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
     new JoystickButton(controller, XboxController.Button.kY.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+
+    new JoystickButton(controller, XboxController.Button.kB.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     
   }
   private void configureDefaultCommands() {
