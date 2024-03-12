@@ -136,7 +136,7 @@ public class Conversions {
     }
 
     public static double RPStoMPS(double RPS, double circumference, double gearRatio){
-        double wheelMPS = (RPS * circumference);
+        double wheelMPS = (RPS * circumference)/gearRatio;
         return wheelMPS;
     }
 

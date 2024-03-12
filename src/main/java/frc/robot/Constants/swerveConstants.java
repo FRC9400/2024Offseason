@@ -23,8 +23,8 @@ public final class swerveConstants {
         public static final double steerGearRatio = 10.28;
 
         /* Max Speeds */
-        public static final double maxSpeed = 2;
-        public static final double maxAngularVelocity = 2.0;
+        public static final double maxSpeed = 5;
+        public static final double maxAngularVelocity = 4;
         
         /* Current Limits */
         public static final double driveStatorCurrentLimit = 120;
@@ -42,7 +42,7 @@ public final class swerveConstants {
         public static final double anglekV = 0.0;
 
         /* Wheel Circumference */
-        public static final double wheelCircumferenceMeters = 0.0;
+        public static final double wheelCircumferenceMeters = Units.inchesToMeters(4* Math.PI);
     }
 
     public static final class kinematicsConstants{

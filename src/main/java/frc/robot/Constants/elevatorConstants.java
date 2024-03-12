@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 public class elevatorConstants {
     public static final InvertedValue leftMotorInvert = InvertedValue.Clockwise_Positive;
 
-    public static final double gearRatio = 25;
+    public static final double gearRatio = 17;
     public static final double wheelCircumferenceMeters = Units.inchesToMeters(5.51873699838);
     public static final double minHeightMeters = 0.0;
     public static final double maxHeightMeters = 0.45;

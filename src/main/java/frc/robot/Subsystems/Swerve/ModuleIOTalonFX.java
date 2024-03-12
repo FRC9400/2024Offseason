@@ -63,7 +63,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/kS", 0);
     LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/kV", 0);
 
-    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 15);
+    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 8);
     LoggedTunableNumber steerkD = new LoggedTunableNumber("Steer/kD", 0);
     LoggedTunableNumber steerkS = new LoggedTunableNumber("Steer/kS", 0);
     LoggedTunableNumber steerkV = new LoggedTunableNumber("Steer/kV", 0);
@@ -240,8 +240,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     }
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates) {
-        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed)
-                * 12;
+        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed) * 5;
         double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
         setDriveVoltage(driveVoltage);
