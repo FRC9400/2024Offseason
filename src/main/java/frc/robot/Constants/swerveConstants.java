@@ -50,11 +50,14 @@ public final class swerveConstants {
         public static final double robotLength = Units.inchesToMeters(28);
         public static final double robotWidth = Units.inchesToMeters(28.5);
 
+        public static final double trackWidth = 0.60325;
+        public static final double wheelBase = 0.59055;
+
         /* Swerve Kinematics */
-        public static final Translation2d FL = new Translation2d(robotLength / 2.0, robotWidth / 2.0);
-        public static final Translation2d FR = new Translation2d(robotLength / 2.0, -robotWidth / 2.0);
-        public static final Translation2d BL = new Translation2d(-robotLength / 2.0, robotWidth / 2.0);
-        public static final Translation2d BR = new Translation2d(-robotLength / 2.0, -robotWidth / 2.0);
+        public static final Translation2d FL = new Translation2d(wheelBase / 2.0, trackWidth / 2.0);
+        public static final Translation2d FR = new Translation2d(wheelBase / 2.0, -trackWidth / 2.0);
+        public static final Translation2d BL = new Translation2d(-wheelBase / 2.0, trackWidth / 2.0);
+        public static final Translation2d BR = new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0);
 
     }
 }
