@@ -229,11 +229,12 @@ public class ModuleIOTalonFX implements ModuleIO {
                 steerkP.hasChanged(steerkP.hashCode()) ||
                 steerkV.hasChanged(steerkV.hashCode())) {
             var steerSlot0Configs = new Slot0Configs();
-            steerSlot0Configs.kP = steerkP.get();
+            steerSlot0Configs.kP = 11.136;
             steerSlot0Configs.kI = 0.0;
-            steerSlot0Configs.kD = steerkD.get();
-            steerSlot0Configs.kS = steerkS.get();
-            steerSlot0Configs.kV = steerkV.get();
+            steerSlot0Configs.kD = 0.13881;
+            steerSlot0Configs.kS = 0.32456;
+            steerSlot0Configs.kV = 0.12174;
+            steerSlot0Configs.kA = 0.0019929;
 
             steerConfigurator.apply(steerSlot0Configs);
         }

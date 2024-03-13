@@ -43,7 +43,7 @@ public class Superstructure extends SubsystemBase {
   LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
   LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 3.6);
   LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -2);
-  LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.4);
+  LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
   LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
   LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 10);
   LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel",20); 
@@ -106,7 +106,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
 
-                if(s_intake.getStatorCurrent() > 40 && !intakeCurrentTriggerTimerStarted){
+                /*if(s_intake.getStatorCurrent() > 40 && !intakeCurrentTriggerTimerStarted){
                     intakeCurrentTriggerTimer.reset();
                     intakeCurrentTriggerTimer.start();
                     intakeCurrentTriggerTimerStarted = true;
@@ -115,9 +115,9 @@ public class Superstructure extends SubsystemBase {
                 if(s_intake.getStatorCurrent() < 40){
                     intakeCurrentTriggerTimer.stop();
                     intakeCurrentTriggerTimerStarted = false;
-                }
+                }*/
 
-                if(s_intake.isPastCurrentThreshold() && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25 && intakeCurrentTriggerTimer.get() > 0.05){
+                if(s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25 ){
                     setState(SuperstructureStates.IDLE);
                 }
 

@@ -52,5 +52,9 @@ public class Handoff{
         this.state = nextState;
     }
 
+    public double getStatorCurrent(){
+        return inputs.currentAmps;
+    }
+
     
 }
