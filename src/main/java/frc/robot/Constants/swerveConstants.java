@@ -5,6 +5,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class swerveConstants {
@@ -58,6 +59,5 @@ public final class swerveConstants {
         public static final Translation2d FR = new Translation2d(wheelBase / 2.0, -trackWidth / 2.0);
         public static final Translation2d BL = new Translation2d(-wheelBase / 2.0, trackWidth / 2.0);
         public static final Translation2d BR = new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0);
-
     }
 }

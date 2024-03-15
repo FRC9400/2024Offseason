@@ -34,6 +34,8 @@ public class Swerve extends SubsystemBase{
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
+    private final Swerve s_swerve = new Swerve();
+
     private final ModuleIOInputsAutoLogged[] moduleInputs = {
             new ModuleIOInputsAutoLogged(),
             new ModuleIOInputsAutoLogged(),
@@ -164,8 +166,30 @@ public class Swerve extends SubsystemBase{
                 getSwerveModulePositions());
     }
 
+    public void resetOdometry(Pose2d pose){
+        odometry.resetPosition(
+            lastGyroYaw,
+            getSwerveModulePositions(),
+            pose
+        );
+    }
+
     public Pose2d getPoseRaw(){
         return poseRaw;
+    }
+
+
+    public ChassisSpeeds getRobotRelativeSpeeds(){
+        return kinematics.toChassisSpeeds(getMeasuredStates());
+    }
+
+    public void driveRobotRelative(ChassisSpeeds speeds){
+        s_swerve.requestVoltage(
+            speeds.vxMetersPerSecond,
+            speeds.vxMetersPerSecond,
+            speeds.omegaRadiansPerSecond,
+            false
+        );
     }
 
     public Rotation2d getRotation2d() {
