@@ -35,8 +35,6 @@ public class Superstructure extends SubsystemBase {
   private Shooter s_shooter;
   private SuperstructureStates systemState = SuperstructureStates.IDLE;
 
-  private Timer intakeCurrentTriggerTimer = new Timer();
-  private boolean intakeCurrentTriggerTimerStarted = false;
   private double stateStartTime = 0;
 
   LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffShooterVoltage", 3);
@@ -65,6 +63,10 @@ public class Superstructure extends SubsystemBase {
     IDLE,
     HOMING,
     INTAKE,
+    SPIN_UP_AMP,
+    SPIN_UP_MID,
+    SPIN_UP_LEFT,
+    SPIN_UP_RIGHT,
     AMP_SHOOTER,
     SHOOT_RIGHT,
     SHOOT_MID,
@@ -106,29 +108,62 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
 
-                /*if(s_intake.getStatorCurrent() > 40 && !intakeCurrentTriggerTimerStarted){
-                    intakeCurrentTriggerTimer.reset();
-                    intakeCurrentTriggerTimer.start();
-                    intakeCurrentTriggerTimerStarted = true;
-                }
-
-                if(s_intake.getStatorCurrent() < 40){
-                    intakeCurrentTriggerTimer.stop();
-                    intakeCurrentTriggerTimerStarted = false;
-                }*/
 
                 if(s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25 ){
                     setState(SuperstructureStates.IDLE);
                 }
 
                 break;
+            case SPIN_UP_AMP:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(ampShooterVel.get(), 1);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                if(s_shooter.getLeftShooterSpeedMPS() == ampShooterVel.get()){
+                    setState(SuperstructureStates.AMP_SHOOTER);
+                }
+                break;
+            case SPIN_UP_MID:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(shootMidVel.get(), 0.7);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                if(s_shooter.getLeftShooterSpeedMPS() == shootMidVel.get()){
+                    setState(SuperstructureStates.SHOOT_MID);
+                }
+                break;
+
+            case SPIN_UP_LEFT:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(shootLeftVel.get(), leftRatio.get());
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                if(s_shooter.getLeftShooterSpeedMPS() == shootLeftVel.get()){
+                    setState(SuperstructureStates.SHOOT_LEFT);
+                }
+                break;
+
+            case SPIN_UP_RIGHT:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(shootRightVel.get(), rightRatio.get());
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+                
+                if(s_shooter.getRightShooterSpeedMPS() == shootRightVel.get() * rightRatio.get()){
+                    setState(SuperstructureStates.SHOOT_RIGHT);
+                }
+                break;
+
             case AMP_SHOOTER:  
                 s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(ampShooterVel.get(), 1);
                 s_intake.requestHandoff(handoffShooterVoltage.get());
                 s_handoff.requestHandoff(handoffShooterVoltage.get());
 
-                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
+                if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1.25){
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -199,6 +234,7 @@ public class Superstructure extends SubsystemBase {
                 break;
         }
   }
+
   
   public void setState(SuperstructureStates nextState){
     this.systemState = nextState;

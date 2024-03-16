@@ -79,5 +79,13 @@ public class Shooter{
     public ShooterStates getState(){
         return this.state;
     }
+    
+    public double getLeftShooterSpeedMPS(){
+        return inputs.shooterSpeedMPS[0];
+    }
+
+    public double getRightShooterSpeedMPS(){
+        return inputs.shooterSetpointsMPS[1];
+    }
 
 }

@@ -10,6 +10,8 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -139,6 +142,30 @@ public class Swerve extends SubsystemBase{
             }
         }
     }
+    /* 
+    public void getAutoBuilder(){
+        AutoBuilder.configureHolonomic(
+            this::getPoseRaw,
+            this::resetPose,
+            this::getRobotRelativeSpeeds,
+            this::driveRobotRelative,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(5.0, 0.0, 0.0),
+                new PIDConstants(5.0, 0.0, 0.0),
+                4.5,
+                0.4,
+                new ReplanningConfig()
+                ),
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                if(alliance.isPresent()){
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+             return false;
+            },
+        this
+        );
+    }*/
 
     public void requestVelocity(double velocityMetersPerSecond, boolean auto){
         for (int i = 0 ; i < 4; i++){
@@ -166,6 +193,18 @@ public class Swerve extends SubsystemBase{
 
     public Pose2d getPoseRaw(){
         return poseRaw;
+    }
+
+    public void resetPose(){
+        poseRaw = new Pose2d();
+    }
+
+    public void driveRobotRelative(){
+
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds(){
+        return kinematics.toChassisSpeeds(getMeasuredStates());
     }
 
     public Rotation2d getRotation2d() {
