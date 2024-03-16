@@ -12,6 +12,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -22,6 +24,8 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  public static PathPlannerPath TWOPieceMid = PathPlannerPath.fromChoreoTrajectory("choreoPaths");
 
   @Override
   public void robotInit() {

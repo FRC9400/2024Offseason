@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -41,10 +42,12 @@ public class TeleopSwerve extends Command {
         double rot_speed = rotationVal * swerveConstants.moduleConstants.maxAngularVelocity;
 
         /* Drive */
-        s_Swerve.requestVoltage(
+        s_Swerve.requestDesiredState(
             x_speed, 
             y_speed,
             rot_speed, 
+            new ChassisSpeeds(),
+            true,
             true
         );
     }

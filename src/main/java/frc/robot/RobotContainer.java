@@ -52,7 +52,7 @@ public class RobotContainer {
   public RobotContainer() {
     //s_elevator.elevatorConfiguration();
     s_shooter.shooterConfiguration();
-    //s_swerve.zeroWheels();
+    s_swerve.zeroWheels();
     s_swerve.zeroGyro();
     s_swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -98,6 +98,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+
   }
 }
 

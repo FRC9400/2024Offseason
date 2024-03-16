@@ -28,7 +28,7 @@ public interface ModuleIO {
     /** Updates the set of loggable inputs */
     public default void updateInputs(ModuleIOInputs inputs) {}
 
-    public default void setDesiredState(SwerveModuleState desiredState){}
+    public default void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){}
 
     /** Run the drive motor at a specified velocity */
     public default void setDriveVelocity(double velocityMetersPerSecond, boolean auto) {}

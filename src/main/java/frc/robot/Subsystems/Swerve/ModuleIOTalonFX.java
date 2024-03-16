@@ -130,11 +130,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = steerkP.get();
+        steerSlot0Configs.kP = 11.136;
         steerSlot0Configs.kI = 0.0;
-        steerSlot0Configs.kD = steerkD.get();
-        steerSlot0Configs.kS = steerkS.get();
-        steerSlot0Configs.kV = steerkV.get();
+        steerSlot0Configs.kD = 0.13881;
+        steerSlot0Configs.kS = 0.32456;
+        steerSlot0Configs.kV = 0.12174;
+        steerSlot0Configs.kA = 0.0019929;
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -240,12 +241,21 @@ public class ModuleIOTalonFX implements ModuleIO {
         }
     }
 
-    public void setDesiredState(SwerveModuleState optimizedDesiredStates) {
-        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed) * 5;
-        double angleDeg = optimizedDesiredStates.angle.getDegrees();
+    public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
+        if(isOpenLoop){
+            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed) * 5;
+            double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
-        setDriveVoltage(driveVoltage);
-        setTurnAngle(angleDeg);
+            setDriveVoltage(driveVoltage);
+            setTurnAngle(angleDeg);
+        }
+        else if(!isOpenLoop){
+            double driveVelocity = optimizedDesiredStates.speedMetersPerSecond;
+            double angleDeg = optimizedDesiredStates.angle.getDegrees();
+
+            setDriveVelocity(driveVelocity, true);
+            setTurnAngle(angleDeg);
+        }
     }
 
     public void setDriveVoltage(double volts) {

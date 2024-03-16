@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -23,6 +25,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,7 +46,6 @@ public class Swerve extends SubsystemBase{
             new ModuleIOInputsAutoLogged(),
             new ModuleIOInputsAutoLogged()
     };
-
     private Pose2d poseRaw = new Pose2d();
     private Rotation2d lastGyroYaw = new Rotation2d();
     private final boolean fieldRelatve;
@@ -120,7 +122,7 @@ public class Swerve extends SubsystemBase{
 
     }
 
-    public void requestVoltage(double x_speed, double y_speed, double rot_speed, boolean fieldRelative){
+    public void requestDesiredState(double x_speed, double y_speed, double rot_speed, ChassisSpeeds desiredChassisSpeeds, boolean fieldRelative, boolean isOpenLoop){
 
         Rotation2d[] steerPositions = new Rotation2d[4];
         SwerveModuleState[] desiredModuleStates = new SwerveModuleState[4];
@@ -138,11 +140,21 @@ public class Swerve extends SubsystemBase{
 
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
-                moduleIOs[i].setDesiredState(setpointModuleStates[i]);
+                moduleIOs[i].setDesiredState(setpointModuleStates[i], true);
             }
         }
+        else if(!fieldRelative){
+            desiredModuleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+
+            for (int i = 0; i < 4; i++) {
+                setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+                moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
+            }
+        }
+        
     }
-    /* 
+
     public void getAutoBuilder(){
         AutoBuilder.configureHolonomic(
             this::getPoseRaw,
@@ -165,13 +177,9 @@ public class Swerve extends SubsystemBase{
             },
         this
         );
-    }*/
-
-    public void requestVelocity(double velocityMetersPerSecond, boolean auto){
-        for (int i = 0 ; i < 4; i++){
-            moduleIOs[i].setDriveVelocity(velocityMetersPerSecond, auto);
-        }
     }
+
+
 
     public void zeroWheels(){
         for(int i = 0; i < 4; i++){
@@ -192,15 +200,17 @@ public class Swerve extends SubsystemBase{
     }
 
     public Pose2d getPoseRaw(){
-        return poseRaw;
+        return odometry.getPoseMeters();
     }
 
-    public void resetPose(){
-        poseRaw = new Pose2d();
+    public void resetPose(Pose2d pose){
+        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+        poseRaw = pose;
     }
 
-    public void driveRobotRelative(){
-
+    public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
+        ChassisSpeeds desiredChassisSpeedsSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        requestDesiredState(0, 0, 0, desiredChassisSpeedsSpeeds, false, false);
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds(){

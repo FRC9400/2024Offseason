@@ -88,7 +88,7 @@ public class Superstructure extends SubsystemBase {
     Logger.recordOutput("SuperstructureState", systemState);
     switch(systemState){
             case IDLE: 
-                s_elevator.requestElevatorHeight(0, false);
+                //s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
