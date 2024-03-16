@@ -144,12 +144,13 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorCurrentConfigs.StatorCurrentLimit = elevatorConstants.statorCurrentLimit;
         
         var slot0Configs = leftMotorConfigs.Slot0;
-        slot0Configs.kP = kP.get();
+        slot0Configs.kP = 29.192;
         slot0Configs.kI = 0.0;
-        slot0Configs.kD = kD.get();
-        slot0Configs.kS = kS.get();
-        slot0Configs.kV = kV.get();
-        slot0Configs.kG = kG.get();
+        slot0Configs.kD = 0.84434;
+        slot0Configs.kS = 0.015472;
+        slot0Configs.kV = 0.12576;
+        slot0Configs.kG = 0.15049;
+        slot0Configs.kA = 0.014797;
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
         
         var motionMagicConfigs = leftMotorConfigs.MotionMagic;
