@@ -71,6 +71,7 @@ public class Superstructure extends SubsystemBase {
     SHOOT_RIGHT,
     SHOOT_MID,
     SHOOT_LEFT,
+    PASS,
     PREPARE_AMP_ELEVATOR,
     AMP_ELEVATOR,
     EXIT_AMP_ELEVATOR,
@@ -88,7 +89,7 @@ public class Superstructure extends SubsystemBase {
     Logger.recordOutput("SuperstructureState", systemState);
     switch(systemState){
             case IDLE: 
-                //s_elevator.requestElevatorHeight(0, false);
+                s_elevator.requestElevatorHeight(0, false);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
@@ -97,7 +98,11 @@ public class Superstructure extends SubsystemBase {
             case HOMING: 
                 s_elevator.setState(ElevatorState.HOMING);
                 
-                if(s_elevator.getState() == ElevatorState.IDLE){
+                if (RobotController.getFPGATime()/1.0E6 - stateStartTime > 0.25 && Math.abs(s_elevator.getElevatorVelMPS()) < 0.2){
+                    s_elevator.setState(ElevatorState.ZEROSENSOR);
+                    setState(SuperstructureStates.IDLE);
+                }
+                else if(s_elevator.getState() == ElevatorState.IDLE){
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -120,7 +125,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if(s_shooter.getLeftShooterSpeedMPS() == ampShooterVel.get()){
+                if(Math.abs(s_shooter.getLeftShooterSpeedMPS() - ampShooterVel.get()) < 0.2){
                     setState(SuperstructureStates.AMP_SHOOTER);
                 }
                 break;
@@ -198,6 +203,16 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.IDLE);
                 }
                 break; 
+            case PASS:
+                s_elevator.requestElevatorHeight(0, false);
+                s_shooter.requestVelocity(5, 1);
+                s_intake.requestHandoff(handoffShooterVoltage.get());
+                s_handoff.requestHandoff(handoffShooterVoltage.get());
+
+                 if(RobotController.getFPGATime()/1.0E6 - stateStartTime > 1){
+                    setState(SuperstructureStates.IDLE);
+                }
+                break;
             case PREPARE_AMP_ELEVATOR:
                 s_elevator.requestElevatorHeight(0.45, false);
                 s_shooter.requestVelocity(0, 0);

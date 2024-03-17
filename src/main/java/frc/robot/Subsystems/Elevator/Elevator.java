@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 import static edu.wpi.first.units.Units.Volts;
 import frc.robot.Constants.elevatorConstants;
+import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 
 public class Elevator {
     private final ElevatorIO elevatorIO;
@@ -23,18 +24,21 @@ public class Elevator {
     private ElevatorState state = ElevatorState.IDLE;
     private double elevatorSetpoints = 0; 
     private double jogInput = 0.0;
+    private double stateStartTime = 0;
 
     public enum ElevatorState{
         IDLE,
         HOMING, 
         JOG,
         SETPOINT,
-        CLIMB
+        CLIMB,
+        ZEROSENSOR
     }
 
     public void Loop() {
         elevatorIO.updateInputs(inputs);
         elevatorIO.updateTunableNumbers();
+        Logger.recordOutput("ElevatorState", state);
         Logger.processInputs("Elevator", inputs);
 
         switch(state){
@@ -42,11 +46,7 @@ public class Elevator {
                 elevatorIO.setOutput(0);
                 break;
             case HOMING:
-                elevatorIO.setOutput(-4);
-                if(RobotController.getFPGATime()/1.0E6 - 0 > 0.5 && Math.abs(inputs.elevatorVelMPS) < 0.1){
-                    elevatorIO.zeroSensor();
-                    setState(ElevatorState.IDLE);
-                }
+                elevatorIO.setOutput(-3);
                 break;
             case JOG:
                 elevatorIO.setOutput(jogInput);
@@ -54,6 +54,8 @@ public class Elevator {
             case SETPOINT:
                 elevatorIO.goToSetpoint(elevatorSetpoints);
                 break;
+            case ZEROSENSOR:
+                elevatorIO.zeroSensor();
             default:
                 break;
         }
@@ -71,10 +73,15 @@ public class Elevator {
 
     public void setState(ElevatorState nextState){
         this.state = nextState;
+        stateStartTime = RobotController.getFPGATime()/1E6;
     }
 
     public boolean atElevatorSetpoint(double height){
         return Math.abs(inputs.elevatorHeightMeters - height) < Units.inchesToMeters(1);
+    }
+
+    public double getElevatorVelMPS(){
+        return inputs.elevatorVelMPS;
     }
      
     public Elevator(ElevatorIO elevatorIO) {
@@ -86,10 +93,10 @@ public class Elevator {
         elevatorIO.elevatorConfiguration();
     }
 
+ 
+
     public ElevatorState getState(){
         return this.state;
     }
-
-
-
+    
 }

@@ -40,8 +40,8 @@ import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.canIDConstants;
 
 public class RobotContainer {
-  private final XboxController controller = new XboxController(0);
-  private final XboxController operator = new XboxController(1);
+  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   private final IntakeIO s_intake = new IntakeIOTalonFX();
   private final HandoffIO s_handoff = new HandoffIOTalonFX();
@@ -70,26 +70,26 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    operator.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
 
-    new JoystickButton(operator, XboxController.Button.kA.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.HOMING)));
+    operator.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
 
-    new JoystickButton(operator, XboxController.Button.kRightBumper.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
+    operator.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_LEFT)));
 
-    new JoystickButton(operator, XboxController.Button.kB.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_RIGHT)));
+    operator.y().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_MID)));
 
-    new JoystickButton(operator, XboxController.Button.kX.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_LEFT)));
+    operator.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_RIGHT)));
 
-    new JoystickButton(operator, XboxController.Button.kY.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)));
+    operator.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_SHOOTER)));
 
-    new JoystickButton(operator, XboxController.Button.kLeftBumper.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_AMP)));
+    operator.leftTrigger().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
-    //new JoystickButton(controller, XboxController.Button.kRightBumper.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR)));
+    operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
 
-    new JoystickButton(controller, XboxController.Button.kRightBumper.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
+    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
-    new JoystickButton(controller, XboxController.Button.kLeftBumper.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
-    new JoystickButton(controller, XboxController.Button.kB.value).onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     
   }
   private void configureDefaultCommands() {
