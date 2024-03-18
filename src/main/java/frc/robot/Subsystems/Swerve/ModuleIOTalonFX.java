@@ -109,11 +109,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.driveStatorCurrentLimit;
 
         var driveSlot0Configs = driveConfigs.Slot0;
-        driveSlot0Configs.kP = drivekP.get();
+        driveSlot0Configs.kP = 0.13995;
         driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = drivekD.get();
-        driveSlot0Configs.kS = drivekS.get();
-        driveSlot0Configs.kV = drivekV.get();
+        driveSlot0Configs.kD = 0.0;
+        driveSlot0Configs.kS = 0.011412;
+        driveSlot0Configs.kV = 0.12125;
+        driveSlot0Configs.kA = 0.042716;
 
         // STEER
 
@@ -130,12 +131,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = 11.136;
+        steerSlot0Configs.kP = 10.309;
         steerSlot0Configs.kI = 0.0;
-        steerSlot0Configs.kD = 0.13881;
-        steerSlot0Configs.kS = 0.32456;
-        steerSlot0Configs.kV = 0.12174;
-        steerSlot0Configs.kA = 0.0019929;
+        steerSlot0Configs.kD = 0.11175;
+        steerSlot0Configs.kS = 0.30895;
+        steerSlot0Configs.kV = 0.12641;
+        steerSlot0Configs.kA = 0.0016487;
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -210,17 +211,19 @@ public class ModuleIOTalonFX implements ModuleIO {
     }
 
     @Override
+    /* 
     public void updateTunableNumbers() {
         if (drivekD.hasChanged(drivekD.hashCode()) ||
                 drivekS.hasChanged(drivekS.hashCode()) ||
                 drivekP.hasChanged(drivekP.hashCode()) ||
                 drivekV.hasChanged(drivekV.hashCode())) {
             var driveSlot0Configs = new Slot0Configs();
-            driveSlot0Configs.kP = drivekP.get();
-            driveSlot0Configs.kI = 0.0;
-            driveSlot0Configs.kD = drivekD.get();
-            driveSlot0Configs.kS = drivekS.get();
-            driveSlot0Configs.kV = drivekV.get();
+                    driveSlot0Configs.kP = 0.13995;
+        driveSlot0Configs.kI = 0.0;
+        driveSlot0Configs.kD = 0.0;
+        driveSlot0Configs.kS = 0.011412;
+        driveSlot0Configs.kV = 0.12125;
+        driveSlot0Configs.kA = 0.042716;
 
             driveConfigurator.apply(driveSlot0Configs);
         }
@@ -239,7 +242,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
             steerConfigurator.apply(steerSlot0Configs);
         }
-    }
+    }*/
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
         if(isOpenLoop){

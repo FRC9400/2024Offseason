@@ -13,6 +13,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,7 +26,6 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -96,6 +96,38 @@ public class Swerve extends SubsystemBase{
         moduleIOs[3] = new ModuleIOTalonFX(canIDConstants.driveMotor[3], canIDConstants.steerMotor[3], canIDConstants.CANcoder[3], swerveConstants.moduleConstants.CANcoderOffsets[3],
         swerveConstants.moduleConstants.driveMotorInverts[3], swerveConstants.moduleConstants.steerMotorInverts[3], swerveConstants.moduleConstants.CANcoderInverts[3]);
 
+        AutoBuilder.configureHolonomic(
+            this::getPoseRaw,
+            this::resetPose,
+            this::getRobotRelativeSpeeds,
+            this::driveRobotRelative,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(2.0, 0.0, 0.0),
+                new PIDConstants(2.0, 0.0, 0.0),
+                4.5,
+                0.4,
+                new ReplanningConfig()
+                ),
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                if(alliance.isPresent()){
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+             return false;
+            },
+        this
+        );
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+                Logger.recordOutput(
+                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            }
+        );
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) ->{
+                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
+
         for (int i = 0; i < 4; i++) {
             moduleIOs[i].setDriveBrakeMode(true);
             moduleIOs[i].setTurnBrakeMode(false);
@@ -122,7 +154,7 @@ public class Swerve extends SubsystemBase{
 
     }
 
-    public void requestDesiredState(double x_speed, double y_speed, double rot_speed, ChassisSpeeds desiredChassisSpeeds, boolean fieldRelative, boolean isOpenLoop){
+    public void requestDesiredState(double x_speed, double y_speed, double rot_speed, boolean fieldRelative, boolean isOpenLoop){
 
         Rotation2d[] steerPositions = new Rotation2d[4];
         SwerveModuleState[] desiredModuleStates = new SwerveModuleState[4];
@@ -144,8 +176,7 @@ public class Swerve extends SubsystemBase{
             }
         }
         else if(!fieldRelative){
-            desiredModuleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(x_speed, y_speed, rot_speed));
 
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
@@ -154,32 +185,6 @@ public class Swerve extends SubsystemBase{
         }
         
     }
-
-    public void getAutoBuilder(){
-        AutoBuilder.configureHolonomic(
-            this::getPoseRaw,
-            this::resetPose,
-            this::getRobotRelativeSpeeds,
-            this::driveRobotRelative,
-            new HolonomicPathFollowerConfig(
-                new PIDConstants(5.0, 0.0, 0.0),
-                new PIDConstants(5.0, 0.0, 0.0),
-                4.5,
-                0.4,
-                new ReplanningConfig()
-                ),
-            () -> {
-                var alliance = DriverStation.getAlliance();
-                if(alliance.isPresent()){
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-             return false;
-            },
-        this
-        );
-    }
-
-
 
     public void zeroWheels(){
         for(int i = 0; i < 4; i++){
@@ -209,8 +214,13 @@ public class Swerve extends SubsystemBase{
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
-        ChassisSpeeds desiredChassisSpeedsSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-        requestDesiredState(0, 0, 0, desiredChassisSpeedsSpeeds, false, false);
+        ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        double x_speed = desiredChassisSpeeds.vxMetersPerSecond;
+        double y_speed = desiredChassisSpeeds.vyMetersPerSecond;
+        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond;
+
+        requestDesiredState(x_speed, y_speed, rot_speed, false, false);
+
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds(){

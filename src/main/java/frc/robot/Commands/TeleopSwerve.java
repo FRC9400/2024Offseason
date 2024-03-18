@@ -33,9 +33,9 @@ public class TeleopSwerve extends Command {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = Math.pow(MathUtil.applyDeadband(translationSup.getAsDouble(), 0.05),5);
-        double strafeVal = Math.pow(MathUtil.applyDeadband(strafeSup.getAsDouble(), 0.05),5) ;
-        double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05),3);
+        double translationVal = Math.pow(MathUtil.applyDeadband(translationSup.getAsDouble(), 0.05),1); //5
+        double strafeVal = Math.pow(MathUtil.applyDeadband(strafeSup.getAsDouble(), 0.05),1) ; //5
+        double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05),1); //3
 
         double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeed;
         double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeed;
@@ -46,9 +46,8 @@ public class TeleopSwerve extends Command {
             x_speed, 
             y_speed,
             rot_speed, 
-            new ChassisSpeeds(),
-            true,
-            true
+            false,
+            false
         );
     }
 }
