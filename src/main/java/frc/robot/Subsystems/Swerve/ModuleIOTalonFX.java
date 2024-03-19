@@ -108,6 +108,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
         driveCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.driveStatorCurrentLimit;
 
+        var driveOpenLoopConfigs = driveConfigs.OpenLoopRamps;
+        driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = swerveConstants.moduleConstants.rampRate;
+
         var driveSlot0Configs = driveConfigs.Slot0;
         driveSlot0Configs.kP = 0.13995;
         driveSlot0Configs.kI = 0.0;
@@ -246,7 +249,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
         if(isOpenLoop){
-            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed) * 5;
+            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 7;
             double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
             setDriveVoltage(driveVoltage);

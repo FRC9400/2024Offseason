@@ -66,7 +66,7 @@ public class Swerve extends SubsystemBase{
         Seconds.of(4), 
         (state) -> SignalLogger.writeString("state", state.toString())), 
         new SysIdRoutine.Mechanism((
-            Measure<Voltage> volts) -> driveSysID(volts.in(Volts)),
+            Measure<Voltage> volts) -> driveVoltage(volts.in(Volts)),
              null, 
              this)
     );
@@ -161,23 +161,33 @@ public class Swerve extends SubsystemBase{
         for (int i = 0; i < 4; i++) {
             steerPositions[i] = new Rotation2d(moduleInputs[i].moduleAngleRads);
         }
-        Rotation2d gyroPositionDegrees = new Rotation2d(gyroInputs.positionRad);
+        Rotation2d gyroPosition = new Rotation2d(gyroInputs.positionRad);
         if (fieldRelative){
             desiredModuleStates = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
                 x_speed,
                 y_speed,
                 rot_speed,
-                gyroPositionDegrees));
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
-
+                gyroPosition));
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, 12);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], true);
             }
         }
-        else if(!fieldRelative){
+        else if(!fieldRelative && isOpenLoop){
+            desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(
+                x_speed,
+                y_speed,
+                rot_speed));
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            for (int i = 0; i < 4; i++) {
+                setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+                moduleIOs[i].setDesiredState(setpointModuleStates[i], true);
+            }
+        }
+        else if(!isOpenLoop){
             desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(x_speed, y_speed, rot_speed));
-
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
@@ -249,8 +259,10 @@ public class Swerve extends SubsystemBase{
         return measuredStates;
     }
 
-    public void driveSysID(double volts){
-        Arrays.stream(moduleIOs).forEach(mod -> mod.setDriveVoltage(volts));
+    public void driveVoltage(double volts){
+        for( int i = 0; i < 4; i++){
+            moduleIOs[i].setDriveVoltage(volts);
+        }
         
     }
 
@@ -259,21 +271,21 @@ public class Swerve extends SubsystemBase{
             this.runOnce(() -> SignalLogger.start()),
             driveRoutine
                 .quasistatic(Direction.kForward),
-                this.runOnce(() -> driveSysID(0)),
+                this.runOnce(() -> driveVoltage(0)),
                 Commands.waitSeconds(1),
             driveRoutine
                 .quasistatic(Direction.kReverse),
-                this.runOnce(() -> driveSysID(0)),
+                this.runOnce(() -> driveVoltage(0)),
                 Commands.waitSeconds(1),  
 
             driveRoutine
                 .dynamic(Direction.kForward),
-                this.runOnce(() -> driveSysID(0)),
+                this.runOnce(() -> driveVoltage(0)),
                 Commands.waitSeconds(1),  
 
             driveRoutine
                 .dynamic(Direction.kReverse),
-                this.runOnce(() -> driveSysID(0)),
+                this.runOnce(() -> driveVoltage(0)),
                 Commands.waitSeconds(1), 
             this.runOnce(() -> SignalLogger.stop())
         );
@@ -307,6 +319,18 @@ public class Swerve extends SubsystemBase{
         return setpointModuleStates;
     }
 
+    public double getGyroPositionDegrees(){
+        return gyroInputs.positionDegRaw;
+    }
+
+    public double getGyroPositionRadians(){
+        return gyroInputs.positionRad;
+    }
+
+    public void setGyroStartingPosition(double yawDegrees){
+        gyroIO.setPosition(yawDegrees);
+    }
+
     private void logModuleStates(String key, SwerveModuleState[] states) {
         List<Double> dataArray = new ArrayList<Double>();
         for (int i = 0; i < 4; i++) {
@@ -316,6 +340,5 @@ public class Swerve extends SubsystemBase{
         Logger.recordOutput(key, dataArray.stream().mapToDouble(Double::doubleValue).toArray());
     }
 
-
-
+ 
 }

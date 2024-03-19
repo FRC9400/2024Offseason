@@ -19,12 +19,13 @@ import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
+import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
-  private final CommandXboxController controller = new CommandXboxController(0);
+  public static final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
   private AutonomousSelector selector;
   private final IntakeIO s_intake = new IntakeIOTalonFX();
@@ -74,6 +75,10 @@ public class RobotContainer {
     controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
     controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+
+    controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
+
+    controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
     
   }

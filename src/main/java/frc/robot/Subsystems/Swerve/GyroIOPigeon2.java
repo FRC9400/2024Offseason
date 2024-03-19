@@ -54,4 +54,8 @@ public class GyroIOPigeon2 implements GyroIO {
         pigeon.setYaw(0.0);
     }
 
+    public void setPosition(double yawDegrees){
+        pigeon.setYaw(yawDegrees);
+    }
+
 }
