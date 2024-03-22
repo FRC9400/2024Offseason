@@ -85,6 +85,7 @@ public class Superstructure extends SubsystemBase {
         s_elevator.Loop();
         s_handoff.Loop();
         s_shooter.Loop();
+        Logger.recordOutput("DisabledElevator", disableElevator);
 
         Logger.recordOutput("SuperstructureState", systemState);
         switch (systemState) {
@@ -150,7 +151,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if (s_shooter.getLeftShooterSpeedMPS() == shootMidVel.get()) {
+                if (Math.abs(s_shooter.getLeftShooterSpeedMPS() - shootMidVel.get()) < 0.2) {
                     setState(SuperstructureStates.SHOOT_MID);
                 }
                 break;
@@ -165,7 +166,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if (s_shooter.getLeftShooterSpeedMPS() == shootLeftVel.get()) {
+                if (Math.abs(s_shooter.getLeftShooterSpeedMPS() - shootLeftVel.get()) < 0.2) {
                     setState(SuperstructureStates.SHOOT_LEFT);
                 }
                 break;
@@ -180,7 +181,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if (s_shooter.getRightShooterSpeedMPS() == shootRightVel.get() * rightRatio.get()) {
+                if (Math.abs(s_shooter.getRightShooterSpeedMPS() - shootRightVel.get() * rightRatio.get()) < 0.2) {
                     setState(SuperstructureStates.SHOOT_RIGHT);
                 }
                 break;
@@ -195,7 +196,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestHandoff(handoffShooterVoltage.get());
                 s_handoff.requestHandoff(handoffShooterVoltage.get());
 
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1.25) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
                 }
 
@@ -248,7 +249,7 @@ public class Superstructure extends SubsystemBase {
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
-                s_shooter.requestVelocity(5, 1);
+                s_shooter.requestVelocity(10, 1);
                 s_intake.requestHandoff(handoffShooterVoltage.get());
                 s_handoff.requestHandoff(handoffShooterVoltage.get());
 
@@ -266,9 +267,6 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if (s_elevator.atElevatorSetpoint(0.45)) {
-                    setState(SuperstructureStates.AMP_ELEVATOR);
-                }
                 break;
             case AMP_ELEVATOR:
                 if (!disableElevator) {
@@ -276,9 +274,12 @@ public class Superstructure extends SubsystemBase {
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
+
                 s_shooter.requestVelocity(0, 0);
-                s_intake.requestOutake(outakeVoltage.get());
-                s_handoff.requestHandoff(0);
+                if (s_elevator.atElevatorSetpoint(0.44)) {
+                    s_intake.requestOutake(outakeVoltage.get());
+                }
+                s_handoff.setState(HandoffStates.IDLE);
 
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.75) {
                     setState(SuperstructureStates.IDLE);
@@ -286,7 +287,7 @@ public class Superstructure extends SubsystemBase {
                 break;
             case CLIMB_UP:
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(climbUpHeight.get(), false);
+                    s_elevator.requestElevatorHeight(0.45, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
@@ -316,6 +317,10 @@ public class Superstructure extends SubsystemBase {
 
     public void disablingElevator() {
         disableElevator = true;
+    }
+
+    public double getIntakeCurrent(){
+        return s_intake.getStatorCurrent();
     }
 
     public SuperstructureStates getState() {

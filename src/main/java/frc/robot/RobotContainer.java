@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -60,25 +62,25 @@ public class RobotContainer {
 
     operator.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
 
-    operator.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_LEFT)));
+    operator.x().onTrue(new InstantCommand(() -> superstructure.setState(DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_LEFT : SuperstructureStates.SPIN_UP_RIGHT)));
 
-    operator.y().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_MID)));
+    operator.y().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)));
 
-    operator.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_RIGHT)));
+    operator.b().onTrue(new InstantCommand(() -> superstructure.setState(DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_LEFT)));
 
-    operator.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_SHOOTER)));
-
-    operator.leftTrigger().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
+    operator.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_AMP)));
 
     operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
 
-    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
+    //controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
-    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+    //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
     controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
+
+    operator.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_ELEVATOR))));
 
     
   }

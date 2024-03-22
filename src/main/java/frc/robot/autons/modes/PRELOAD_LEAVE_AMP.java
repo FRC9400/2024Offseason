@@ -1,5 +1,6 @@
 package frc.robot.autons.modes;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,29 +11,25 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Swerve.Turn;
 
-public class PreLoadLeaveAmpSide extends SequentialCommandGroup{
+public class PRELOAD_LEAVE_AMP extends SequentialCommandGroup{
     double startingPosDegrees;
-    double rot_speed = 2;
-    public PreLoadLeaveAmpSide(Swerve swerve, Superstructure superstructure){
+    SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_LEFT : SuperstructureStates.SPIN_UP_RIGHT;
+    public PRELOAD_LEAVE_AMP(Swerve swerve, Superstructure superstructure){
          startingPosDegrees = DriverStation.getAlliance().equals(Alliance.Blue) ? 60 : -60;
-        if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            rot_speed *= 1;
-        }
-        else{
-            rot_speed *= -1; 
-        }
         addRequirements(swerve, superstructure);
         addCommands(
             new InstantCommand(() -> swerve.setGyroStartingPosition(startingPosDegrees)),
-            new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_LEFT)),
+            new InstantCommand(() -> superstructure.setState(shootSide)),
             new WaitCommand(1.0),
-            new RunCommand(() -> swerve.requestDesiredState(3, 0, 0, false, false))
-            .withTimeout(1),
-            new RunCommand(() -> swerve.requestDesiredState(0, 0, rot_speed, false, false))
-            .until(() -> swerve.getGyroPositionDegrees() - 0 < 3),
-            new RunCommand(() -> swerve.requestDesiredState(3, 0, 0, false, false))
-            .withTimeout(1)
+            new RunCommand(() -> swerve.requestDesiredState(0, 1.5, 0, false, false))
+            .withTimeout(0.75),
+            new Turn(swerve,  new Rotation2d(0))
+            .until(() ->Math.abs( swerve.getGyroPositionDegrees()) < 3),
+            new RunCommand(() -> swerve.requestDesiredState(1.5, 0, 0, false, false))
+            .withTimeout(0.5),
+            new RunCommand(() -> swerve.requestDesiredState(0, 0, 0, false, false))
     
         );    
     }

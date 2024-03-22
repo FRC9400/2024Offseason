@@ -112,12 +112,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = swerveConstants.moduleConstants.rampRate;
 
         var driveSlot0Configs = driveConfigs.Slot0;
-        driveSlot0Configs.kP = 0.13995;
+        driveSlot0Configs.kP = 0.13995; // 0.13995
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.011412;
-        driveSlot0Configs.kV = 0.12125;
-        driveSlot0Configs.kA = 0.042716;
+        driveSlot0Configs.kS = 0.011412; //  0.011412
+        driveSlot0Configs.kV = 0.12125;// 0.12125
+        driveSlot0Configs.kA = 0.042716; // 0.042716
 
         // STEER
 

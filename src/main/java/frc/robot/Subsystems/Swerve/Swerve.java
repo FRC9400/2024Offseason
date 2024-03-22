@@ -102,9 +102,9 @@ public class Swerve extends SubsystemBase{
             this::getRobotRelativeSpeeds,
             this::driveRobotRelative,
             new HolonomicPathFollowerConfig(
-                new PIDConstants(2.0, 0.0, 0.0),
-                new PIDConstants(2.0, 0.0, 0.0),
-                4.5,
+                new PIDConstants(5.0, 0.0, 0.0),
+                new PIDConstants(5.0, 0.0, 0.0),
+                1,
                 0.4,
                 new ReplanningConfig()
                 ),
@@ -162,7 +162,7 @@ public class Swerve extends SubsystemBase{
             steerPositions[i] = new Rotation2d(moduleInputs[i].moduleAngleRads);
         }
         Rotation2d gyroPosition = new Rotation2d(gyroInputs.positionRad);
-        if (fieldRelative){
+        if (fieldRelative && isOpenLoop){
             desiredModuleStates = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
                 x_speed,
                 y_speed,
@@ -174,20 +174,33 @@ public class Swerve extends SubsystemBase{
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], true);
             }
         }
-        else if(!fieldRelative && isOpenLoop){
-            desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(
+        else if(fieldRelative && !isOpenLoop){
+            desiredModuleStates = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
                 x_speed,
                 y_speed,
-                rot_speed));
+                rot_speed,
+                gyroPosition));
             kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
-                moduleIOs[i].setDesiredState(setpointModuleStates[i], true);
+                moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
+            }
+        }
+        else if(!fieldRelative && !isOpenLoop){
+            desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(
+                x_speed,
+                y_speed,
+                rot_speed
+                ));
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            for (int i = 0; i < 4; i++) {
+                setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
+                moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
             }
         }
         else if(!isOpenLoop){
             desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(x_speed, y_speed, rot_speed));
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, 2);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
@@ -325,6 +338,10 @@ public class Swerve extends SubsystemBase{
 
     public double getGyroPositionRadians(){
         return gyroInputs.positionRad;
+    }
+
+    public double getDriveCurrent(){
+        return moduleInputs[0].driveCurrentAmps;
     }
 
     public void setGyroStartingPosition(double yawDegrees){

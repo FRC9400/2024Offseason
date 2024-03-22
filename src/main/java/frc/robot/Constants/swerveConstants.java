@@ -16,7 +16,7 @@ public final class swerveConstants {
         public static final double[] CANcoderOffsets = {0.478516, 0.722412, 0.617920, 0.819824}; //degrees or rotations 178.418, 204.17, 220.254, 358.154
  // 0.518311, 0.271240, 0.386230, 0.173340
         /* CANcoder Offset FL, FR, BL, BR */
-        public static final double[] CANcoderOffset = {};
+        
 
         /* Gear Ratios */
         public static final double driveGearRatio = 6.55;
@@ -31,7 +31,7 @@ public final class swerveConstants {
         public static final double steerStatorCurrentLimit = 50;
 
         /* Ramp Rate */
-        public static final double rampRate = 20;
+        public static final double rampRate = 0.02;
         
         /* PID Values */
         public static final double drivekP = 0.0;

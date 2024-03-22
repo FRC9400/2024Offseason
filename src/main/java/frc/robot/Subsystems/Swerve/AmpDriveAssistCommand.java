@@ -13,7 +13,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 public class AmpDriveAssistCommand extends Command{
     private final Swerve swerve;
     private final Superstructure superstructure;
-    private final PIDController thetaController = new PIDController(5.0, 0, 0.25);
+    private final PIDController thetaController = new PIDController(2.0, 0, 0.25);
     private Rotation2d headingGoal;
     
     public AmpDriveAssistCommand(Swerve swerve, Superstructure superstructure){
@@ -25,8 +25,8 @@ public class AmpDriveAssistCommand extends Command{
 
     @Override
     public void initialize(){
-        headingGoal = DriverStation.getAlliance().equals(Alliance.Blue) ? new Rotation2d(Math.PI/2.0) : new Rotation2d(Math.PI/2.0);
-        //superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR);
+        headingGoal = DriverStation.getAlliance().equals(Alliance.Blue) ? new Rotation2d(Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
+        superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AmpDriveAssistCommand extends Command{
             dy = y * -1;
         } else{
             dx = x;
-            dy =y;
+            dy = y;
         }
         double thetaFeedback = thetaController.calculate(
             swerve.getGyroPositionRadians(),

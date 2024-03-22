@@ -16,7 +16,7 @@ public class elevatorConstants {
     public static final double maxHeightInRotations = 0.0;
 
     /* Current Limits */
-    public static final double statorCurrentLimit = 100;
+    public static final double statorCurrentLimit = 80;
 
     /* PID Values*/
     public static final double kP = 8.413;
@@ -26,8 +26,8 @@ public class elevatorConstants {
     public static final double kG = 0.0662029;
 
     /* MotionMagic Values */
-    public static final double CruiseVelocityUp = 48;
-    public static final double AccelerationUp = 96;
+    public static final double CruiseVelocityUp = 55;
+    public static final double AccelerationUp = 110;
     public static final double Jerk = 10000;
 
     public static final double CruiseVelocityDown = 10;

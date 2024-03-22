@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 
 
-
 public class TeleopSwerve extends Command {    
     private Swerve s_Swerve;    
     private DoubleSupplier translationSup;
@@ -33,9 +32,9 @@ public class TeleopSwerve extends Command {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = Math.pow(MathUtil.applyDeadband(translationSup.getAsDouble(), 0.05),1); //5
-        double strafeVal = Math.pow(MathUtil.applyDeadband(strafeSup.getAsDouble(), 0.05),1) ; //5
-        double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05),1); //3
+        double translationVal = Math.pow(MathUtil.applyDeadband(translationSup.getAsDouble(), 0.05), 1); 
+        double strafeVal = Math.pow(MathUtil.applyDeadband(strafeSup.getAsDouble(), 0.05), 1) ; 
+        double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05), 1); 
 
         double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeed;
         double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeed;

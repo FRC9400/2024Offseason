@@ -6,12 +6,12 @@ import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class PreloadAmpSide extends SequentialCommandGroup{
+public class PRELOAD_MID extends SequentialCommandGroup{
     
-    public PreloadAmpSide(Swerve swerve, Superstructure superstructure){
+    public PRELOAD_MID(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
-            new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_LEFT))
+            new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID))
         );
     
     }
