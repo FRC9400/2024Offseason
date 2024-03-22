@@ -80,7 +80,7 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
-    operator.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_ELEVATOR))));
+    operator.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
     
   }

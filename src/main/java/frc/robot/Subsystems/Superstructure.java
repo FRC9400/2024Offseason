@@ -267,6 +267,9 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
+                if(s_elevator.atElevatorSetpoint(0.45)){
+                    setState(SuperstructureStates.AMP_ELEVATOR);
+                }
                 break;
             case AMP_ELEVATOR:
                 if (!disableElevator) {
