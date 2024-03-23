@@ -29,7 +29,7 @@ public class AutonomousSelector {
 
         //autonomousSelector.addOption("TwoPieceMID", new TWOPieceMid(swerve, superstructure));
 
-        autonomousSelector.addOption("TWO_PIECE_MID", new TWOPIECE_MID(swerve, superstructure));
+        autonomousSelector.addOption("TWOPIECE_MID", new TWOPIECE_MID(swerve, superstructure));
 
         autonomousSelector.addOption("PRELOAD_LEAVE_MID", new PRELOAD_LEAVE_MID(swerve, superstructure));
 

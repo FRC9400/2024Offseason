@@ -15,9 +15,9 @@ import frc.robot.Subsystems.Swerve.Turn;
 
 public class PRELOAD_LEAVE_AMP extends SequentialCommandGroup{
     double startingPosDegrees;
-    SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_LEFT : SuperstructureStates.SPIN_UP_RIGHT;
+    SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_LEFT : SuperstructureStates.SPIN_UP_LEFT;
     public PRELOAD_LEAVE_AMP(Swerve swerve, Superstructure superstructure){
-         startingPosDegrees = DriverStation.getAlliance().equals(Alliance.Blue) ? 60 : -60;
+         startingPosDegrees = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 60 : -60;
         addRequirements(swerve, superstructure);
         addCommands(
             new InstantCommand(() -> swerve.setGyroStartingPosition(startingPosDegrees)),

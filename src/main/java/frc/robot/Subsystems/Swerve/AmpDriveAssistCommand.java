@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Swerve;
 
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,7 +14,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 public class AmpDriveAssistCommand extends Command{
     private final Swerve swerve;
     private final Superstructure superstructure;
-    private final PIDController thetaController = new PIDController(2.0, 0, 0.25);
+    private final PIDController thetaController = new PIDController(4, 0, 0.25);
     private Rotation2d headingGoal;
     
     public AmpDriveAssistCommand(Swerve swerve, Superstructure superstructure){
@@ -25,7 +26,7 @@ public class AmpDriveAssistCommand extends Command{
 
     @Override
     public void initialize(){
-        headingGoal = DriverStation.getAlliance().equals(Alliance.Blue) ? new Rotation2d(Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
+        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d( Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
         superstructure.setState(SuperstructureStates.CLIMB_UP); //dont mind the state name :|||
     }
 

@@ -62,11 +62,11 @@ public class RobotContainer {
 
     operator.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
 
-    operator.x().onTrue(new InstantCommand(() -> superstructure.setState(DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_LEFT : SuperstructureStates.SPIN_UP_RIGHT)));
+    operator.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_LEFT)));
 
     operator.y().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)));
 
-    operator.b().onTrue(new InstantCommand(() -> superstructure.setState(DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_LEFT)));
+    operator.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_RIGHT)));
 
     operator.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_AMP)));
 
@@ -78,9 +78,11 @@ public class RobotContainer {
 
     controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
+    controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
+
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
-    operator.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
+    controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
     
   }

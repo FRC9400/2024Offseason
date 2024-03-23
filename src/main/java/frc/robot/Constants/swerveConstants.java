@@ -24,7 +24,7 @@ public final class swerveConstants {
 
         /* Max Speeds */
         public static final double maxSpeed = 4.72; 
-        public static final double maxAngularVelocity = 2.5; 
+        public static final double maxAngularVelocity = 2; 
         
         /* Current Limits */
         public static final double driveStatorCurrentLimit = 80;

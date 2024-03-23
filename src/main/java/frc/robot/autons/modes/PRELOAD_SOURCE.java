@@ -11,9 +11,11 @@ import frc.robot.Subsystems.Swerve.Swerve;
 public class PRELOAD_SOURCE extends SequentialCommandGroup{
     
     public PRELOAD_SOURCE(Swerve swerve, Superstructure superstructure){
-        SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_LEFT;
+        SuperstructureStates shootSide = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_RIGHT;
+        double gyroStartAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -60 :  60;
         addRequirements(swerve, superstructure);
         addCommands(
+            new InstantCommand(() -> swerve.setGyroStartingPosition(gyroStartAngle)),
             new InstantCommand(() -> superstructure.setState(shootSide))
         );
     

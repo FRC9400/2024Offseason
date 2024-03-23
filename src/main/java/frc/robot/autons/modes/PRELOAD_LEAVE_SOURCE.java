@@ -14,7 +14,7 @@ import frc.robot.Subsystems.Swerve.Turn;
 
 public class PRELOAD_LEAVE_SOURCE extends SequentialCommandGroup{
     double startingPosDegrees;
-    SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_LEFT;
+    SuperstructureStates shootSide = DriverStation.getAlliance().equals(Alliance.Blue) ? SuperstructureStates.SPIN_UP_RIGHT : SuperstructureStates.SPIN_UP_RIGHT;
     public PRELOAD_LEAVE_SOURCE(Swerve swerve, Superstructure superstructure){
         startingPosDegrees = DriverStation.getAlliance().equals(Alliance.Blue) ? -60 : 60;
         addRequirements(swerve, superstructure);
