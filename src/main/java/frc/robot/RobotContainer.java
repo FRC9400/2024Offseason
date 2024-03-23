@@ -22,6 +22,7 @@ import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
+import frc.robot.Subsystems.Swerve.SpeakerDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.Commands.TeleopSwerve;
@@ -81,6 +82,8 @@ public class RobotContainer {
     controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
 
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
+
+    controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
     controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
