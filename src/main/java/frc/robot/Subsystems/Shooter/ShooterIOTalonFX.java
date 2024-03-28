@@ -101,7 +101,7 @@ public class ShooterIOTalonFX implements ShooterIO{
         }
     }
 
-    public void setVoltage(double volts) {
+    public void setOutput(double volts) {
         leftShooter.setControl(shootRequestVoltage.withOutput(volts));
         rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
     }
@@ -145,7 +145,7 @@ public class ShooterIOTalonFX implements ShooterIO{
 
         var rightShooterCurrentConfigs = rightShooterConfigs.CurrentLimits;
         rightShooterCurrentConfigs.StatorCurrentLimitEnable = true;
-        leftShooterCurrentConfigs.StatorCurrentLimit = 50;
+        rightShooterCurrentConfigs.StatorCurrentLimit = 50;
 
         var leftSlot0Configs = leftShooterConfigs.Slot0;
         leftSlot0Configs.kP = kP.get();

@@ -7,6 +7,7 @@ public interface IntakeIO {
     public static class IntakeIOInputs {
 
         public double appliedVolts = 0.0;
+        public double setPointVolts = 0.0;
         public double currentAmps = 0.0;
         public double tempFahrenheit = 0.0;
         public double intakeSpeedRPS = 0.0;
@@ -16,7 +17,7 @@ public interface IntakeIO {
     public default void updateInputs(IntakeIOInputs inputs) {
     }
 
-    public default void setIntakeVoltage(double volts) {
+    public default void setOutput(double volts) {
     }
 
 

@@ -63,7 +63,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/kS", 0);
     LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/kV", 0);
 
-    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 15);
+    LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 8);
     LoggedTunableNumber steerkD = new LoggedTunableNumber("Steer/kD", 0);
     LoggedTunableNumber steerkS = new LoggedTunableNumber("Steer/kS", 0);
     LoggedTunableNumber steerkV = new LoggedTunableNumber("Steer/kV", 0);
@@ -108,12 +108,16 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveCurrentLimitConfigs.StatorCurrentLimitEnable = true;
         driveCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.driveStatorCurrentLimit;
 
+        var driveOpenLoopConfigs = driveConfigs.OpenLoopRamps;
+        driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = swerveConstants.moduleConstants.rampRate;
+
         var driveSlot0Configs = driveConfigs.Slot0;
-        driveSlot0Configs.kP = drivekP.get();
+        driveSlot0Configs.kP = 0.13995; // 0.13995
         driveSlot0Configs.kI = 0.0;
-        driveSlot0Configs.kD = drivekD.get();
-        driveSlot0Configs.kS = drivekS.get();
-        driveSlot0Configs.kV = drivekV.get();
+        driveSlot0Configs.kD = 0.0;
+        driveSlot0Configs.kS = 0.011412; //  0.011412
+        driveSlot0Configs.kV = 0.12125;// 0.12125
+        driveSlot0Configs.kA = 0.042716; // 0.042716
 
         // STEER
 
@@ -130,11 +134,12 @@ public class ModuleIOTalonFX implements ModuleIO {
         // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
         var steerSlot0Configs = steerConfigs.Slot0;
-        steerSlot0Configs.kP = steerkP.get();
+        steerSlot0Configs.kP = 10.309;
         steerSlot0Configs.kI = 0.0;
-        steerSlot0Configs.kD = steerkD.get();
-        steerSlot0Configs.kS = steerkS.get();
-        steerSlot0Configs.kV = steerkV.get();
+        steerSlot0Configs.kD = 0.11175;
+        steerSlot0Configs.kS = 0.30895;
+        steerSlot0Configs.kV = 0.12641;
+        steerSlot0Configs.kA = 0.0016487;
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
@@ -209,17 +214,19 @@ public class ModuleIOTalonFX implements ModuleIO {
     }
 
     @Override
+    /* 
     public void updateTunableNumbers() {
         if (drivekD.hasChanged(drivekD.hashCode()) ||
                 drivekS.hasChanged(drivekS.hashCode()) ||
                 drivekP.hasChanged(drivekP.hashCode()) ||
                 drivekV.hasChanged(drivekV.hashCode())) {
             var driveSlot0Configs = new Slot0Configs();
-            driveSlot0Configs.kP = drivekP.get();
-            driveSlot0Configs.kI = 0.0;
-            driveSlot0Configs.kD = drivekD.get();
-            driveSlot0Configs.kS = drivekS.get();
-            driveSlot0Configs.kV = drivekV.get();
+                    driveSlot0Configs.kP = 0.13995;
+        driveSlot0Configs.kI = 0.0;
+        driveSlot0Configs.kD = 0.0;
+        driveSlot0Configs.kS = 0.011412;
+        driveSlot0Configs.kV = 0.12125;
+        driveSlot0Configs.kA = 0.042716;
 
             driveConfigurator.apply(driveSlot0Configs);
         }
@@ -229,23 +236,32 @@ public class ModuleIOTalonFX implements ModuleIO {
                 steerkP.hasChanged(steerkP.hashCode()) ||
                 steerkV.hasChanged(steerkV.hashCode())) {
             var steerSlot0Configs = new Slot0Configs();
-            steerSlot0Configs.kP = steerkP.get();
+            steerSlot0Configs.kP = 11.136;
             steerSlot0Configs.kI = 0.0;
-            steerSlot0Configs.kD = steerkD.get();
-            steerSlot0Configs.kS = steerkS.get();
-            steerSlot0Configs.kV = steerkV.get();
+            steerSlot0Configs.kD = 0.13881;
+            steerSlot0Configs.kS = 0.32456;
+            steerSlot0Configs.kV = 0.12174;
+            steerSlot0Configs.kA = 0.0019929;
 
             steerConfigurator.apply(steerSlot0Configs);
         }
-    }
+    }*/
 
-    public void setDesiredState(SwerveModuleState optimizedDesiredStates) {
-        double driveVoltage = optimizedDesiredStates.speedMetersPerSecond / (swerveConstants.moduleConstants.maxSpeed)
-                * 12;
-        double angleDeg = optimizedDesiredStates.angle.getDegrees();
+    public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
+        if(isOpenLoop){
+            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 7;
+            double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
-        setDriveVoltage(driveVoltage);
-        setTurnAngle(angleDeg);
+            setDriveVoltage(driveVoltage);
+            setTurnAngle(angleDeg);
+        }
+        else if(!isOpenLoop){
+            double driveVelocity = optimizedDesiredStates.speedMetersPerSecond;
+            double angleDeg = optimizedDesiredStates.angle.getDegrees();
+
+            setDriveVelocity(driveVelocity, true);
+            setTurnAngle(angleDeg);
+        }
     }
 
     public void setDriveVoltage(double volts) {

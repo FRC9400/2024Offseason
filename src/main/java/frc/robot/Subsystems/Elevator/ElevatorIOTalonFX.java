@@ -41,6 +41,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
     private VoltageOut voltageOutRequest =  new VoltageOut(0).withEnableFOC(true);
     
     double setPointMeters;
+    private boolean climbDown;
     
     LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 8.413);
     LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.0030141);
@@ -59,6 +60,7 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorConfigs = new TalonFXConfiguration();
         rightMotorConfigs = new TalonFXConfiguration();
         setPointMeters = 0;  
+        climbDown = false;
 
         BaseStatusSignal.setUpdateFrequencyForAll(
             50,
@@ -113,17 +115,20 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotor.setControl(voltageOutRequest.withOutput(output));
     }
 
-    public void driveElevator(double setPointMeters){
+    public void goToSetpoint(double setPointMeters){
+        this.setPointMeters = setPointMeters;
         double setPointRotations = Conversions.metersToRotations(setPointMeters, elevatorConstants.wheelCircumferenceMeters, elevatorConstants.gearRatio);
         leftMotor.setControl(motionMagicRequest.withPosition(setPointRotations));     
     }
 
-    public void setMotionMagicConfigs(boolean down){
-        MotionMagicConfigs climb = new MotionMagicConfigs();
-        climb.MotionMagicCruiseVelocity = down ? elevatorConstants.CruiseVelocityDown : elevatorConstants.CruiseVelocityUp;
-        climb.MotionMagicAcceleration = down ? elevatorConstants.AccelerationDown : elevatorConstants.AccelerationUp;
-
-        leftMotorConfigurator.apply(climb);
+    public void setMotionMagicConfigs(boolean climb){
+        if(this.climbDown != climb){
+            MotionMagicConfigs climbDown = new MotionMagicConfigs();
+            climbDown.MotionMagicCruiseVelocity = climb ? elevatorConstants.CruiseVelocityDown : elevatorConstants.CruiseVelocityUp;
+            climbDown.MotionMagicAcceleration = climb ? elevatorConstants.AccelerationDown : elevatorConstants.AccelerationUp;
+            leftMotorConfigurator.apply(climbDown);
+        }
+        this.climbDown = climb;
     }
 
      
@@ -139,17 +144,18 @@ public class ElevatorIOTalonFX implements ElevatorIO{
         leftMotorCurrentConfigs.StatorCurrentLimit = elevatorConstants.statorCurrentLimit;
         
         var slot0Configs = leftMotorConfigs.Slot0;
-        slot0Configs.kP = kP.get();
+        slot0Configs.kP = 8.413;
         slot0Configs.kI = 0.0;
-        slot0Configs.kD = kD.get();
-        slot0Configs.kS = kS.get();
-        slot0Configs.kV = kV.get();
-        slot0Configs.kG = kG.get();
+        slot0Configs.kD = 0.0030141;
+        slot0Configs.kS = 0.058684;
+        slot0Configs.kV = 0.0044;
+        slot0Configs.kG = 0.066202;
+
         slot0Configs.GravityType = GravityTypeValue.Elevator_Static;
         
         var motionMagicConfigs = leftMotorConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = kMotionCruiseVelocity.get();
-        motionMagicConfigs.MotionMagicAcceleration = kMotionAcceleration.get();
+        motionMagicConfigs.MotionMagicCruiseVelocity = elevatorConstants.CruiseVelocityUp;
+        motionMagicConfigs.MotionMagicAcceleration = elevatorConstants.AccelerationUp;
         motionMagicConfigs.MotionMagicJerk = kMotionJerk.get();
 
         var feedbackConfigs = leftMotorConfigs.Feedback;

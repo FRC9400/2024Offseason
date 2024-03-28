@@ -19,6 +19,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     private final StatusSignal<Double> temp = intake.getDeviceTemp();
     private final StatusSignal<Double> RPS = intake.getRotorVelocity();
 
+    private double setpointVolts;
+
     public IntakeIOTalonFX() {
         var intakeConfigs = new TalonFXConfiguration();
         var intakeCurrentLimitConfigs = intakeConfigs.CurrentLimits;
@@ -44,12 +46,14 @@ public class IntakeIOTalonFX implements IntakeIO {
             RPS
         );
         inputs.appliedVolts = intakeRequest.Output;
+        inputs.setPointVolts = this.setpointVolts;
         inputs.currentAmps = current.getValue();
         inputs.tempFahrenheit = temp.getValue();
         inputs.intakeSpeedRPS = RPS.getValue();
     }
 
-    public void setIntakeVoltage(double output) {
+    public void setOutput(double output) {
+        this.setpointVolts = output;
         intake.setControl(intakeRequest.withOutput(output));
     }
 
