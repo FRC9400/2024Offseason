@@ -23,8 +23,8 @@ public class PRELOAD_LEAVE_AMP extends SequentialCommandGroup{
             new InstantCommand(() -> swerve.setGyroStartingPosition(startingPosDegrees)),
             new InstantCommand(() -> superstructure.setState(shootSide)),
             new WaitCommand(1.0),
-            new RunCommand(() -> swerve.requestDesiredState(0, 1.5, 0, false, false))
-            .withTimeout(1.5),
+            new RunCommand(() -> swerve.requestDesiredState(1.5, 0, 0, false, false))
+            .withTimeout(1.1),
             new Turn(swerve,  new Rotation2d(0))
             .until(() ->Math.abs( swerve.getGyroPositionDegrees()) < 3),
             new RunCommand(() -> swerve.requestDesiredState(1.5, 0, 0, false, false))

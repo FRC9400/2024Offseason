@@ -26,8 +26,8 @@ public class elevatorConstants {
     public static final double kG = 0.0662029;
 
     /* MotionMagic Values */
-    public static final double CruiseVelocityUp = 70;
-    public static final double AccelerationUp = 140;
+    public static final double CruiseVelocityUp = 55;
+    public static final double AccelerationUp = 110;
     public static final double Jerk = 10000;
 
     public static final double CruiseVelocityDown = 10;

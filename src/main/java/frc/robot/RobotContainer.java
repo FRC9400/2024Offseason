@@ -18,6 +18,7 @@ import frc.robot.Subsystems.Handoff.HandoffIO;
 import frc.robot.Subsystems.Handoff.HandoffIOTalonFX;
 import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
+import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
@@ -35,7 +36,8 @@ public class RobotContainer {
   private final HandoffIO s_handoff = new HandoffIOTalonFX();
   private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
   private final ShooterIO s_shooter = new ShooterIOTalonFX();
-  private final Superstructure superstructure = new Superstructure(s_intake, s_handoff, s_elevator, s_shooter);
+  private final LEDs led = new LEDs();
+  private final Superstructure superstructure = new Superstructure(s_intake, s_handoff, s_elevator, s_shooter, led);
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
     configureAutonomousSelector();
@@ -73,9 +75,9 @@ public class RobotContainer {
 
     operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
 
-    //controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
+    controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
-    //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+    controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
     controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
@@ -83,7 +85,7 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
-    controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
+    //controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
     controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 

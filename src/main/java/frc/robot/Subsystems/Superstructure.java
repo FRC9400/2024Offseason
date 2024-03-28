@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +23,8 @@ import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake.IntakeStates;
+import frc.robot.Subsystems.LEDs.LEDs;
+import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
@@ -33,8 +36,11 @@ public class Superstructure extends SubsystemBase {
     private Handoff s_handoff;
     private Elevator s_elevator;
     private Shooter s_shooter;
+    private LEDs led;
+    
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
 
+    
     private double stateStartTime = 0;
     private boolean disableElevator = false;
 
@@ -52,17 +58,19 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber climbUpHeight = new LoggedTunableNumber("Superstructure/climbUpHeight", 0.45);
     LoggedTunableNumber climbDownHeight = new LoggedTunableNumber("Superstructure/climbDownHeight", 0);
 
-    public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter) {
+    public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter, LEDs led) {
         this.s_intake = new Intake(intake);
         this.s_handoff = new Handoff(handoff);
         this.s_elevator = new Elevator(elevator);
         this.s_shooter = new Shooter(shooter);
+        this.led = led;
     }
 
     public enum SuperstructureStates {
         IDLE,
         HOMING,
         INTAKE,
+        HOLD_PIECE,
         SPIN_UP_AMP,
         SPIN_UP_MID,
         SPIN_UP_LEFT,
@@ -85,11 +93,20 @@ public class Superstructure extends SubsystemBase {
         s_elevator.Loop();
         s_handoff.Loop();
         s_shooter.Loop();
+        led.Loop();
+
         Logger.recordOutput("DisabledElevator", disableElevator);
 
         Logger.recordOutput("SuperstructureState", systemState);
         switch (systemState) {
             case IDLE:
+                if(DriverStation.isDisabled()){
+                    led.setState(LEDStates.DISABLED);
+                }
+                else{
+                    led.setState(LEDStates.IDLE);
+                }
+
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -113,6 +130,7 @@ public class Superstructure extends SubsystemBase {
 
                 break;
             case INTAKE:
+                led.setState(LEDStates.INTAKING);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -123,11 +141,23 @@ public class Superstructure extends SubsystemBase {
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
 
                 if (s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.HOLD_PIECE);
                 }
 
                 break;
+            case HOLD_PIECE:
+                led.setState(LEDStates.READY_TO_SCORE);
+                 if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
             case SPIN_UP_AMP:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -142,6 +172,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case SPIN_UP_MID:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -157,6 +188,7 @@ public class Superstructure extends SubsystemBase {
                 break;
 
             case SPIN_UP_LEFT:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -172,6 +204,7 @@ public class Superstructure extends SubsystemBase {
                 break;
 
             case SPIN_UP_RIGHT:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -187,6 +220,7 @@ public class Superstructure extends SubsystemBase {
                 break;
 
             case AMP_SHOOTER:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -202,6 +236,7 @@ public class Superstructure extends SubsystemBase {
 
                 break;
             case SHOOT_RIGHT:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -216,6 +251,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case SHOOT_MID:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -230,6 +266,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case SHOOT_LEFT:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -244,6 +281,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case PASS:
+                led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
                 } else {
@@ -258,8 +296,9 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case PREPARE_AMP_ELEVATOR:
+                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(0.45, false);
+                    s_elevator.requestElevatorHeight(0.44, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
@@ -267,13 +306,14 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if(s_elevator.atElevatorSetpoint(0.45)){
+                if(s_elevator.atElevatorSetpoint(0.44)){
                     setState(SuperstructureStates.AMP_ELEVATOR);
                 }
                 break;
             case AMP_ELEVATOR:
+                led.setState(LEDStates.ELEVATOR_AMP);
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(0.45, false);
+                    s_elevator.requestElevatorHeight(0.44, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
@@ -290,7 +330,7 @@ public class Superstructure extends SubsystemBase {
                 break;
             case CLIMB_UP:
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(0.45, false);
+                    s_elevator.requestElevatorHeight(0.44, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
