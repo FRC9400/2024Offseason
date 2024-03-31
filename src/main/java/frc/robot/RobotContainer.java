@@ -73,19 +73,23 @@ public class RobotContainer {
 
     operator.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_AMP)));
 
+    operator.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTAKE)));
+
     operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
 
-    controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
+    //controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
-    controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
+    //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
-    controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
+    //controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
+
+    controller.start().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
     controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
 
     controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
-    //controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
+    controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
     controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 

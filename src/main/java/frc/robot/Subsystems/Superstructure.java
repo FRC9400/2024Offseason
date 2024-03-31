@@ -50,10 +50,10 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5);
     LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
     LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
-    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 10);
+    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
     LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 20);
     LoggedTunableNumber midRatio = new LoggedTunableNumber("Superstructure/MIDratio", 0.7);
-    LoggedTunableNumber rightRatio = new LoggedTunableNumber("Superstructure/RIGHTratio", 2);
+    LoggedTunableNumber rightRatio = new LoggedTunableNumber("Superstructure/RIGHTratio", 1.7);
     LoggedTunableNumber leftRatio = new LoggedTunableNumber("Superstructure/LEFTratio", 0.5);
     LoggedTunableNumber climbUpHeight = new LoggedTunableNumber("Superstructure/climbUpHeight", 0.45);
     LoggedTunableNumber climbDownHeight = new LoggedTunableNumber("Superstructure/climbDownHeight", 0);
@@ -70,6 +70,7 @@ public class Superstructure extends SubsystemBase {
         IDLE,
         HOMING,
         INTAKE,
+        OUTAKE,
         HOLD_PIECE,
         SPIN_UP_AMP,
         SPIN_UP_MID,
@@ -141,8 +142,19 @@ public class Superstructure extends SubsystemBase {
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
 
                 if (s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
-                    setState(SuperstructureStates.HOLD_PIECE);
+                    setState(SuperstructureStates.IDLE);
                 }
+
+                break;
+            case OUTAKE:
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.requestIntake(outakeVoltage.get());
+                s_handoff.requestHandoff(-2);
 
                 break;
             case HOLD_PIECE:
@@ -155,7 +167,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
-
+                break;
             case SPIN_UP_AMP:
                 led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
@@ -296,7 +308,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case PREPARE_AMP_ELEVATOR:
-                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
+               led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0.44, false);
                 } else {
@@ -311,7 +323,7 @@ public class Superstructure extends SubsystemBase {
                 }
                 break;
             case AMP_ELEVATOR:
-                led.setState(LEDStates.ELEVATOR_AMP);
+               led.setState(LEDStates.ELEVATOR_AMP);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0.44, false);
                 } else {

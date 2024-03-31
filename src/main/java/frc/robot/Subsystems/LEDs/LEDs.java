@@ -6,10 +6,13 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants.canIDConstants;
+import frc.robot.Subsystems.LEDs.LEDs.BlinkPattern;
+import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
 
 public class LEDs {
     private CANdle candle = new CANdle(canIDConstants.candle, "rio");
@@ -23,7 +26,7 @@ public class LEDs {
    
     public LEDs(){
         CANdleConfiguration config = new CANdleConfiguration();
-        config.stripType = LEDStripType.RGBW; // set the strip type to RGB
+        config.stripType = LEDStripType.GRB; // set the strip type to RGB
         config.brightnessScalar = 0.5; // dim the LEDs to half brightness
         candle.configAllSettings(config);
         onDuration = 0;
@@ -82,7 +85,7 @@ public class LEDs {
         Color8Bit color8Bit = new Color8Bit(color);
 
         if (blinkPattern == BlinkPattern.SOLID) {
-            candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
+            candle.setLEDs(color8Bit.green, color8Bit.red, color8Bit.blue);
           } else {
             double time = blinkTimer.get();
             double onDuration = 0;
