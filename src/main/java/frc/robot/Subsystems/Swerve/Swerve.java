@@ -138,7 +138,6 @@ public class Swerve extends SubsystemBase{
 
     @Override
     public void periodic(){
-        updateOdometry();
         gyroIO.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (int i = 0; i < 4; i++){
@@ -146,7 +145,8 @@ public class Swerve extends SubsystemBase{
             Logger.processInputs("Swerve/Module/ModuleNum[" + i + "]", moduleInputs[i]);
             moduleIOs[i].updateTunableNumbers();
         }
-
+        
+        updateOdometry();
         logModuleStates("SwerveModuleStates/setpointStates", getSetpointStates());
         //logModuleStates("SwerveModuleStates/optimizedSetpointStates", getOptimizedSetPointStates());
         logModuleStates("SwerveModuleStates/MeasuredStates", getMeasuredStates());
@@ -271,6 +271,8 @@ public class Swerve extends SubsystemBase{
         }
         return measuredStates;
     }
+
+  
 
     public void driveVoltage(double volts){
         for( int i = 0; i < 4; i++){

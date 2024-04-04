@@ -155,7 +155,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.requestIntake(outakeVoltage.get());
                 s_handoff.requestHandoff(-2);
-
+                
                 break;
             case HOLD_PIECE:
                 led.setState(LEDStates.READY_TO_SCORE);

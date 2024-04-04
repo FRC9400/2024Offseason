@@ -101,10 +101,12 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return selector.get();
+    
   }
 
   public void configureAutonomousSelector(){
     selector = new AutonomousSelector(s_swerve, superstructure);
+    
   }
 }
 

@@ -21,8 +21,9 @@ public class AutonomousSelector {
 
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
         autonomousSelector.setDefaultOption(
+        
             "PRELOAD_MID", new PRELOAD_MID(swerve, superstructure));
-
+        /* 
         autonomousSelector.addOption("PRELOAD_AMP", new PRELOAD_AMP(swerve, superstructure));
 
         autonomousSelector.addOption("PRELOAD_SOURCE", new PRELOAD_SOURCE(swerve, superstructure));
@@ -40,8 +41,9 @@ public class AutonomousSelector {
         //autonomousSelector.addOption("ThreePieceMidSource", new ThreePieceMidSource(swerve, superstructure));
 
         //autonomousSelector.addOption("testHardstop", new Hardstop(swerve, superstructure));
-
+        */
         SmartDashboard.putData("Auto Choices", autonomousSelector);
+        autonomousSelector.addOption("testPath", new TWOPieceMid(swerve, superstructure));
 
 
     }
