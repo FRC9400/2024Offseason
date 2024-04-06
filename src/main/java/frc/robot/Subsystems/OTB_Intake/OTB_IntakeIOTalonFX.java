@@ -21,7 +21,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor, "canivore");
-    private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor, "canivore");
+    private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor, "rio");
     private final TalonFXConfigurator pivotConfigurator;
     private final TalonFXConfiguration pivotConfigs;
     private final TalonFXConfigurator intakeConfigurator;
@@ -36,10 +36,7 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     private final StatusSignal<Double> pivotRPS = pivot.getRotorVelocity();
     private final StatusSignal<Double> pivotPos = pivot.getRotorPosition();
 
-    private final StatusSignal<Double> intakeCurrent = intake.getStatorCurrent();
-    private final StatusSignal<Double> intakeTemp = intake.getDeviceTemp();
-    private final StatusSignal<Double> intakeRPS = intake.getRotorVelocity();
-
+    
     public OTB_IntakeIOTalonFX() {
         pivotConfigurator = pivot.getConfigurator();
         pivotConfigs = new TalonFXConfiguration();
@@ -56,18 +53,19 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         pivotCurrentLimitConfigs.StatorCurrentLimitEnable = true;
 
         var slot0Configs = pivotConfigs.Slot0;
-        slot0Configs.kP = 0.0;
+        slot0Configs.kP = 6.5; // 34.311
         slot0Configs.kI = 0.0;
-        slot0Configs.kD = 0.0;
-        slot0Configs.kS = 0.0;
-        slot0Configs.kV = 0.0;
-        slot0Configs.kG = 0.0;
+        slot0Configs.kD = 0; //1.253
+        slot0Configs.kS = 0.169; //0.169
+        slot0Configs.kV = 0.0649; // 0.0649
+        slot0Configs.kA = 0.0246; //0.024675
+        slot0Configs.kG = 0.0301; //0.030166
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = pivotConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0.0;
-        motionMagicConfigs.MotionMagicAcceleration = 0.0;
-        motionMagicConfigs.MotionMagicJerk = 0.0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 40;
+        motionMagicConfigs.MotionMagicAcceleration = 80;
+        motionMagicConfigs.MotionMagicJerk = 10000;
 
         var feedbackConfigs = pivotConfigs.Feedback;
         feedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -93,10 +91,8 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
                 pivotCurrent,
                 pivotPos,
                 pivotRPS,
-                pivotTemp,
-                intakeCurrent,
-                intakeTemp,
-                intakeRPS);
+                pivotTemp
+               );
 
         intake.optimizeBusUtilization();
     }
@@ -106,24 +102,21 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
           pivotCurrent,
             pivotPos,
             pivotRPS,
-            pivotTemp,
-            intakeCurrent,
-            intakeTemp,
-            intakeRPS  
+            pivotTemp
         );
         otbIntakeInputs.pivotAppliedVolts = pivotVoltageRequest.Output;
         otbIntakeInputs.pivotCurrent = pivotCurrent.getValue();
-        otbIntakeInputs.pivotPosDeg = Conversions.DegreesToRotations(pivotPos.getValue(), otbIntakeConstants.gearRatio);
+        otbIntakeInputs.pivotPosDeg = Conversions.RotationsToDegrees(pivotPos.getValue(), otbIntakeConstants.gearRatio);
         otbIntakeInputs.pivotPosRot = pivotPos.getValue();
         otbIntakeInputs.pivotSetpointDeg = pivotSetpoint;
         otbIntakeInputs.pivotSetpointRot = Conversions.DegreesToRotations(pivotSetpoint, otbIntakeConstants.gearRatio);
         otbIntakeInputs.pivotTemperature = pivotTemp.getValue();
         otbIntakeInputs.pivotRPS = pivotRPS.getValue();
 
-        otbIntakeInputs.intakeTemperature = intakeTemp.getValue();
+        otbIntakeInputs.intakeTemperature = intake.getDeviceTemp().getValue();
         otbIntakeInputs.intakeAppliedVolts = intakeVoltageRequest.Output;
-        otbIntakeInputs.intakeCurrent = intakeCurrent.getValue();
-        otbIntakeInputs.intakeRPS = intakeRPS.getValue();
+        otbIntakeInputs.intakeCurrent = intake.getStatorCurrent().getValue();
+        otbIntakeInputs.intakeRPS = intake.getRotorVelocity().getValue();
     }
 
     public void requestPivotVoltage(double voltage) {
