@@ -22,7 +22,7 @@ public class AutonomousSelector {
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
         autonomousSelector.setDefaultOption(
         
-            "PRELOAD_MID", new PRELOAD_MID(swerve, superstructure));
+            "testPath", new TWOPieceMid(swerve, superstructure));
         /* 
         autonomousSelector.addOption("PRELOAD_AMP", new PRELOAD_AMP(swerve, superstructure));
 

@@ -45,7 +45,7 @@ public final class swerveConstants {
         public static final double anglekV = 0.0;
 
         /* Wheel Circumference */
-        public static final double wheelCircumferenceMeters = Units.inchesToMeters(4* Math.PI);
+        public static final double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI;
     }
 
     public static final class kinematicsConstants{
