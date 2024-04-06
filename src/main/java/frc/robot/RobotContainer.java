@@ -99,7 +99,7 @@ public class RobotContainer {
     controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
     */
-    operator.a().onTrue(otbIntake.runSysIdCmd());
+    //operator.a().onTrue(otbIntake.runSysIdCmd());
   }
   private void configureDefaultCommands() {
    

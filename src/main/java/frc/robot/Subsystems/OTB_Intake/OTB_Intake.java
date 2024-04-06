@@ -19,7 +19,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 public class OTB_Intake{
     private final OTB_IntakeIO otbIntakeIO;
     private OTB_IntakeIOInputsAutoLogged inputs = new OTB_IntakeIOInputsAutoLogged();
+    private OTB_IntakeStates state = OTB_IntakeStates.IDLE;
+    private double angleSetpoint = 0;
+    private double voltageSetpoint = 0;
     //private final SysIdRoutine pivotSysID;
+
+    public enum OTB_IntakeStates{
+        IDLE,
+        INTAKE,
+        HOMING,
+        SETPOINT
+    }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
         this.otbIntakeIO = otbIntakeIO;
@@ -57,9 +67,48 @@ public class OTB_Intake{
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
     } */
-    @Override
     public void Loop(){
         otbIntakeIO.updateInputs(inputs);
         Logger.processInputs("OTB_Intake", inputs);
+
+        switch(state){
+            case IDLE:
+                otbIntakeIO.requestPivotVoltage(0);
+                otbIntakeIO.requestIntakeVoltage(0);
+                break;
+            case HOMING:
+                break;
+            case INTAKE:
+                otbIntakeIO.requestSetpoint(angleSetpoint);
+                otbIntakeIO.requestIntakeVoltage(voltageSetpoint);
+                break;
+            case SETPOINT:
+                otbIntakeIO.requestSetpoint(angleSetpoint);
+                otbIntakeIO.requestIntakeVoltage(0);
+                break;
+        }
+    }
+
+    public void requestIntake(double angleSetpointDeg, double voltage){
+        this.angleSetpoint = angleSetpointDeg;
+        this.voltageSetpoint = voltage;
+        setState(OTB_IntakeStates.INTAKE);
+    }
+
+    public void requestSetpoint(double angleSetpointDeg){
+        this.angleSetpoint = angleSetpointDeg;
+        this.voltageSetpoint = 0;
+        setState(OTB_IntakeStates.SETPOINT);
+    }
+    public void setState(OTB_IntakeStates nextState){
+        this.state = nextState;
+    }
+
+    public OTB_IntakeStates getState(){
+        return this.state;
+    }
+    
+    public double getStatorCurrent(){
+        return inputs.pivotCurrent;
     }
 }
