@@ -92,11 +92,11 @@ public class RobotContainer {
 
     controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
 
-    controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
+    //controller.rightBumper().whileTrue(new AmpDriveAssistCommand(s_swerve, superstructure));
 
     controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
-    controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
+    //controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
     
     //operator.a().onTrue(otbIntake.runSysIdCmd());

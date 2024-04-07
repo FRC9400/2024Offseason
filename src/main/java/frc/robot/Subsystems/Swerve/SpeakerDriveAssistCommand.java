@@ -35,8 +35,8 @@ public class SpeakerDriveAssistCommand extends Command{
         double dy;
 
         if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            dx = x * -1;
-            dy = y * -1;
+            dx = x ;
+            dy = y ;
         } else{
             dx = x;
             dy = y;

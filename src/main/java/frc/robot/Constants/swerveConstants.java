@@ -23,7 +23,7 @@ public final class swerveConstants {
         public static final double steerGearRatio = 10.28;
 
         /* Max Speeds */
-        public static final double maxSpeed = 4.72; 
+        public static final double maxSpeed =2; 
         public static final double maxAngularVelocity = 2.5; 
         
         /* Current Limits */
