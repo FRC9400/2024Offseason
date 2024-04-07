@@ -109,6 +109,6 @@ public class OTB_Intake{
     }
     
     public double getStatorCurrent(){
-        return inputs.pivotCurrent;
+        return inputs.intakeCurrent;
     }
 }

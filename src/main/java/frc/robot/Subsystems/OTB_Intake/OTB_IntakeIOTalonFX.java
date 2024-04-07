@@ -36,6 +36,10 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     private final StatusSignal<Double> pivotRPS = pivot.getRotorVelocity();
     private final StatusSignal<Double> pivotPos = pivot.getRotorPosition();
 
+    private final StatusSignal<Double> intakeCurrent = intake.getStatorCurrent();
+    private final StatusSignal<Double> intakeTemp = intake.getDeviceTemp();
+    private final StatusSignal<Double> intakeRPS = intake.getRotorVelocity();
+
     
     public OTB_IntakeIOTalonFX() {
         pivotConfigurator = pivot.getConfigurator();
@@ -63,8 +67,8 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = pivotConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 40;
-        motionMagicConfigs.MotionMagicAcceleration = 80;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 60;
+        motionMagicConfigs.MotionMagicAcceleration = 120;
         motionMagicConfigs.MotionMagicJerk = 10000;
 
         var feedbackConfigs = pivotConfigs.Feedback;
@@ -92,6 +96,7 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
                 pivotPos,
                 pivotRPS,
                 pivotTemp
+                
                );
 
         intake.optimizeBusUtilization();
@@ -113,10 +118,10 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         otbIntakeInputs.pivotTemperature = pivotTemp.getValue();
         otbIntakeInputs.pivotRPS = pivotRPS.getValue();
 
-        otbIntakeInputs.intakeTemperature = intake.getDeviceTemp().getValue();
+        otbIntakeInputs.intakeTemperature = intakeTemp.getValue();
         otbIntakeInputs.intakeAppliedVolts = intakeVoltageRequest.Output;
-        otbIntakeInputs.intakeCurrent = intake.getStatorCurrent().getValue();
-        otbIntakeInputs.intakeRPS = intake.getRotorVelocity().getValue();
+        otbIntakeInputs.intakeCurrent = intakeCurrent.getValue();
+        otbIntakeInputs.intakeRPS = intakeRPS.getValue();
     }
 
     public void requestPivotVoltage(double voltage) {

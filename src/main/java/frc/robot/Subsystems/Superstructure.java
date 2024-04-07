@@ -145,13 +145,14 @@ public class Superstructure extends SubsystemBase {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
                 s_shooter.requestVelocity(0, 0);
-                s_intake.requestIntake(0);
+                s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(0);
-                s_OTBIntake.requestIntake(140, 4);
+                s_OTBIntake.requestIntake(142, 4);
 
-                if (s_OTBIntake.getStatorCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                if (s_intake.getStatorCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.INTAKE_B);
                 }
+                break;
             case INTAKE_B:
                 led.setState(LEDStates.INTAKING);
                 if (!disableElevator) {
@@ -162,7 +163,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
-                s_OTBIntake.requestIntake(140, 4);
+                s_OTBIntake.requestSetpoint(0);
 
                 if (s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.IDLE);
