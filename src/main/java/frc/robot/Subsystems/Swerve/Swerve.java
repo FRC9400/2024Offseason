@@ -128,6 +128,9 @@ public class Swerve extends SubsystemBase{
                 Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
             });
 
+            
+
+
         for (int i = 0; i < 4; i++) {
             moduleIOs[i].setDriveBrakeMode(true);
             moduleIOs[i].setTurnBrakeMode(false);
@@ -193,14 +196,6 @@ public class Swerve extends SubsystemBase{
                 rot_speed
                 ));
             kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
-            for (int i = 0; i < 4; i++) {
-                setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
-                moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
-            }
-        }
-        else if(!isOpenLoop){
-            desiredModuleStates = kinematics.toSwerveModuleStates(new ChassisSpeeds(x_speed, y_speed, rot_speed));
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, 2);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], false);

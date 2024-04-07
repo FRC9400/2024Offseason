@@ -15,7 +15,7 @@ public class ThreePieceMidSource extends SequentialCommandGroup{
     Timer timer = new Timer();
     public ThreePieceMidSource(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
-        addCommands(
+        addCommands(/* 
             // this is rlly fuckin bad lol
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
             new WaitCommand(1.25),
@@ -58,7 +58,7 @@ public class ThreePieceMidSource extends SequentialCommandGroup{
             .withTimeout(0.25),
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID))
 
-            
+            */
             );
 
 

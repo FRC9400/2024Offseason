@@ -14,7 +14,7 @@ public class PRELOAD_LEAVE_MID extends SequentialCommandGroup{
         addCommands(
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
             new WaitCommand(1.25),
-            new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)),
+            new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A)),
             new RunCommand(() -> swerve.requestDesiredState(1.5, 0, 0, true, false))
             .withTimeout(1),
             new RunCommand(() -> swerve.requestDesiredState(0, 0, 0, true, false))

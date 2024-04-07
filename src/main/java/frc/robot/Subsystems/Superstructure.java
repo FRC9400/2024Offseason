@@ -25,6 +25,8 @@ import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.Intake.Intake.IntakeStates;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
+import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
+import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
@@ -36,6 +38,7 @@ public class Superstructure extends SubsystemBase {
     private Handoff s_handoff;
     private Elevator s_elevator;
     private Shooter s_shooter;
+    private OTB_Intake s_OTBIntake;
     private LEDs led;
     
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
@@ -58,18 +61,20 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber climbUpHeight = new LoggedTunableNumber("Superstructure/climbUpHeight", 0.45);
     LoggedTunableNumber climbDownHeight = new LoggedTunableNumber("Superstructure/climbDownHeight", 0);
 
-    public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter, LEDs led) {
+    public Superstructure(IntakeIO intake, HandoffIO handoff, ElevatorIO elevator, ShooterIO shooter, OTB_IntakeIO otbIntake, LEDs led) {
         this.s_intake = new Intake(intake);
         this.s_handoff = new Handoff(handoff);
         this.s_elevator = new Elevator(elevator);
         this.s_shooter = new Shooter(shooter);
+        this.s_OTBIntake = new OTB_Intake(otbIntake);
         this.led = led;
     }
 
     public enum SuperstructureStates {
         IDLE,
         HOMING,
-        INTAKE,
+        INTAKE_A,
+        INTAKE_B,
         OUTAKE,
         HOLD_PIECE,
         SPIN_UP_AMP,
@@ -94,6 +99,7 @@ public class Superstructure extends SubsystemBase {
         s_elevator.Loop();
         s_handoff.Loop();
         s_shooter.Loop();
+        s_OTBIntake.Loop();
         led.Loop();
 
         Logger.recordOutput("DisabledElevator", disableElevator);
@@ -113,6 +119,7 @@ public class Superstructure extends SubsystemBase {
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
+                s_OTBIntake.requestSetpoint(0);
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
@@ -130,7 +137,23 @@ public class Superstructure extends SubsystemBase {
                 }
 
                 break;
-            case INTAKE:
+            case INTAKE_A:
+                led.setState(LEDStates.INTAKING);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.requestIntake(intakeVoltage.get());
+                s_handoff.requestHandoff(0);
+                s_OTBIntake.requestIntake(142, 4);
+
+                if (s_intake.getStatorCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                    setState(SuperstructureStates.INTAKE_B);
+                }
+                break;
+            case INTAKE_B:
                 led.setState(LEDStates.INTAKING);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0, false);
@@ -140,6 +163,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(handoffIntakeVoltage.get());
+                s_OTBIntake.requestSetpoint(0);
 
                 if (s_handoff.getStatorCurrent() > 5 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.IDLE);

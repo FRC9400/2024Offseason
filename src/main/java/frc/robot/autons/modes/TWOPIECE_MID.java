@@ -13,6 +13,7 @@ public class TWOPIECE_MID extends SequentialCommandGroup{
     public TWOPIECE_MID(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
+            /* 
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
             new WaitCommand(1.25),
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)),
@@ -24,7 +25,7 @@ public class TWOPIECE_MID extends SequentialCommandGroup{
             .withTimeout(1.15),
             new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
             new RunCommand(() -> swerve.requestDesiredState(0, 0, 0, true, false))
-            );
+            */);
         
     }
 }
