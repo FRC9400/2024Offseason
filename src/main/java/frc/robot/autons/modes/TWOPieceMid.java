@@ -19,6 +19,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class TWOPieceMid extends SequentialCommandGroup{
+    
     private final PathPlannerPath midForwardPath = PathPlannerPath.fromChoreoTrajectory("forward");
     private final PathPlannerPath backPath = PathPlannerPath.fromChoreoTrajectory("backtestpath");
     private final PathPlannerPath turn = PathPlannerPath.fromChoreoTrajectory("turn");

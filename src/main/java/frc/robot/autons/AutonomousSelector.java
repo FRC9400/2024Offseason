@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.modes.TWOPieceMid;
+import frc.robot.autons.modes.TWO_PIECE_SOURCE;
 import frc.robot.autons.modes.ThreePieceMidSource;
 import frc.robot.autons.modes.TWOPIECE_MID;
 import frc.robot.autons.modes.Hardstop;
@@ -43,7 +44,7 @@ public class AutonomousSelector {
         //autonomousSelector.addOption("testHardstop", new Hardstop(swerve, superstructure));
         */
         SmartDashboard.putData("Auto Choices", autonomousSelector);
-        autonomousSelector.addOption("testPath", new TWOPieceMid(swerve, superstructure));
+        autonomousSelector.addOption("testPath", new TWO_PIECE_SOURCE(swerve, superstructure));
 
 
     }

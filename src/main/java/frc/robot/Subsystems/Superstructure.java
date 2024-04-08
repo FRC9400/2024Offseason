@@ -147,7 +147,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(0);
-                s_OTBIntake.requestIntake(142, 4);
+                s_OTBIntake.requestIntake(150, 4);
 
                 if (s_intake.getStatorCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.INTAKE_B);
