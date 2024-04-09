@@ -88,6 +88,7 @@ public class Superstructure extends SubsystemBase {
         PASS,
         PREPARE_AMP_ELEVATOR,
         AMP_ELEVATOR,
+        AMP_DOWN,
         EXIT_AMP_ELEVATOR,
         CLIMB_UP,
         CLIMB_DOWN
@@ -333,6 +334,7 @@ public class Superstructure extends SubsystemBase {
                 break;
             case PREPARE_AMP_ELEVATOR:
                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
+               s_OTBIntake.requestSetpoint(34);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0.44, false);
                 } else {
@@ -341,12 +343,14 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
+                
 
                 if(s_elevator.atElevatorSetpoint(0.44)){
                     setState(SuperstructureStates.AMP_ELEVATOR);
                 }
                 break;
             case AMP_ELEVATOR:
+               s_OTBIntake.requestSetpoint(34);
                led.setState(LEDStates.ELEVATOR_AMP);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0.44, false);
@@ -359,8 +363,25 @@ public class Superstructure extends SubsystemBase {
                     s_intake.requestOutake(outakeVoltage.get());
                 }
                 s_handoff.setState(HandoffStates.IDLE);
-
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.75) {
+                    setState(SuperstructureStates.AMP_DOWN);
+                }
+                break;
+            case AMP_DOWN:
+                led.setState(LEDStates.ELEVATOR_AMP);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+
+                s_shooter.requestVelocity(0, 0);
+                if (s_elevator.atElevatorSetpoint(0.44)) {
+                    s_intake.requestOutake(outakeVoltage.get());
+                }
+                s_handoff.setState(HandoffStates.IDLE);
+                s_OTBIntake.requestSetpoint(34);
+                if (s_elevator.atElevatorSetpoint(0)) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;

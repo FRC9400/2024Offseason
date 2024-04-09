@@ -86,9 +86,13 @@ public class RobotContainer {
 
     //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
-    //controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
+    controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
     controller.start().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
+
+    controller.x().onTrue(s_swerve.driveSysIdCmd());
+
+    controller.y().onTrue(s_swerve.steerSysIdCmd());
 
     controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
 
@@ -96,7 +100,7 @@ public class RobotContainer {
 
     controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
-    //controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
+    controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR))));
 
     
     //operator.a().onTrue(otbIntake.runSysIdCmd());
