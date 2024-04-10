@@ -15,7 +15,7 @@ import frc.robot.Subsystems.LEDs.LEDs.BlinkPattern;
 import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
 
 public class LEDs {
-   // private CANdle candle = new CANdle(canIDConstants.candle, "rio");
+    private CANdle candle = new CANdle(canIDConstants.candle, "rio");
     private LEDStates state = LEDStates.IDLE;
     private BlinkPattern blinkPattern = BlinkPattern.SOLID;
     private Timer blinkTimer = new Timer();
@@ -28,7 +28,7 @@ public class LEDs {
         CANdleConfiguration config = new CANdleConfiguration();
         config.stripType = LEDStripType.GRB; // set the strip type to RGB
         config.brightnessScalar = 0.5; // dim the LEDs to half brightness
-       // candle.configAllSettings(config);
+        candle.configAllSettings(config);
         onDuration = 0;
         offDuration = 0;
         
@@ -83,7 +83,7 @@ public class LEDs {
         }
 
         Color8Bit color8Bit = new Color8Bit(color);
-/* 
+ 
         if (blinkPattern == BlinkPattern.SOLID) {
             candle.setLEDs(color8Bit.green, color8Bit.red, color8Bit.blue);
           } else {
@@ -105,7 +105,7 @@ public class LEDs {
             } else if (time >= onDuration) {
               candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
             }
-          }*/
+          }
     }
 
     public void setState(LEDStates nextState){

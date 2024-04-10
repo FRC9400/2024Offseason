@@ -258,7 +258,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
         if(isOpenLoop){
-            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 4 ;
+            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 7 ;
             double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
             setDriveVoltage(driveVoltage);
