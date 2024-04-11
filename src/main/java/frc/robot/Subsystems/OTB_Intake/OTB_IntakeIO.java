@@ -31,5 +31,7 @@ public default void requestSetpoint(double angleDegrees){}
 
 public default void requestIntakeVoltage(double voltage){}
 
+public default void zeroPosition(){}
+
     
 }
