@@ -22,8 +22,9 @@ public class TWO_PIECE_SOURCE extends SequentialCommandGroup{
         
         addRequirements(swerve, superstructure);
         addCommands(
-        new InstantCommand(() -> swerve.setGyroStartingPosition(-60)),
-        new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d( 0.7651792764663696, 4.407987117767334 ), new Rotation2d(-1.047047697709670)))),
+        new InstantCommand(() -> swerve.setGyroStartingPosition(60)),
+        //new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d( 0.7651792764663696, 4.407987117767334 ), new Rotation2d(-1.047047697709670)))),
+        new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d( 15.7163724899292, 4.378147125244141 ), new Rotation2d(1.047)))),
         AutoBuilder.followPath(forward),
         //.raceWith(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A))),
         new WaitCommand(2.5),
