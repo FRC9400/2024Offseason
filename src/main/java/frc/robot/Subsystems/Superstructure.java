@@ -50,7 +50,7 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffShooterVoltage", 3);
     LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
     LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 4);
-    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5);
+    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5); //-3.5
     LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
     LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
     LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
