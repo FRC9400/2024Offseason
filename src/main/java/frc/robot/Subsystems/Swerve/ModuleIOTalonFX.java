@@ -112,22 +112,23 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveOpenLoopConfigs.VoltageOpenLoopRampPeriod = swerveConstants.moduleConstants.rampRate;
 
         var driveSlot0Configs = driveConfigs.Slot0;
-        /* swan carpet
+        // swan carpet
         driveSlot0Configs.kP = 0.13995; // 0.13995
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
         driveSlot0Configs.kS = 0.011412; //  0.011412
         driveSlot0Configs.kV = 0.12125;// 0.12125
-        driveSlot0Configs.kA = 0.042716; // 0.042716*/
+        driveSlot0Configs.kA = 0.042716; // 0.042716
 
         //field carpet
+        /* 
         driveSlot0Configs.kP = 0.12006; // 0.13995
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
         driveSlot0Configs.kS = 0.21146; //  0.011412
         driveSlot0Configs.kV = 0.12209;// 0.12125
         driveSlot0Configs.kA = 0.013607; // 0.042716
-
+*/
         // STEER
 
         var steerMotorOutputConfigs = steerConfigs.MotorOutput;
@@ -258,7 +259,7 @@ public class ModuleIOTalonFX implements ModuleIO {
 
     public void setDesiredState(SwerveModuleState optimizedDesiredStates, boolean isOpenLoop) {
         if(isOpenLoop){
-            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 4 ;
+            double driveVoltage = optimizedDesiredStates.speedMetersPerSecond * 7 ;
             double angleDeg = optimizedDesiredStates.angle.getDegrees();
 
             setDriveVoltage(driveVoltage);

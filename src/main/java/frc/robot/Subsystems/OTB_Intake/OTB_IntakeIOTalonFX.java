@@ -138,4 +138,7 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         intake.setControl(intakeVoltageRequest.withOutput(voltage));
     }
 
+    public void zeroPosition(){
+        pivot.setPosition(0);
+    }
 }

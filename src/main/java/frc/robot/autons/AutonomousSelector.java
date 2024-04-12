@@ -9,6 +9,7 @@ import frc.robot.autons.modes.TWOPieceMid;
 import frc.robot.autons.modes.TWO_PIECE_SOURCE;
 import frc.robot.autons.modes.ThreePieceMidSource;
 import frc.robot.autons.modes.TWOPIECE_MID;
+import frc.robot.autons.modes.FOUR_PIECE;
 import frc.robot.autons.modes.Hardstop;
 import frc.robot.autons.modes.PRELOAD_LEAVE_AMP;
 import frc.robot.autons.modes.PRELOAD_LEAVE_MID;
@@ -23,7 +24,7 @@ public class AutonomousSelector {
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
         autonomousSelector.setDefaultOption(
         
-            "testPath", new TWOPieceMid(swerve, superstructure));
+            "testPath", new FOUR_PIECE(swerve, superstructure));
         /* 
         autonomousSelector.addOption("PRELOAD_AMP", new PRELOAD_AMP(swerve, superstructure));
 
@@ -44,7 +45,7 @@ public class AutonomousSelector {
         //autonomousSelector.addOption("testHardstop", new Hardstop(swerve, superstructure));
         */
         SmartDashboard.putData("Auto Choices", autonomousSelector);
-        autonomousSelector.addOption("testPath", new TWO_PIECE_SOURCE(swerve, superstructure));
+        autonomousSelector.addOption("testPath", new FOUR_PIECE(swerve, superstructure));
 
 
     }

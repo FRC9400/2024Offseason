@@ -77,6 +77,8 @@ public class OTB_Intake{
                 otbIntakeIO.requestIntakeVoltage(0);
                 break;
             case HOMING:
+                otbIntakeIO.requestPivotVoltage(-1);
+                otbIntakeIO.requestIntakeVoltage(0);
                 break;
             case INTAKE:
                 otbIntakeIO.requestSetpoint(angleSetpoint);
@@ -110,5 +112,13 @@ public class OTB_Intake{
     
     public double getStatorCurrent(){
         return inputs.intakeCurrent;
+    }
+
+    public double getPivotStatorCurrent(){
+        return inputs.pivotCurrent;
+    }
+
+    public void zeroPosition(){
+        otbIntakeIO.zeroPosition();
     }
 }
