@@ -50,7 +50,7 @@ public class Superstructure extends SubsystemBase {
     LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffShooterVoltage", 3);
     LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
     LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 4);
-    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5); //-3.5
+    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5);
     LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
     LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
     LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
@@ -148,7 +148,7 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.requestIntake(intakeVoltage.get());
                 s_handoff.requestHandoff(0);
-                s_OTBIntake.requestIntake(137, 4);
+                s_OTBIntake.requestIntake(138, 4);
 
                 if (s_intake.getStatorCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.INTAKE_B);
@@ -334,9 +334,9 @@ public class Superstructure extends SubsystemBase {
                 break;
             case PREPARE_AMP_ELEVATOR:
                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
-               s_OTBIntake.requestSetpoint(20.6);
+               s_OTBIntake.requestSetpoint(21);
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(0.44, false);
+                    s_elevator.requestElevatorHeight(0.45, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
@@ -345,21 +345,19 @@ public class Superstructure extends SubsystemBase {
                 s_handoff.setState(HandoffStates.IDLE);
                 
 
-                if(s_elevator.atElevatorSetpoint(0.44)){
-                    setState(SuperstructureStates.AMP_ELEVATOR);
-                }
+                
                 break;
             case AMP_ELEVATOR:
-               s_OTBIntake.requestSetpoint(20.6);
+               s_OTBIntake.requestSetpoint(21);
                led.setState(LEDStates.ELEVATOR_AMP);
                 if (!disableElevator) {
-                    s_elevator.requestElevatorHeight(0.44, false);
+                    s_elevator.requestElevatorHeight(0.45, false);
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
 
                 s_shooter.requestVelocity(0, 0);
-                if (s_elevator.atElevatorSetpoint(0.44)) {
+                if (s_elevator.atElevatorSetpoint(0.45)) {
                     s_intake.requestOutake(outakeVoltage.get());
                 }
                 s_handoff.setState(HandoffStates.IDLE);
@@ -411,8 +409,19 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setState(SuperstructureStates nextState) {
+        /*if(this.systemState == SuperstructureStates.PREPARE_AMP_ELEVATOR || this.systemState == SuperstructureStates.AMP_ELEVATOR || this.systemState == SuperstructureStates.EXIT_AMP_ELEVATOR){
+            if(nextState != SuperstructureStates.PREPARE_AMP_ELEVATOR || nextState != SuperstructureStates.AMP_ELEVATOR || nextState !=SuperstructureStates.EXIT_AMP_ELEVATOR){
+                systemState = systemState;
+            }
+            else{
+                this.systemState = nextState;
+                stateStartTime = RobotController.getFPGATime() / 1E6;
+            }
+        }
+        else{*/
         this.systemState = nextState;
         stateStartTime = RobotController.getFPGATime() / 1E6;
+        //}
     }
 
     public void disablingElevator() {
