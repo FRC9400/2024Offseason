@@ -5,18 +5,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.autons.modes.TWOPieceMid;
 import frc.robot.autons.modes.TWO_PIECE_SOURCE;
-import frc.robot.autons.modes.ThreePieceMidSource;
 import frc.robot.autons.modes.TWOPIECE_MID;
 import frc.robot.autons.modes.FOUR_PIECE;
-import frc.robot.autons.modes.Hardstop;
+import frc.robot.autons.modes.FOUR_PIECE_RED;
 import frc.robot.autons.modes.PRELOAD_LEAVE_AMP;
 import frc.robot.autons.modes.PRELOAD_LEAVE_MID;
 import frc.robot.autons.modes.PRELOAD_LEAVE_SOURCE;
 import frc.robot.autons.modes.PRELOAD_AMP;
 import frc.robot.autons.modes.PRELOAD_MID;
 import frc.robot.autons.modes.PRELOAD_SOURCE;
+import frc.robot.autons.modes.SOURCE3;
 
 public class AutonomousSelector {
     private SendableChooser<SequentialCommandGroup> autonomousSelector = new SendableChooser<SequentialCommandGroup>();
@@ -24,8 +23,8 @@ public class AutonomousSelector {
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
         autonomousSelector.setDefaultOption(
         
-            "testPath", new FOUR_PIECE(swerve, superstructure));
-        /* 
+            "4pR", new SOURCE3(swerve, superstructure));
+        /*
         autonomousSelector.addOption("PRELOAD_AMP", new PRELOAD_AMP(swerve, superstructure));
 
         autonomousSelector.addOption("PRELOAD_SOURCE", new PRELOAD_SOURCE(swerve, superstructure));
@@ -45,7 +44,7 @@ public class AutonomousSelector {
         //autonomousSelector.addOption("testHardstop", new Hardstop(swerve, superstructure));
         */
         SmartDashboard.putData("Auto Choices", autonomousSelector);
-        autonomousSelector.addOption("testPath", new FOUR_PIECE(swerve, superstructure));
+        autonomousSelector.addOption("4pR", new SOURCE3(swerve, superstructure));
 
 
     }

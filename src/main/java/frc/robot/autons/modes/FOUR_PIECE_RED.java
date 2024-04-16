@@ -17,20 +17,20 @@ import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class FOUR_PIECE extends SequentialCommandGroup{
+public class FOUR_PIECE_RED extends SequentialCommandGroup{
     private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0;
     private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Pose2d(new Translation2d( 1.390610694885254, 5.51975345611572 ), new Rotation2d(0)) : new Pose2d(new Translation2d( 14.91, 5.558 ), new Rotation2d(3.14));
 
-    private final PathPlannerPath B =  PathPlannerPath.fromChoreoTrajectory("4pB");
-    private final PathPlannerPath Bback = PathPlannerPath.fromChoreoTrajectory("4pBback");
+    private final PathPlannerPath B =  PathPlannerPath.fromChoreoTrajectory("4pBRed");
+    private final PathPlannerPath Bback = PathPlannerPath.fromChoreoTrajectory("4pBbackRed");
 
-    private final PathPlannerPath C =  PathPlannerPath.fromChoreoTrajectory("4pC");
-    private final PathPlannerPath Cback =  PathPlannerPath.fromChoreoTrajectory("4pCback");
+    private final PathPlannerPath C =  PathPlannerPath.fromChoreoTrajectory("4pCRed");
+    private final PathPlannerPath Cback =  PathPlannerPath.fromChoreoTrajectory("4pCbackRed");
 
-    private final PathPlannerPath A = PathPlannerPath.fromChoreoTrajectory("4pA");
-    private final PathPlannerPath Aback =  PathPlannerPath.fromChoreoTrajectory("4pAback");
+    private final PathPlannerPath A = PathPlannerPath.fromChoreoTrajectory("4pARed");
+    private final PathPlannerPath Aback = PathPlannerPath.fromChoreoTrajectory("4pAbackRed");
 
-    public FOUR_PIECE(Swerve swerve, Superstructure superstructure){
+    public FOUR_PIECE_RED(Swerve swerve, Superstructure superstructure){
 
         addRequirements(swerve, superstructure);
         addCommands(

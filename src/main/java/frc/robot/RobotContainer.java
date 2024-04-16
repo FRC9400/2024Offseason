@@ -86,13 +86,7 @@ public class RobotContainer {
 
     //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
-    controller.a().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
-
     controller.start().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
-
-    controller.x().onTrue(s_swerve.driveSysIdCmd());
-
-    controller.y().onTrue(s_swerve.steerSysIdCmd());
 
     controller.b().onTrue(new InstantCommand(() -> s_swerve.zeroGyro()));
 

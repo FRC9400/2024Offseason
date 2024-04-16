@@ -34,20 +34,16 @@ public class SpeakerDriveAssistCommand extends Command{
         double dx;
         double dy;
 
-        if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            dx = x ;
-            dy = y ;
-        } else{
-            dx = x;
-            dy = y;
-        }
+       dx = x;
+       dy = y;
+       
         double thetaFeedback = thetaController.calculate(
             swerve.getGyroPositionRadians(),
             headingGoal.getRadians()
         );
         thetaFeedback = MathUtil.clamp(thetaFeedback, -5, 5);
 
-        swerve.requestDesiredState(dx * 4.72, dy * 4.72, thetaFeedback, true, false);
+        swerve.requestDesiredState(dx * -4.72, dy *- 4.72, thetaFeedback, true, false);
 
     }
 

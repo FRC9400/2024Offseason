@@ -283,7 +283,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestHandoff(handoffShooterVoltage.get());
                 s_handoff.requestHandoff(handoffShooterVoltage.get());
 
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.7) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -298,7 +298,7 @@ public class Superstructure extends SubsystemBase {
                 s_intake.requestHandoff(handoffShooterVoltage.get());
                 s_handoff.requestHandoff(handoffShooterVoltage.get());
 
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.7) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
