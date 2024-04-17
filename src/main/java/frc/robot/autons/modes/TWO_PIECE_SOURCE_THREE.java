@@ -19,9 +19,9 @@ import frc.robot.Subsystems.Swerve.Swerve;
 
 public class TWO_PIECE_SOURCE_THREE extends SequentialCommandGroup{
 
-    private final Pose2d startingPose =  new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.043047697709670)) ;
+    //private final Pose2d startingPose =  new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(0)) ;
 
-    //private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(1.047047697709670));
+    private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(Math.PI + 1.047));
 
     private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? -60 : 60;
     private final PathPlannerPath Three =  PathPlannerPath.fromChoreoTrajectory("source3");

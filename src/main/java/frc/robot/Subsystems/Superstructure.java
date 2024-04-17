@@ -218,11 +218,11 @@ public class Superstructure extends SubsystemBase {
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
-                s_shooter.requestVelocity(shootMidVel.get(), 0.7);
+                s_shooter.requestVelocity(20, 0.7);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
 
-                if (Math.abs(s_shooter.getLeftShooterSpeedMPS() - shootMidVel.get()) < 0.2) {
+                if (Math.abs(s_shooter.getLeftShooterSpeedMPS() - shootMidVel.get()) < 0.1) {
                     setState(SuperstructureStates.SHOOT_MID);
                 }
                 break;
@@ -437,7 +437,7 @@ public class Superstructure extends SubsystemBase {
                 s_handoff.setState(HandoffStates.IDLE);
     
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
-                    setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_B);
+                    setState(SuperstructureStates.RAISE_B);
                 }
                 
                 break;

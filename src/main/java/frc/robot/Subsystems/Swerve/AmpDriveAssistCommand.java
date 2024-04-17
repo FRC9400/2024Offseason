@@ -27,7 +27,7 @@ public class AmpDriveAssistCommand extends Command{
     @Override
     public void initialize(){
         headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d( Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
-        superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_A); //dont mind the state name :|||
+        superstructure.setState(SuperstructureStates.RAISE_A); //dont mind the state name :|||
     }
 
     @Override
