@@ -82,9 +82,7 @@ public class RobotContainer {
 
     operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
 
-    //controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_UP)));
 
-    //controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.CLIMB_DOWN)));
 
     controller.start().onTrue(new InstantCommand(() -> superstructure.disablingElevator()));
 
@@ -94,10 +92,8 @@ public class RobotContainer {
 
     controller.rightTrigger().whileTrue(new SpeakerDriveAssistCommand(s_swerve));
 
-    controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_ELEVATOR))));
+    controller.leftBumper().onTrue((new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_B))));
 
-    
-    //operator.a().onTrue(otbIntake.runSysIdCmd());
   }
   private void configureDefaultCommands() {
    

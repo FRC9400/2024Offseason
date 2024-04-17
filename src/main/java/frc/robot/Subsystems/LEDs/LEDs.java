@@ -16,7 +16,7 @@ import frc.robot.Subsystems.LEDs.LEDs.LEDStates;
 
 public class LEDs {
     private CANdle candle = new CANdle(canIDConstants.candle, "rio");
-    private LEDStates state = LEDStates.IDLE;
+    private LEDStates state = LEDStates.DISABLED;
     private BlinkPattern blinkPattern = BlinkPattern.SOLID;
     private Timer blinkTimer = new Timer();
     private Color color = new Color();
@@ -56,12 +56,10 @@ public class LEDs {
             case DISABLED:
                 color = Color.kRed;
                 blinkPattern = BlinkPattern.SOLID;
-    
                 break;
             case IDLE:
                 color = Color.kOrange;
                 blinkPattern = BlinkPattern.BLINK_SLOW;
-        
                 break;
             case INTAKING:
                 color = Color.kCrimson;
@@ -83,7 +81,7 @@ public class LEDs {
                 blinkPattern = BlinkPattern.BLINK_FAST;
                 break;
         }
-         
+
         Color8Bit color8Bit = new Color8Bit(color);
  
         if (blinkPattern == BlinkPattern.SOLID) {
@@ -105,7 +103,7 @@ public class LEDs {
               blinkTimer.reset();
               candle.setLEDs(0, 0, 0);
             } else if (time >= onDuration) {
-              candle.setLEDs(color8Bit.green, color8Bit.red, color8Bit.blue);
+              candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
             }
           }
     }
