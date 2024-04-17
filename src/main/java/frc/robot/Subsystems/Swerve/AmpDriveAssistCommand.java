@@ -27,7 +27,7 @@ public class AmpDriveAssistCommand extends Command{
     @Override
     public void initialize(){
         headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d( Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
-        superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR); //dont mind the state name :|||
+        superstructure.setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_A); //dont mind the state name :|||
     }
 
     @Override
@@ -37,20 +37,16 @@ public class AmpDriveAssistCommand extends Command{
         double dx;
         double dy;
 
-        if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            dx = x * -1;
-            dy = y * -1;
-        } else{
-            dx = x;
-            dy = y;
-        }
+        dx = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? x * -1 : x;
+        dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y * -1: y;
+       
         double thetaFeedback = thetaController.calculate(
             swerve.getGyroPositionRadians(),
             headingGoal.getRadians()
         );
         thetaFeedback = MathUtil.clamp(thetaFeedback, -5, 5);
 
-        swerve.requestDesiredState(dx * -2, dy * -2, thetaFeedback, true, false);
+        swerve.requestDesiredState(dx * 2, dy * 2, thetaFeedback, true, false);
 
     }
 

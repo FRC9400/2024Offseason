@@ -9,8 +9,8 @@ import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class TWOPIECE_MID extends SequentialCommandGroup{
-    public TWOPIECE_MID(Swerve swerve, Superstructure superstructure){
+public class TWO_PIECE_MID extends SequentialCommandGroup{
+    public TWO_PIECE_MID(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
             

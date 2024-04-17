@@ -34,13 +34,9 @@ public class Pass extends Command{
         double dx;
         double dy;
 
-        if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            dx = x ;
-            dy = y ;
-        } else{
-            dx = x;
-            dy = y;
-        }
+        dx = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? x * -1 : x;
+        dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y * -1: y;
+        
         double thetaFeedback = thetaController.calculate(
             swerve.getGyroPositionRadians(),
             headingGoal.getRadians()

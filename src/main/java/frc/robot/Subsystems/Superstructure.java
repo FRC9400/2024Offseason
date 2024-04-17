@@ -86,12 +86,15 @@ public class Superstructure extends SubsystemBase {
         SHOOT_MID,
         SHOOT_LEFT,
         PASS,
-        PREPARE_AMP_ELEVATOR,
+        PREPARE_AMP_ELEVATOR_A,
+        PREPARE_AMP_ELEVATOR_B,
         AMP_ELEVATOR,
         AMP_DOWN,
         EXIT_AMP_ELEVATOR,
         CLIMB_UP,
-        CLIMB_DOWN
+        CLIMB_DOWN,
+        RAISE_A,
+        RAISE_B
     }
 
     @Override
@@ -332,8 +335,25 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
-            case PREPARE_AMP_ELEVATOR:
+            case PREPARE_AMP_ELEVATOR_A:
                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
+               s_OTBIntake.requestSetpoint(21);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0.45, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.requestOutake(-0.5);
+                s_handoff.setState(HandoffStates.IDLE);
+    
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
+                    setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_B);
+                }
+                
+                break;
+            case PREPARE_AMP_ELEVATOR_B:
+                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
                s_OTBIntake.requestSetpoint(21);
                 if (!disableElevator) {
                     s_elevator.requestElevatorHeight(0.45, false);
@@ -343,9 +363,10 @@ public class Superstructure extends SubsystemBase {
                 s_shooter.requestVelocity(0, 0);
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
-                
 
-                
+                if(s_elevator.atElevatorSetpoint(0.45)){
+                    setState(SuperstructureStates.AMP_ELEVATOR);
+                }
                 break;
             case AMP_ELEVATOR:
                s_OTBIntake.requestSetpoint(21);
@@ -403,14 +424,44 @@ public class Superstructure extends SubsystemBase {
                 s_intake.setState(IntakeStates.IDLE);
                 s_handoff.setState(HandoffStates.IDLE);
                 break;
+            case RAISE_A:
+               led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
+               s_OTBIntake.requestSetpoint(21);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0.45, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.requestOutake(-0.5);
+                s_handoff.setState(HandoffStates.IDLE);
+    
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
+                    setState(SuperstructureStates.PREPARE_AMP_ELEVATOR_B);
+                }
+                
+                break;
+            case RAISE_B:
+                led.setState(LEDStates.PREPARING_ELEVATOR_AMP);
+               s_OTBIntake.requestSetpoint(21);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0.45, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(0, 0);
+                s_intake.setState(IntakeStates.IDLE);
+                s_handoff.setState(HandoffStates.IDLE);
+
+                break;
             default:
                 break;
         }
     }
 
     public void setState(SuperstructureStates nextState) {
-        /*if(this.systemState == SuperstructureStates.PREPARE_AMP_ELEVATOR || this.systemState == SuperstructureStates.AMP_ELEVATOR || this.systemState == SuperstructureStates.EXIT_AMP_ELEVATOR){
-            if(nextState != SuperstructureStates.PREPARE_AMP_ELEVATOR || nextState != SuperstructureStates.AMP_ELEVATOR || nextState !=SuperstructureStates.EXIT_AMP_ELEVATOR){
+        if(this.systemState == SuperstructureStates.PREPARE_AMP_ELEVATOR_A || this.systemState == SuperstructureStates.PREPARE_AMP_ELEVATOR_B || this.systemState == SuperstructureStates.AMP_ELEVATOR || this.systemState == SuperstructureStates.EXIT_AMP_ELEVATOR){
+            if(nextState == SuperstructureStates.INTAKE_A || nextState == SuperstructureStates.IDLE){
                 systemState = systemState;
             }
             else{
@@ -418,10 +469,10 @@ public class Superstructure extends SubsystemBase {
                 stateStartTime = RobotController.getFPGATime() / 1E6;
             }
         }
-        else{*/
+        else{
         this.systemState = nextState;
         stateStartTime = RobotController.getFPGATime() / 1E6;
-        //}
+        }
     }
 
     public void disablingElevator() {

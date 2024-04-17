@@ -20,7 +20,7 @@ public class GyroIOPigeon2 implements GyroIO {
 
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            50,
+            250,
             positionDegRaw,
             pitchDeg,
             rollDeg
