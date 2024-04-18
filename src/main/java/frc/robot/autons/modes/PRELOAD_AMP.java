@@ -14,7 +14,7 @@ public class PRELOAD_AMP extends SequentialCommandGroup{
     public PRELOAD_AMP(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
-            new InstantCommand(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 60 : - 60)),
+            new InstantCommand(() -> swerve.setGyroStartingPosition(- 60)),
             new InstantCommand(() -> superstructure.setState(shootSide))
         );
     

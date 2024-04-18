@@ -20,13 +20,26 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.autons.modes.FOUR_HALF_PIECE;
+import frc.robot.autons.modes.FOUR_PIECE;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  public static PathPlannerPath TWOPieceMid = PathPlannerPath.fromChoreoTrajectory("choreoPaths");
+  //public static PathPlannerPath TWOPieceMid = PathPlannerPath.fromChoreoTrajectory("choreoPaths");
+  SequentialCommandGroup mid_2p_b;
+  SequentialCommandGroup mid_4p_b_c_a;
+  SequentialCommandGroup mid_preload;
+  SequentialCommandGroup mid_four_race_three;
+  SequentialCommandGroup mid_preload_leave;
+  SequentialCommandGroup mid_four_half_piece;
+  SequentialCommandGroup amp_preload;
+  SequentialCommandGroup source_two_piece;
+  SequentialCommandGroup source_preload;
+  SequentialCommandGroup source_preload_leave;
 
   @Override
   public void robotInit() {
@@ -63,6 +76,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    mid_2p = new FOUR_HALF_PIECE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
   }
 
   @Override

@@ -29,6 +29,7 @@ import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.SpeakerDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
+import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -99,7 +100,7 @@ public class RobotContainer {
    
   } 
 
-  public Command getAutonomousCommand() {
+  public modes getAutonomousCommand() {
     return selector.get();
     
   }
@@ -107,6 +108,14 @@ public class RobotContainer {
   public void configureAutonomousSelector(){
     selector = new AutonomousSelector(s_swerve, superstructure);
     
+  }
+
+  public Superstructure getSuperstructure(){
+    return superstructure;
+  }
+
+  public Swerve getSwerve(){
+    return s_swerve;
   }
 }
 
