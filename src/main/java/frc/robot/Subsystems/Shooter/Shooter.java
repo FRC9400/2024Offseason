@@ -22,7 +22,7 @@ public class Shooter{
     private final ShooterIO shooterIO;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private ShooterStates state = ShooterStates.IDLE;
-    private double shooterVolts = 0.0;
+    private double shooterVolts = 0;
     private double[] shooterVelocity = {0, 0}; //vel, ratio
     
     public enum ShooterStates{

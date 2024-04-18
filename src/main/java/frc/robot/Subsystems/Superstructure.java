@@ -85,6 +85,7 @@ public class Superstructure extends SubsystemBase {
         SHOOT_RIGHT,
         SHOOT_MID,
         SHOOT_LEFT,
+        SPIN_UP_PASS,
         PASS,
         PREPARE_AMP_ELEVATOR_A,
         PREPARE_AMP_ELEVATOR_B,
@@ -320,6 +321,21 @@ public class Superstructure extends SubsystemBase {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
+            case SPIN_UP_PASS:
+                led.setState(LEDStates.SHOOT);
+                if (!disableElevator) {
+                    s_elevator.requestElevatorHeight(0, false);
+                } else {
+                    s_elevator.setState(ElevatorState.IDLE);
+                }
+                s_shooter.requestVelocity(30, 0.8);
+                s_intake.requestHandoff(0);
+                s_handoff.requestHandoff(0);
+
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
+                    setState(SuperstructureStates.PASS);
+                }
+                break;
             case PASS:
                 led.setState(LEDStates.SHOOT);
                 if (!disableElevator) {
@@ -327,11 +343,11 @@ public class Superstructure extends SubsystemBase {
                 } else {
                     s_elevator.setState(ElevatorState.IDLE);
                 }
-                s_shooter.requestVelocity(10, 1);
-                s_intake.requestHandoff(handoffShooterVoltage.get());
-                s_handoff.requestHandoff(handoffShooterVoltage.get());
+               s_shooter.requestVelocity(30, 0.8);
+                s_intake.requestHandoff(12);
+                s_handoff.requestHandoff(12);
 
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.7) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;

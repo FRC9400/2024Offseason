@@ -19,9 +19,9 @@ import frc.robot.Subsystems.Swerve.Swerve;
 
 public class TWO_PIECE_SOURCE extends SequentialCommandGroup{
 
-    private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(Math.PI + 1.047));
+    //private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(Math.PI + 1.047));
 
-    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? -60 : 60;
+    //private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? -60 : 60;
     private final PathPlannerPath forward =  PathPlannerPath.fromChoreoTrajectory("sourceC");
     private final PathPlannerPath backward = PathPlannerPath.fromChoreoTrajectory("backSourceC");
     
@@ -29,8 +29,8 @@ public class TWO_PIECE_SOURCE extends SequentialCommandGroup{
         
         addRequirements(swerve, superstructure);
         addCommands(
-        new InstantCommand(() -> swerve.setGyroStartingPosition(startingAngle)),
-        new InstantCommand(() -> swerve.resetPose(startingPose)),
+        new InstantCommand(() -> swerve.setGyroStartingPosition(60)),
+        new InstantCommand(() -> swerve.resetPose( new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(-Math.PI + 1.047)))),
         
         new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
         new WaitCommand(1.25),

@@ -80,7 +80,7 @@ public class RobotContainer {
 
     operator.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTAKE)));
 
-    operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PASS)));
+    operator.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_PASS)));
 
 
 
