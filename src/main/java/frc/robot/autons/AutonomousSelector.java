@@ -20,6 +20,7 @@ public class AutonomousSelector {
         MID_PRELOAD_LEAVE,
         AMP_PRELOAD,
         AMP_PRELOAD_LEAVE,
+        TESTABLE_AMP_TWO_PIECE_ONE,
         TESTABLE_SOURCE_TWO_PIECE,
         TESTABLE_SOURCE_TWO_PIECE_THREE,
         SOURCE_PRELOAD,
@@ -46,6 +47,8 @@ public class AutonomousSelector {
         autonomousSelector.addOption("AMP_PRELOAD", modes.AMP_PRELOAD);
 
         autonomousSelector.addOption("AMP_PRELOAD_LEAVE", modes.AMP_PRELOAD_LEAVE);
+
+        autonomousSelector.addOption("TESTABLE_AMP_TWO_PIECE_ONE", modes.TESTABLE_AMP_TWO_PIECE_ONE);
 
         autonomousSelector.addOption("TESTABLE_SOURCE_TWO_PIECE", modes.TESTABLE_SOURCE_TWO_PIECE);
 

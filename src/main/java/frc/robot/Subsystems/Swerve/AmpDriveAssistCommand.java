@@ -38,7 +38,7 @@ public class AmpDriveAssistCommand extends Command{
         double dy;
 
         dx = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? x * -1 : x;
-        dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y * -1: y;
+        dy =  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? y : y *-1;
        
         double thetaFeedback = thetaController.calculate(
             swerve.getGyroPositionRadians(),

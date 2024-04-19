@@ -17,28 +17,28 @@ import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class TWO_PIECE_SOURCE extends SequentialCommandGroup{
+public class TWO_PIECE_AMP_ONE extends SequentialCommandGroup{
 
-    private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.708431601524353, 4.3697943687438965 ), new Rotation2d(-1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(Math.PI + 1.047));
+    private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? new Pose2d(new Translation2d( 0.6889407634735107, 6.747675895690918 ), new Rotation2d(1.047047697709670)) : new Pose2d(new Translation2d( 15.813826560974121, 4.350637844085693 ), new Rotation2d(Math.PI - 1.047));
 
-    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? -60 : 60;
-    private final PathPlannerPath forward =  PathPlannerPath.fromChoreoTrajectory("sourceC");
-    private final PathPlannerPath backward = PathPlannerPath.fromChoreoTrajectory("backSourceC");
+    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue? 60 : -60;
+    private final PathPlannerPath forward =  PathPlannerPath.fromChoreoTrajectory("2pOne");
+    private final PathPlannerPath backward = PathPlannerPath.fromChoreoTrajectory("2pOneback");
     
-    public TWO_PIECE_SOURCE(Swerve swerve, Superstructure superstructure){
+    public TWO_PIECE_AMP_ONE(Swerve swerve, Superstructure superstructure){
         
         addRequirements(swerve, superstructure);
         addCommands(
         new InstantCommand(() -> swerve.setGyroStartingPosition(startingAngle)),
         new InstantCommand(() -> swerve.resetPose(startingPose)),
         
-        new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_MID)),
+       // new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_LEFT)),
         new WaitCommand(1.25),
-        new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A)),
+        //new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A)),
         AutoBuilder.followPath(forward),
         new WaitCommand(2.5),
-        AutoBuilder.followPath(backward),
-        new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_RIGHT))
+        AutoBuilder.followPath(backward)
+       // new InstantCommand(() -> superstructure.setState(SuperstructureStates.SPIN_UP_LEFT))
         );
         
     }
