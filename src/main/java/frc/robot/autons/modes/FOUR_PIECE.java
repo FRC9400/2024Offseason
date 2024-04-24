@@ -35,7 +35,7 @@ public class FOUR_PIECE extends SequentialCommandGroup{
         addRequirements(swerve, superstructure);
         addCommands(
         new InstantCommand(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0)),
-        new InstantCommand(() -> swerve.resetPose(startingPose)),
+        new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d( 14.91, 5.558 ), new Rotation2d(3.14)))),
         new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_MID)),
         new WaitCommand(1),
         new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A)),
