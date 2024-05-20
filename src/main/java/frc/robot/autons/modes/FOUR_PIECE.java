@@ -18,7 +18,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class FOUR_PIECE extends SequentialCommandGroup{
-    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0;
+    //private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0;
     private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Pose2d(new Translation2d( 1.390610694885254, 5.51975345611572 ), new Rotation2d(0)) : new Pose2d(new Translation2d( 14.91, 5.558 ), new Rotation2d(3.14));
     //private final Pose2d startingPose = new Pose2d(new Translation2d( 1.390610694885254, 5.51975345611572 ), new Rotation2d(0));
     private final PathPlannerPath B =  PathPlannerPath.fromChoreoTrajectory("4pB");
@@ -34,8 +34,8 @@ public class FOUR_PIECE extends SequentialCommandGroup{
 
         addRequirements(swerve, superstructure);
         addCommands(
-        new InstantCommand(() -> swerve.setGyroStartingPosition(startingAngle)),
-        new InstantCommand(() -> swerve.resetPose(startingPose)),
+        new InstantCommand(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0)),
+        new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d( 14.91, 5.558 ), new Rotation2d(3.14)))),
         new InstantCommand(() -> superstructure.setState(SuperstructureStates.SHOOT_MID)),
         new WaitCommand(1),
         new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE_A)),

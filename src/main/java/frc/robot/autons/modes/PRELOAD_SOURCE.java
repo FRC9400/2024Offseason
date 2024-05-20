@@ -15,7 +15,7 @@ public class PRELOAD_SOURCE extends SequentialCommandGroup{
         double gyroStartAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -60 :  60;
         addRequirements(swerve, superstructure);
         addCommands(
-            new InstantCommand(() -> swerve.setGyroStartingPosition(gyroStartAngle)),
+            new InstantCommand(() -> swerve.setGyroStartingPosition(60)),
             new InstantCommand(() -> superstructure.setState(shootSide))
         );
     

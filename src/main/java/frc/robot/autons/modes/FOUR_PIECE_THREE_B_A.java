@@ -20,7 +20,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class FOUR_PIECE_THREE_B_A extends SequentialCommandGroup{
-    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0;
+    private final double startingAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 360;
     private final Pose2d startingPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Pose2d(new Translation2d( 1.574845314025879, 5.54275345611572 ), new Rotation2d(0)) : new Pose2d(new Translation2d( 14.96, 5.542 ), new Rotation2d(3.14));
     //7.7 inches???? wtf bro
     private final PathPlannerPath Three = PathPlannerPath.fromChoreoTrajectory("4pRaceThree");
