@@ -16,30 +16,20 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 
-public class OTB_Intake{
+public class OTB_Intake extends SubsystemBase{
     private final OTB_IntakeIO otbIntakeIO;
     private OTB_IntakeIOInputsAutoLogged inputs = new OTB_IntakeIOInputsAutoLogged();
-    private OTB_IntakeStates state = OTB_IntakeStates.IDLE;
-    private double angleSetpoint = 0;
-    private double voltageSetpoint = 0;
-    //private final SysIdRoutine pivotSysID;
-
-    public enum OTB_IntakeStates{
-        IDLE,
-        INTAKE,
-        HOMING,
-        SETPOINT
-    }
+    private final SysIdRoutine pivotSysID;
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
         this.otbIntakeIO = otbIntakeIO;
-        /*pivotSysID  = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(2), null,
+        pivotSysID  = new SysIdRoutine(
+            new SysIdRoutine.Config(null, Volts.of(4), null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> otbIntakeIO.requestPivotVoltage(volts.in(Volts)), null,
-                    this));*/
+                    this));
       }
-      /* 
+      
     public Command runSysIdCmd() {
         return Commands.sequence(
                 this.runOnce(() -> SignalLogger.start()),
@@ -66,59 +56,11 @@ public class OTB_Intake{
                 this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
-    } */
-    public void Loop(){
+    } 
+    
+    @Override
+    public void periodic() {
         otbIntakeIO.updateInputs(inputs);
         Logger.processInputs("OTB_Intake", inputs);
-
-        switch(state){
-            case IDLE:
-                otbIntakeIO.requestPivotVoltage(0);
-                otbIntakeIO.requestIntakeVoltage(0);
-                break;
-            case HOMING:
-                otbIntakeIO.requestPivotVoltage(-1);
-                otbIntakeIO.requestIntakeVoltage(0);
-                break;
-            case INTAKE:
-                otbIntakeIO.requestSetpoint(angleSetpoint);
-                otbIntakeIO.requestIntakeVoltage(voltageSetpoint);
-                break;
-            case SETPOINT:
-                otbIntakeIO.requestSetpoint(angleSetpoint);
-                otbIntakeIO.requestIntakeVoltage(0);
-                break;
-        }
-    }
-
-    public void requestIntake(double angleSetpointDeg, double voltage){
-        this.angleSetpoint = angleSetpointDeg;
-        this.voltageSetpoint = voltage;
-        setState(OTB_IntakeStates.INTAKE);
-    }
-
-    public void requestSetpoint(double angleSetpointDeg){
-        this.angleSetpoint = angleSetpointDeg;
-        this.voltageSetpoint = 0;
-        setState(OTB_IntakeStates.SETPOINT);
-    }
-    public void setState(OTB_IntakeStates nextState){
-        this.state = nextState;
-    }
-
-    public OTB_IntakeStates getState(){
-        return this.state;
-    }
-    
-    public double getStatorCurrent(){
-        return inputs.intakeCurrent;
-    }
-
-    public double getPivotStatorCurrent(){
-        return inputs.pivotCurrent;
-    }
-
-    public void zeroPosition(){
-        otbIntakeIO.zeroPosition();
     }
 }

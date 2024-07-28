@@ -13,13 +13,18 @@ public interface OTB_IntakeIO {
         public double pivotSetpointRot = 0.0;
         public double pivotPosDeg = 0.0;
         public double pivotPosRot = 0.0;
-        public double pivotTemperature = 0;
+        public double pivotTemperature = 0.0;
         public double pivotRPS = 0.0;
 
-        public double intakeTemperature = 0;
+        public double intakeTemperature = 0.0;
         public double intakeAppliedVolts = 0.0;
         public double intakeCurrent = 0.0;
         public double intakeRPS = 0.0;
+
+        public double indexerTemperature = 0.0;
+        public double indexerAppliedVolts = 0.0;
+        public double indexerCurrent = 0.0;
+        public double indexerRPS = 0.0;
     }
 
 
@@ -30,6 +35,8 @@ public default void requestPivotVoltage(double voltage){}
 public default void requestSetpoint(double angleDegrees){}
 
 public default void requestIntakeVoltage(double voltage){}
+
+public default void requestIndexerVoltage(double voltage){}
 
 public default void zeroPosition(){}
 

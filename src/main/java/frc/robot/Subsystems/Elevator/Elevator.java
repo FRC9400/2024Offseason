@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.RobotController;
 
 import static edu.wpi.first.units.Units.Volts;
 import frc.robot.Constants.elevatorConstants;
-import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 
 public class Elevator {
     private final ElevatorIO elevatorIO;

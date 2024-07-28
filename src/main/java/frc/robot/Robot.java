@@ -24,19 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autons.AutonomousSelector.modes;
-import frc.robot.autons.modes.FOUR_HALF_PIECE;
-import frc.robot.autons.modes.FOUR_PIECE;
-import frc.robot.autons.modes.FOUR_PIECE_THREE_B_A;
-import frc.robot.autons.modes.PRELOAD_AMP;
-import frc.robot.autons.modes.PRELOAD_LEAVE_AMP;
-import frc.robot.autons.modes.PRELOAD_LEAVE_MID;
-import frc.robot.autons.modes.PRELOAD_LEAVE_SOURCE;
-import frc.robot.autons.modes.PRELOAD_MID;
-import frc.robot.autons.modes.PRELOAD_SOURCE;
-import frc.robot.autons.modes.TWO_PIECE_AMP_ONE;
-import frc.robot.autons.modes.TWO_PIECE_MID;
-import frc.robot.autons.modes.TWO_PIECE_SOURCE;
-import frc.robot.autons.modes.TWO_PIECE_SOURCE_THREE;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -95,23 +82,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if (DriverStation.getAlliance().isPresent() && !built){
-    mid_preload = new PRELOAD_MID(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    mid_four_half_piece = new FOUR_HALF_PIECE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    mid_2p_b = new TWO_PIECE_MID(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    mid_4p_b_c_a = new FOUR_PIECE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    mid_four_race_three = new FOUR_PIECE_THREE_B_A(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    mid_preload_leave = new PRELOAD_LEAVE_MID(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    amp_preload = new PRELOAD_AMP(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    amp_preload_leave = new PRELOAD_LEAVE_AMP(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    amp_two_piece_race_one = new TWO_PIECE_AMP_ONE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    source_two_piece = new TWO_PIECE_SOURCE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    source_two_piece_three = new TWO_PIECE_SOURCE_THREE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    source_preload_leave = new PRELOAD_LEAVE_SOURCE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-    source_preload = new PRELOAD_SOURCE(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-
-    built = true;
-    }
   }
 
   @Override
@@ -120,45 +90,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    if(m_robotContainer.getAutonomousCommand() == modes.MID_PRELOAD){
-      m_autonomousCommand = mid_preload;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.MID_2p_B){
-      m_autonomousCommand = mid_2p_b;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.MID_4p_B_C_A){
-      m_autonomousCommand = mid_4p_b_c_a;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.TESTABLE_MID_FOUR_HALF_PIECE){
-      m_autonomousCommand = mid_four_half_piece;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.TESTABLE_MID_FOUR_RACE_THREE){
-      m_autonomousCommand = mid_four_race_three;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.MID_PRELOAD_LEAVE){
-      m_autonomousCommand = mid_preload_leave;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.AMP_PRELOAD){
-      m_autonomousCommand = amp_preload;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.AMP_PRELOAD_LEAVE){
-      m_autonomousCommand = amp_preload_leave;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.TESTABLE_AMP_TWO_PIECE_ONE){
-      m_autonomousCommand = amp_two_piece_race_one;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.TESTABLE_SOURCE_TWO_PIECE){
-      m_autonomousCommand = source_two_piece;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.TESTABLE_SOURCE_TWO_PIECE_THREE){
-      m_autonomousCommand = source_two_piece_three;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.SOURCE_PRELOAD){
-      m_autonomousCommand = source_preload;
-    }
-    else if(m_robotContainer.getAutonomousCommand() == modes.SOURCE_PRELOAD_LEAVE){
-      m_autonomousCommand = source_preload_leave;
-    }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
