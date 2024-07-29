@@ -11,12 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Subsystems.Elevator.ElevatorIO;
-import frc.robot.Subsystems.Elevator.ElevatorIOTalonFX;
-import frc.robot.Subsystems.Handoff.HandoffIO;
-import frc.robot.Subsystems.Handoff.HandoffIOTalonFX;
-import frc.robot.Subsystems.Intake.IntakeIO;
-import frc.robot.Subsystems.Intake.IntakeIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
@@ -32,17 +26,12 @@ public class RobotContainer {
   public static final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
   private AutonomousSelector selector;
-  private final IntakeIO s_intake = new IntakeIOTalonFX();
-  private final HandoffIO s_handoff = new HandoffIOTalonFX();
-  private final ElevatorIO s_elevator = new ElevatorIOTalonFX();
   private final ShooterIO s_shooter = new ShooterIOTalonFX();
   private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
   private final LEDs led = new LEDs();
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
     configureAutonomousSelector();
-    s_elevator.elevatorConfiguration();
-    s_shooter.shooterConfiguration();
     s_swerve.zeroWheels();
     s_swerve.zeroGyro();
     s_swerve.setDefaultCommand(

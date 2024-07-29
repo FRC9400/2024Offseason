@@ -2,8 +2,6 @@ package frc.robot.Subsystems.OTB_Intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-
-
 public interface OTB_IntakeIO {
     @AutoLog
     public static class OTB_IntakeIOInputs{

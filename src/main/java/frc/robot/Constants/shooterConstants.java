@@ -7,18 +7,22 @@ import edu.wpi.first.math.util.Units;
 import java.lang.Math;
 
 public class shooterConstants {
-    public static double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI;
+
     /* Motor Inverts */
     public static final InvertedValue leftShooterInvert = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue rightShooterInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue leftArmInvert = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue rightArmInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue ampRollerInvert = InvertedValue.CounterClockwise_Positive; 
 
     /* Current Limits */
-    public static final double statorCurrentLimit = 0.0;
+    public static final double shooterCurrentLimit = 50; //NOT REAl
+    public static final double armCurrentLimit = 50; //NOT REAL
+    public static final double ampRollerCurrentLimit = 50; //NOT REAL
 
-    /* PID values */
-    public static final double kP = 0.068419;
-    public static final double kD = 0.0;
-    public static final double kS = 0.16488;
-    public static final double kV = 0.11167;
-    public static final double kA = 0.0077173;
+    public static double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI; 
+    public static double shooterGearRatio = 0.5;
+    public static double armGearRatio = 97.337962963;
+
 
 }
