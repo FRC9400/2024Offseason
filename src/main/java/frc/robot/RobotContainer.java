@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIOTalonFX;
@@ -28,7 +27,6 @@ public class RobotContainer {
   private AutonomousSelector selector;
   private final ShooterIO s_shooter = new ShooterIOTalonFX();
   private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
-  private final LEDs led = new LEDs();
   private final Swerve s_swerve = new Swerve();
   public RobotContainer() {
     configureAutonomousSelector();
