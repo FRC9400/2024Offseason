@@ -20,6 +20,17 @@ public class OTB_Intake extends SubsystemBase{
     private final OTB_IntakeIO otbIntakeIO;
     private OTB_IntakeIOInputsAutoLogged inputs = new OTB_IntakeIOInputsAutoLogged();
     private final SysIdRoutine pivotSysID;
+    private double angleSetpoint = 0;
+    private double voltsSetpoint = 0;
+
+
+    private IntakeStates state = IntakeStates.IDLE;
+
+    public enum IntakeStates{
+        IDLE,
+        SETPOINT,
+        INTAKE
+    }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
         this.otbIntakeIO = otbIntakeIO;
@@ -58,6 +69,43 @@ public class OTB_Intake extends SubsystemBase{
                 this.runOnce(() -> SignalLogger.stop()));
     } 
     
+    public void Loop(){
+        otbIntakeIO.updateInputs(inputs);
+
+        switch(state){
+            case IDLE:
+                otbIntakeIO.requestPivotVoltage(0);
+                otbIntakeIO.requestIntakeVoltage(0);
+                break;
+            case SETPOINT:
+                otbIntakeIO.requestSetpoint(angleSetpoint);
+                otbIntakeIO.requestIntakeVoltage(0);
+                break;
+            case INTAKE:
+                otbIntakeIO.requestSetpoint(angleSetpoint);
+                otbIntakeIO.requestIntakeVoltage(voltsSetpoint);
+                break;
+        }
+    }
+
+    public void setState(IntakeStates nextState){
+        this.state = nextState;
+    }
+
+    public void RequestIntake(double angle, double volts){
+        this.angleSetpoint=angle;
+        this.voltsSetpoint=volts;
+        setState(IntakeStates.INTAKE);
+    }
+
+    public void RequestSetpoint(double angle){
+        this.angleSetpoint = angle;
+        this.voltsSetpoint = 0;
+        setState(IntakeStates.SETPOINT);
+    }
+
+    public IntakeStates getState(){return this.state;}
+
     @Override
     public void periodic() {
         otbIntakeIO.updateInputs(inputs);

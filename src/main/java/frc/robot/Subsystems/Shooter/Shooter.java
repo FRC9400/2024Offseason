@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.shooterConstants;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 
@@ -20,6 +21,19 @@ public class Shooter extends SubsystemBase{
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private final SysIdRoutine shooterRoutine;
     private final SysIdRoutine armRoutine;
+
+    private ShooterStates state = ShooterStates.IDLE;
+
+    private double volts = 0;
+    private double velocity = 0;
+    private double setpointDeg = 0;
+
+    public enum ShooterStates{
+        IDLE,
+        VOLTAGE,
+        VELOCITY,
+        SETPOINT
+    }
 
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
@@ -91,6 +105,44 @@ public class Shooter extends SubsystemBase{
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
     } 
+
+    public void Loop(){
+        shooterIO.updateInputs(inputs);
+
+        switch(state){
+            case IDLE:
+                shooterIO.requestShooterVoltage(0);
+                break;
+            case VOLTAGE:
+                shooterIO.requestShooterVoltage(volts);
+                break;
+            case VELOCITY:
+                shooterIO.requestVelocity(velocity, shooterConstants.shooterGearRatio);
+                break;
+            case SETPOINT:
+                shooterIO.requestSetpoint(setpointDeg);
+                break;
+        }
+    }
+
+    public void requestVolts(double volts){
+        this.volts = volts;
+        setState(ShooterStates.VOLTAGE);
+    }
+
+    public void requestVelocity(double velocity){
+        this.velocity = velocity;
+        setState(ShooterStates.VELOCITY);
+    }
+
+    public void requestSetpoint(double setpoint){
+        this.setpointDeg = setpoint;
+        setState(ShooterStates.SETPOINT);
+    }
+
+    public void setState(ShooterStates nextState){
+        this.state=nextState;
+    }
 
     @Override
     public void periodic(){
