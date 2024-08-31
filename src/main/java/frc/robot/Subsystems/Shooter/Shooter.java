@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase{
         );
     }
 
-    public Command armSysIdCmd() {
+    public Command armSysIdCmd(){
         return Commands.sequence(
                 this.runOnce(() -> SignalLogger.start()),
                 armRoutine

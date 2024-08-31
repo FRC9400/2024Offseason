@@ -183,7 +183,7 @@ public class Swerve extends SubsystemBase{
                 y_speed,
                 rot_speed,
                 gyroPosition));
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeedMeterPerSecond);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], false);
@@ -195,7 +195,7 @@ public class Swerve extends SubsystemBase{
                 y_speed,
                 rot_speed
                 ));
-            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeed);
+            kinematics.desaturateWheelSpeeds(setpointModuleStates, swerveConstants.moduleConstants.maxSpeedMeterPerSecond);
             for (int i = 0; i < 4; i++) {
                 setpointModuleStates[i] =  SwerveModuleState.optimize(desiredModuleStates[i], steerPositions[i]);
                 moduleIOs[i].setDesiredState(setpointModuleStates[i], false);

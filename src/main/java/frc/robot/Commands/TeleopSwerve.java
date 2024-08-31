@@ -36,8 +36,8 @@ public class TeleopSwerve extends Command {
         double strafeVal = Math.pow(MathUtil.applyDeadband(strafeSup.getAsDouble(), 0.05), 3) ; 
         double rotationVal = Math.pow(MathUtil.applyDeadband(rotationSup.getAsDouble(), 0.05), 1); 
 
-        double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeed;
-        double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeed;
+        double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
+        double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
         double rot_speed = rotationVal * swerveConstants.moduleConstants.maxAngularVelocity;
 
         /* Drive */

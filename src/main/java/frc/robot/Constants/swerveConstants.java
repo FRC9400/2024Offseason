@@ -13,17 +13,16 @@ public final class swerveConstants {
         public static final InvertedValue[] driveMotorInverts = {InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive};
         public static final InvertedValue[] steerMotorInverts = {InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive};
         public static final SensorDirectionValue[] CANcoderInverts = {SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive};
-        public static final double[] CANcoderOffsets = {0.4812016, 0.8261721, 0.611572, 0.819092}; //degrees or rotations 178.418, 204.17, 220.254, 358.154
- // 0.518311, 0.271240, 0.386230, 0.173340
         /* CANcoder Offset FL, FR, BL, BR */
+        public static final double[] CANcoderOffsets = {0, 0, 0, 0}; 
+    
         
-
         /* Gear Ratios */
-        public static final double driveGearRatio = 6.55;
-        public static final double steerGearRatio = 10.28;
+        public static final double driveGearRatio = 6.12;
+        public static final double steerGearRatio = 150.0 / 7.0;
 
         /* Max Speeds */
-        public static final double maxSpeed =2; 
+        public static final double maxSpeedMeterPerSecond = Units.feetToMeters(16); 
         public static final double maxAngularVelocity = 2.5; 
         
         /* Current Limits */
@@ -50,11 +49,8 @@ public final class swerveConstants {
 
     public static final class kinematicsConstants{
         /* Drivetrain Constants */
-        public static final double robotLength = Units.inchesToMeters(28);
-        public static final double robotWidth = Units.inchesToMeters(28.5);
-
-        public static final double trackWidth = 0.60325;
-        public static final double wheelBase = 0.59055;
+        public static final double wheelBase = Units.inchesToMeters(22.75);
+        public static final double trackWidth = Units.inchesToMeters(20.75);
 
         /* Swerve Kinematics */
         public static final Translation2d FL = new Translation2d(wheelBase / 2.0, trackWidth / 2.0);

@@ -17,19 +17,15 @@ import frc.robot.Constants.canIDConstants;
 public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor);
     private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor);
-    private final TalonFX indexer = new TalonFX(canIDConstants.indexerMotor);
 
     private final TalonFXConfiguration pivotConfigs;
     private final TalonFXConfiguration intakeConfigs;
-    private final TalonFXConfiguration indexerConfigs;
 
     MotionMagicVoltage pivotMotionMagicRequest;
     VoltageOut pivotVoltageRequest;
     VoltageOut intakeVoltageRequest;
-    VoltageOut indexerVoltageRequest;
 
     double pivotSetpoint;
-    double indexerSetpointVolts;
     double intakeSetpointVolts;
 
     private final StatusSignal<Double> pivotCurrent = pivot.getStatorCurrent();
@@ -41,16 +37,11 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     private final StatusSignal<Double> intakeTemp = intake.getDeviceTemp();
     private final StatusSignal<Double> intakeRPS = intake.getRotorVelocity();
 
-    private final StatusSignal<Double> indexerCurrent = indexer.getStatorCurrent();
-    private final StatusSignal<Double> indexerTemp = indexer.getDeviceTemp();
-    private final StatusSignal<Double> indexerRPS = indexer.getRotorVelocity();
-
     
     public OTB_IntakeIOTalonFX() {
 
         pivotConfigs = new TalonFXConfiguration();
         intakeConfigs = new TalonFXConfiguration();
-        indexerConfigs = new TalonFXConfiguration();
 
         var pivotMotorOuputConfigs = pivotConfigs.MotorOutput;
         pivotMotorOuputConfigs.NeutralMode = NeutralModeValue.Brake;
@@ -87,22 +78,12 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         intakeCurrentLimitConfigs.StatorCurrentLimit = otbIntakeConstants.intakeCurrentLimit;
         intakeCurrentLimitConfigs.StatorCurrentLimitEnable = true;
 
-        var indexerMotorOutputConfigs = indexerConfigs.MotorOutput;
-        indexerMotorOutputConfigs.NeutralMode = NeutralModeValue.Brake;
-        indexerMotorOutputConfigs.Inverted = otbIntakeConstants.indexerInvert;
-
-        var indexerCurrentLimitConfigs = indexerConfigs.CurrentLimits;
-        indexerCurrentLimitConfigs.StatorCurrentLimit = otbIntakeConstants.indexerCurrentLimit;
-        indexerCurrentLimitConfigs.StatorCurrentLimitEnable = true;
-
         pivotMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0).withEnableFOC(true);
         pivotVoltageRequest = new VoltageOut(0).withEnableFOC(true);
         intakeVoltageRequest = new VoltageOut(0).withEnableFOC(true);
-        indexerVoltageRequest = new VoltageOut(0).withEnableFOC(true);
 
         pivot.getConfigurator().apply(pivotConfigs);
         intake.getConfigurator().apply(intakeConfigs);
-        indexer.getConfigurator().apply(indexerConfigs);
 
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50,
@@ -112,10 +93,7 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
                 pivotTemp,
                 intakeTemp,
                 intakeCurrent,
-                intakeRPS,
-                indexerTemp,
-                indexerCurrent,
-                indexerRPS
+                intakeRPS
                );
 
         intake.optimizeBusUtilization();
@@ -129,10 +107,7 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
             pivotTemp,
             intakeTemp,
             intakeCurrent,
-            intakeRPS,
-            indexerTemp,
-            indexerCurrent,
-            indexerRPS
+            intakeRPS
         );
         otbIntakeInputs.pivotAppliedVolts = pivotVoltageRequest.Output;
         otbIntakeInputs.pivotCurrent = pivotCurrent.getValue();
@@ -147,11 +122,8 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         otbIntakeInputs.intakeAppliedVolts = intakeVoltageRequest.Output;
         otbIntakeInputs.intakeCurrent = intakeCurrent.getValue();
         otbIntakeInputs.intakeRPS = intakeRPS.getValue();
+        otbIntakeInputs.intakeSetpointVolts = this.intakeSetpointVolts;
 
-        otbIntakeInputs.indexerTemperature = indexerTemp.getValue();
-        otbIntakeInputs.indexerAppliedVolts = indexerVoltageRequest.Output;
-        otbIntakeInputs.indexerCurrent = indexerCurrent.getValue();
-        otbIntakeInputs.indexerRPS = indexerRPS.getValue();
     }
 
     public void requestPivotVoltage(double voltage) {
@@ -159,19 +131,14 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
     }
 
     public void requestSetpoint(double angleDegrees) {
-        pivotSetpoint = angleDegrees;
+        this.pivotSetpoint = angleDegrees;
         double pivotSetpointRotations = Conversions.DegreesToRotations(angleDegrees, otbIntakeConstants.gearRatio);
         pivot.setControl(pivotMotionMagicRequest.withPosition(pivotSetpointRotations));
     }
 
     public void requestIntakeVoltage(double voltage) {
-        intakeSetpointVolts = voltage;
+        this.intakeSetpointVolts = voltage;
         intake.setControl(intakeVoltageRequest.withOutput(intakeSetpointVolts));
-    }
-
-    public void requestIndexerVoltage(double voltage) {
-        indexerSetpointVolts = voltage;
-        indexer.setControl(indexerVoltageRequest.withOutput(indexerSetpointVolts));
     }
 
     public void zeroPosition(){

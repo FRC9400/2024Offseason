@@ -3,7 +3,6 @@ package frc.robot.Subsystems.Shooter;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -11,11 +10,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.commons.Conversions;
-import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.shooterConstants;
 
@@ -24,12 +21,10 @@ public class ShooterIOTalonFX implements ShooterIO{
     private final TalonFX rightShooter = new TalonFX(canIDConstants.rightShooterMotor);
     private final TalonFX leftArm = new TalonFX(canIDConstants.leftArmMotor);
     private final TalonFX rightArm = new TalonFX(canIDConstants.rightArmMotor);
-    private final TalonFX ampRoller = new TalonFX(canIDConstants.ampRollerMotor);
     
     private TalonFXConfiguration leftShooterConfigs;
     private TalonFXConfiguration rightShooterConfigs;
     private TalonFXConfiguration leftArmConfigs;
-    private TalonFXConfiguration ampRollerConfigs;
 
     private final StatusSignal<Double> leftShooterCurrent = leftShooter.getStatorCurrent();
     private final StatusSignal<Double> rightShooterCurrent = rightShooter.getStatorCurrent();
@@ -46,21 +41,14 @@ public class ShooterIOTalonFX implements ShooterIO{
     private final StatusSignal<Double> rightArmPos = rightArm.getRotorPosition();
     private final StatusSignal<Double> leftArmRPS = leftArm.getRotorVelocity();
     private final StatusSignal<Double> rightArmRPS = rightArm.getRotorVelocity();
-
-    private final StatusSignal<Double> ampRollerCurrent = ampRoller.getStatorCurrent();
-    private final StatusSignal<Double> ampRollerTemp = ampRoller.getDeviceTemp();
-    private final StatusSignal<Double> ampRollerRPS = ampRoller.getRotorVelocity();
     
     private double leftShooterSetpointMPS = 0;
     private double rightShooterSetpointMPS = 0;
     private double leftArmSetpointDegrees = 0;
-    private double ampRollerSetpointVolts = 0;
 
     private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
     private VelocityVoltage leftShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
     private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
-
-    private VoltageOut ampRollerRequestVoltage = new VoltageOut(0).withEnableFOC(true);
 
     private VoltageOut leftArmRequestVoltage = new VoltageOut(0).withEnableFOC(true);
     private MotionMagicVoltage leftArmMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0).withEnableFOC(true);
@@ -69,7 +57,6 @@ public class ShooterIOTalonFX implements ShooterIO{
         leftShooterConfigs = new TalonFXConfiguration();
         rightShooterConfigs = new TalonFXConfiguration();
         leftArmConfigs = new TalonFXConfiguration();
-        ampRollerConfigs = new TalonFXConfiguration();
 
         var leftShooterMotorConfigs = leftShooterConfigs.MotorOutput;
         var rightShooterMotorConfigs = rightShooterConfigs.MotorOutput;
@@ -133,20 +120,10 @@ public class ShooterIOTalonFX implements ShooterIO{
         var feedbackConfigs = leftArmConfigs.Feedback;
         feedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        var ampRollerMotorConfigs = ampRollerConfigs.MotorOutput;
-        ampRollerMotorConfigs.NeutralMode = NeutralModeValue.Coast;
-        ampRollerMotorConfigs.Inverted = shooterConstants.ampRollerInvert;
-
-        var ampRollerCurrentConfigs = ampRollerConfigs.CurrentLimits;
-        ampRollerCurrentConfigs.StatorCurrentLimit = shooterConstants.ampRollerCurrentLimit;
-        ampRollerCurrentConfigs.StatorCurrentLimitEnable = true;
-
         leftShooter.getConfigurator().apply(leftShooterConfigs);
         rightShooter.getConfigurator().apply(rightShooterConfigs);
         rightArm.setControl(new Follower(leftArm.getDeviceID(), true));
         leftArm.getConfigurator().apply(leftArmConfigs);
-        ampRoller.getConfigurator().apply(ampRollerConfigs);
-
 
         BaseStatusSignal.setUpdateFrequencyForAll(
             50,
@@ -163,10 +140,7 @@ public class ShooterIOTalonFX implements ShooterIO{
             leftArmPos,
             rightArmPos,
             leftArmRPS,
-            rightArmRPS,
-            ampRollerCurrent,
-            ampRollerTemp,
-            ampRollerRPS
+            rightArmRPS
             );
 
         leftShooter.optimizeBusUtilization();
@@ -188,10 +162,7 @@ public class ShooterIOTalonFX implements ShooterIO{
             leftArmPos,
             rightArmPos,
             leftArmRPS,
-            rightArmRPS,
-            ampRollerCurrent,
-            ampRollerTemp,
-            ampRollerRPS
+            rightArmRPS
         );
 
         inputs.shooterAppliedVolts = shootRequestVoltage.Output;
@@ -214,11 +185,6 @@ public class ShooterIOTalonFX implements ShooterIO{
         inputs.armCurrent = new double[] {leftArmCurrent.getValue(), rightArmCurrent.getValue()};
         inputs.armTemp = new double[] {leftArmTemp.getValue(), rightArmTemp.getValue()};
         inputs.armRPS = new double[] {leftArmRPS.getValue(), rightArmRPS.getValue()};
-
-        inputs.ampRollerAppliedVolts = ampRollerRequestVoltage.Output;
-        inputs.ampRollerTemp = ampRollerTemp.getValue();
-        inputs.ampRollerCurrent = ampRollerCurrent.getValue();
-        inputs.ampRollerRPS = ampRollerRPS.getValue();
     }
 
 
@@ -232,11 +198,6 @@ public class ShooterIOTalonFX implements ShooterIO{
         rightShooterSetpointMPS = velocity * ratio;
         leftShooter.setControl(leftShootRequestVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)));
         rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)));
-    }
-
-    public void requestAmpRollerVoltage(double voltage) {
-        ampRollerSetpointVolts = voltage;
-        ampRoller.setControl(ampRollerRequestVoltage.withOutput(ampRollerSetpointVolts));
     }
 
     public void requestArmVoltage(double voltage) {

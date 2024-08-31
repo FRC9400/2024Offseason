@@ -24,11 +24,6 @@ public interface ShooterIO {
         public double[] armCurrent = new double[] {};
         public double[] armTemp = new double[] {};
         public double[] armRPS = new double[] {};
-
-        public double ampRollerAppliedVolts = 0.0;
-        public double ampRollerTemp = 0.0;
-        public double ampRollerCurrent = 0.0;
-        public double ampRollerRPS = 0.0;
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {}
@@ -36,8 +31,6 @@ public interface ShooterIO {
     public default void requestShooterVoltage(double voltage) {}
 
     public default void requestVelocity(double velocity, double ratio) {}
-
-    public default void requestAmpRollerVoltage(double voltage) {}
 
     public default void requestArmVoltage(double voltage) {}
 
