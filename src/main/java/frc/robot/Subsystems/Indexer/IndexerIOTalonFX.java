@@ -11,7 +11,7 @@ import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.indexerConstants;
 import frc.robot.Subsystems.Indexer.IndexerIO.IndexerIOInputs;
 
-public class IndexerIOTalonFX extends SubsystemBase{
+public class IndexerIOTalonFX implements IndexerIO{
     private final TalonFX indexer = new TalonFX(canIDConstants.indexerMotor);
     private final TalonFX ampRoller = new TalonFX(canIDConstants.ampRollerMotor);
 

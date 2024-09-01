@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Subsystems.Indexer.Indexer;
+import frc.robot.Subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.Subsystems.LEDs.LEDs;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIOTalonFX;
+import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -24,45 +27,40 @@ import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
   public static final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController operator = new CommandXboxController(1);
-  private AutonomousSelector selector;
-  private final ShooterIO s_shooter = new ShooterIOTalonFX();
-  private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
-  private final LEDs led = new LEDs();
-  private final Swerve s_swerve = new Swerve();
+    private final Shooter shooter = new Shooter(new ShooterIOTalonFX());
+    private final OTB_Intake otbIntake = new OTB_Intake(new OTB_IntakeIOTalonFX());
+    private final Indexer indexer = new Indexer(new IndexerIOTalonFX());
+    private final Swerve swerve = new Swerve();
   public RobotContainer() {
-    configureAutonomousSelector();
-    s_swerve.zeroWheels();
-    s_swerve.zeroGyro();
-    s_swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_swerve, 
-                () -> -controller.getRawAxis(XboxController.Axis.kLeftY.value),
-                () -> -controller.getRawAxis(XboxController.Axis.kLeftX.value), 
-                () -> -controller.getRawAxis(XboxController.Axis.kRightX.value)
-              
-            )
-        );
+  
+    swerve.zeroWheels();
+    swerve.zeroGyro();
     
     configureBindings();
-    configureDefaultCommands();
 
   }
 
   private void configureBindings() {
+    controller.a()
+      .onTrue(shooter.armSysIdCmd());
+
+    controller.b()
+      .onTrue(shooter.shooterSysIdCmd());
+
+    controller.x()
+      .onTrue(swerve.driveSysIdCmd());
+
+    controller.y()
+      .onTrue(swerve.steerSysIdCmd());
+
+    controller.leftBumper()
+      .onTrue(otbIntake.runSysIdCmd());
     
 
   }
-  private void configureDefaultCommands() {
-   
-  } 
 
-  public modes getAutonomousCommand() {
-    return selector.get();
-    
-  }
-
-  public void configureAutonomousSelector(){
+  public boolean getAutonomousCommand() {
+    return false;
     
   }
 
