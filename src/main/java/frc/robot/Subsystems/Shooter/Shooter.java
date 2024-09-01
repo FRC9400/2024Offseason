@@ -21,6 +21,18 @@ public class Shooter extends SubsystemBase{
     private final SysIdRoutine shooterRoutine;
     private final SysIdRoutine armRoutine;
 
+    private ShooterStates state = ShooterStates.IDLE;
+    private double shooterVolts = 0;
+    private double[] shooterVelocity = {0, 0}; //velocity, ratio
+    private double armSetpointDeg = 0;
+    private double armVolts = 0;
+
+    public enum ShooterStates{
+        IDLE,
+        SHOOT,
+        VOLTAGE
+    }
+
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
         shooterRoutine = new SysIdRoutine(
@@ -96,5 +108,43 @@ public class Shooter extends SubsystemBase{
     public void periodic(){
         shooterIO.updateInputs(inputs);
         Logger.processInputs("Shooter", inputs);
+        //Logger.recordOutput("ShooterState", state);
+
+        switch(state){
+            case IDLE:
+                shooterIO.requestArmVoltage(0);
+                shooterIO.requestShooterVoltage(0);
+                break;
+            case SHOOT:
+                shooterIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
+                shooterIO.requestSetpoint(armSetpointDeg);
+                break;
+            case VOLTAGE:
+                shooterIO.requestArmVoltage(armVolts);
+                shooterIO.requestShooterVoltage(shooterVolts);
+                break;
         }
+    }
+
+    public void requestVoltage(double shooterVoltage, double armVoltage){
+        this.shooterVolts = shooterVoltage;
+        this.armVolts = armVoltage;
+        setState(ShooterStates.VOLTAGE);
+    }
+
+    public void requestShoot(double velocity, double ratio, double armSetpointDeg){
+        this.shooterVelocity[0] = velocity;
+        this.shooterVelocity[1] = ratio;
+        this.armSetpointDeg = armSetpointDeg;
+        setState(ShooterStates.SHOOT);
+    }
+
+    public void setState(ShooterStates nextState){
+        this.state = nextState;
+    }
+
+    public ShooterStates getState(){
+        return this.state;
+    }
+
 }
