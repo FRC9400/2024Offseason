@@ -18,8 +18,6 @@ import static edu.wpi.first.units.Units.Volts;
 public class Shooter extends SubsystemBase{
     private final ShooterIO shooterIO;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-    private final SysIdRoutine shooterRoutine;
-    private final SysIdRoutine armRoutine;
 
     private ShooterStates state = ShooterStates.IDLE;
     private double shooterVolts = 0;
@@ -29,80 +27,15 @@ public class Shooter extends SubsystemBase{
 
     public enum ShooterStates{
         IDLE,
+        HOMING,
         SHOOT,
-        VOLTAGE
+        VOLTAGE,
+        ZEROPOSITION
     }
 
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
-        shooterRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(6),null, 
-                    (state) -> SignalLogger.writeString("state", state.toString())), 
-            new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.requestShooterVoltage(volts.in(Volts)), null, 
-                    this));
-        armRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(5), null,
-                    (state) -> SignalLogger.writeString("state", state.toString())),
-            new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.requestArmVoltage(volts.in(Volts)), null,
-                    this));
     }
-
-    public Command shooterSysIdCmd(){
-        return Commands.sequence(
-            this.runOnce(() -> SignalLogger.start()),
-            shooterRoutine
-                .quasistatic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 30),
-                this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
-                Commands.waitSeconds(1),
-            shooterRoutine
-                .quasistatic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -30),
-                this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
-                Commands.waitSeconds(1),  
-
-            shooterRoutine
-                .dynamic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 15),
-                this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
-                Commands.waitSeconds(1),  
-
-            shooterRoutine
-                .dynamic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -15),
-                this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
-                Commands.waitSeconds(1), 
-            this.runOnce(() -> SignalLogger.stop())
-        );
-    }
-
-    public Command armSysIdCmd(){
-        return Commands.sequence(
-                this.runOnce(() -> SignalLogger.start()),
-                armRoutine
-                        .quasistatic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.armPosDeg[0]) > 140),
-                this.runOnce(() -> shooterIO.requestArmVoltage(0)),
-                Commands.waitSeconds(1),
-                armRoutine
-                        .quasistatic(Direction.kReverse)
-                        .until(() -> inputs.armPosDeg[0] < 5),
-                this.runOnce(() -> shooterIO.requestArmVoltage(0)),
-                Commands.waitSeconds(1),
-
-                armRoutine
-                        .dynamic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.armPosDeg[0]) > 140),
-                this.runOnce(() -> shooterIO.requestArmVoltage(0)),
-                Commands.waitSeconds(1),
-
-                armRoutine
-                        .dynamic(Direction.kReverse)
-                        .until(() -> inputs.armPosDeg[0] < 5),
-                this.runOnce(() -> shooterIO.requestArmVoltage(0)),
-                Commands.waitSeconds(1),
-                this.runOnce(() -> SignalLogger.stop()));
-    } 
 
     @Override
     public void periodic(){
@@ -115,6 +48,9 @@ public class Shooter extends SubsystemBase{
                 shooterIO.requestArmVoltage(0);
                 shooterIO.requestShooterVoltage(0);
                 break;
+            case HOMING:
+                shooterIO.requestArmVoltage(-1);
+                shooterIO.requestShooterVoltage(0);
             case SHOOT:
                 shooterIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
                 shooterIO.requestSetpoint(armSetpointDeg);
@@ -123,6 +59,9 @@ public class Shooter extends SubsystemBase{
                 shooterIO.requestArmVoltage(armVolts);
                 shooterIO.requestShooterVoltage(shooterVolts);
                 break;
+            case ZEROPOSITION:
+                shooterIO.zeroPosition();
+                shooterIO.requestShooterVoltage(0);
         }
     }
 
@@ -137,6 +76,10 @@ public class Shooter extends SubsystemBase{
         this.shooterVelocity[1] = ratio;
         this.armSetpointDeg = armSetpointDeg;
         setState(ShooterStates.SHOOT);
+    }
+
+    public void requestIdle(){
+        setState(ShooterStates.IDLE);
     }
 
     public void setState(ShooterStates nextState){

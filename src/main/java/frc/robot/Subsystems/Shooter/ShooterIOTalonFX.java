@@ -216,4 +216,8 @@ public class ShooterIOTalonFX implements ShooterIO{
         leftShooter.setControl(leftShootRequestVelocity.withVelocity(0));
         rightShooter.setControl(rightShootRequestVelocity.withVelocity(0));
     }
+
+    public void zeroPosition(){
+        leftArm.setPosition(0);
+    }
 }

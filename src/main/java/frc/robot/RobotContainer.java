@@ -40,22 +40,7 @@ public class RobotContainer {
 
   }
 
-  private void configureBindings() {
-    controller.a()
-      .onTrue(shooter.armSysIdCmd());
-
-    controller.b()
-      .onTrue(shooter.shooterSysIdCmd());
-
-    controller.x()
-      .onTrue(swerve.driveSysIdCmd());
-
-    controller.y()
-      .onTrue(swerve.steerSysIdCmd());
-
-    controller.leftBumper()
-      .onTrue(otbIntake.runSysIdCmd());
-    
+  private void configureBindings() {    
 
   }
 

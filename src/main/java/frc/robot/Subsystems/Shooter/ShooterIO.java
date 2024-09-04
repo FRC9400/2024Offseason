@@ -38,4 +38,6 @@ public interface ShooterIO {
 
     public default void zeroShooterVelocity() {}
 
+    public default void zeroPosition() {}
+
 }

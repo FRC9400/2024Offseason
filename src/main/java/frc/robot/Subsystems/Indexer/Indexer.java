@@ -40,6 +40,10 @@ public class Indexer extends SubsystemBase {
         setState(IndexerStates.OUTAKE);
     }
 
+    public void requestIdle(){
+        setState(IndexerStates.IDLE);
+    }
+
     public void setState(IndexerStates nextState){
         this.state = nextState;
     }
@@ -65,6 +69,7 @@ public class Indexer extends SubsystemBase {
                 break;
             case OUTAKE:
                 indexerIO.setAmpRollerVoltage(ampRollerVoltage[2]);
+                indexerIO.setIndexerVoltage(0);
                 break;
             case HANDOFF:
                 indexerIO.setIndexerVoltage(indexerVoltage[1]);
