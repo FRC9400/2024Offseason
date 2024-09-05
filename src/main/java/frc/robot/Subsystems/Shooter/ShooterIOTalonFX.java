@@ -17,10 +17,10 @@ import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.shooterConstants;
 
 public class ShooterIOTalonFX implements ShooterIO{
-    private final TalonFX leftShooter = new TalonFX(canIDConstants.leftShooterMotor);
-    private final TalonFX rightShooter = new TalonFX(canIDConstants.rightShooterMotor);
-    private final TalonFX leftArm = new TalonFX(canIDConstants.leftArmMotor);
-    private final TalonFX rightArm = new TalonFX(canIDConstants.rightArmMotor);
+    private final TalonFX leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "rio");
+    private final TalonFX rightShooter = new TalonFX(canIDConstants.rightShooterMotor, "rio");
+    private final TalonFX leftArm = new TalonFX(canIDConstants.leftArmMotor, "rio");
+    private final TalonFX rightArm = new TalonFX(canIDConstants.rightArmMotor, "rio");
     
     private TalonFXConfiguration leftShooterConfigs;
     private TalonFXConfiguration rightShooterConfigs;

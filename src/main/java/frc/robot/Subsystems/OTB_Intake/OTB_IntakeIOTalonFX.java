@@ -15,8 +15,8 @@ import frc.robot.Constants.otbIntakeConstants;
 import frc.robot.Constants.canIDConstants;
 
 public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
-    private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor);
-    private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor);
+    private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor, "rio");
+    private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor, "canivore");
 
     private final TalonFXConfiguration pivotConfigs;
     private final TalonFXConfiguration intakeConfigs;

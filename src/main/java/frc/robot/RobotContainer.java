@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Indexer.Indexer;
 import frc.robot.Subsystems.Indexer.IndexerIOTalonFX;
@@ -32,7 +33,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   
-    swerve.zeroWheels();
+    //swerve.zeroWheels();
     swerve.zeroGyro();
     
     configureBindings();
@@ -40,7 +41,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    controller.a()
+    /*controller.a()
       .onTrue(shooter.armSysIdCmd());
 
     controller.b()
@@ -54,7 +55,13 @@ public class RobotContainer {
 
     controller.leftBumper()
       .onTrue(otbIntake.runSysIdCmd());
-    
+    */
+
+    controller.a() 
+      .onTrue(new InstantCommand(() -> swerve.zeroWheels()));
+
+    controller.b()
+      .whileTrue(new RunCommand(() -> shooter.setShooterVoltage(1)));
 
   }
 

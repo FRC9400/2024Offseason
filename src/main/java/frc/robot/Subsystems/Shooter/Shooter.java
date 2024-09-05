@@ -98,4 +98,12 @@ public class Shooter extends SubsystemBase{
         Logger.processInputs("Shooter", inputs);
     }
 
+    public void setArmVoltage(double voltage){
+        shooterIO.requestArmVoltage(voltage);
+    }
+
+    public void setShooterVoltage(double voltage){
+        shooterIO.requestShooterVoltage(voltage);
+    }
+
 }

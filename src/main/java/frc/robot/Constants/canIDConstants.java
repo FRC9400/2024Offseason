@@ -25,7 +25,4 @@ public class canIDConstants {
     public static final int rightArmMotor = 19;
     public static final int ampRollerMotor = 20;
 
-    /* CANdle*/
-    public static final int candle = 21;
-
 }

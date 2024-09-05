@@ -13,7 +13,7 @@ public class GyroIOPigeon2 implements GyroIO {
     private final StatusSignal<Double> rollDeg;
 
     public GyroIOPigeon2(int pigeonID){
-        pigeon = new Pigeon2(pigeonID, "canivore");
+        pigeon = new Pigeon2(pigeonID, "rio");
         positionDegRaw = pigeon.getYaw();
         pitchDeg = pigeon.getPitch();
         rollDeg = pigeon.getRoll();

@@ -6,7 +6,7 @@ public class otbIntakeConstants {
 
     /* Motor Inverts */
 
-    public static final InvertedValue pivotInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue pivotInvert = InvertedValue.Clockwise_Positive;
     public static final InvertedValue intakeInvert = InvertedValue.Clockwise_Positive;
 
     /* Current Limits */
