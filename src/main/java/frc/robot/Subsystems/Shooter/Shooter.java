@@ -30,9 +30,9 @@ public class Shooter extends SubsystemBase{
 
     public enum ShooterStates{
         IDLE,
-        VOLTAGE,
-        VELOCITY,
-        SETPOINT
+        SHOOT,
+        PREPARE,
+        AMP
     }
 
     public Shooter(ShooterIO shooterIO) {
@@ -113,31 +113,37 @@ public class Shooter extends SubsystemBase{
             case IDLE:
                 shooterIO.requestShooterVoltage(0);
                 break;
-            case VOLTAGE:
-                shooterIO.requestShooterVoltage(volts);
-                break;
-            case VELOCITY:
+            case PREPARE:
                 shooterIO.requestVelocity(velocity, shooterConstants.shooterGearRatio);
+                shooterIO.requestSetpoint(setpointDeg);
                 break;
-            case SETPOINT:
+            case SHOOT:
+                shooterIO.requestVelocity(velocity, shooterConstants.shooterGearRatio);
+                shooterIO.requestSetpoint(setpointDeg);
+                break;
+            case AMP:
+                shooterIO.requestAmpRollerVoltage(volts);
                 shooterIO.requestSetpoint(setpointDeg);
                 break;
         }
     }
-
-    public void requestVolts(double volts){
-        this.volts = volts;
-        setState(ShooterStates.VOLTAGE);
+  
+    public void prepShoot(double velocity, double deg){
+        this.velocity=velocity;
+        this.setpointDeg = deg;
+        setState(ShooterStates.PREPARE);
     }
 
-    public void requestVelocity(double velocity){
+    public void shoot(double velocity, double deg){
         this.velocity = velocity;
-        setState(ShooterStates.VELOCITY);
+        this.setpointDeg = deg;
+        setState(ShooterStates.SHOOT);
     }
 
-    public void requestSetpoint(double setpoint){
-        this.setpointDeg = setpoint;
-        setState(ShooterStates.SETPOINT);
+    public void amp(double volts, double deg){
+        this.volts = volts;
+        this.setpointDeg = deg;
+        setState(ShooterStates.AMP);
     }
 
     public void setState(ShooterStates nextState){

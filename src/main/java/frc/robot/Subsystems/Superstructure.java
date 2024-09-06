@@ -21,10 +21,9 @@ public class Superstructure extends SubsystemBase{
 
     public enum SuperstructureStates{
         IDLE,
-        INTAKE_DOWN,
+        INTAKE_MOVE,
         INTAKE_RUN,
-        INTAKE_UP,
-        SETPOINT_SHOOTER,
+        PREPARE_SHOOTER,
         RUN_SHOOTER
     }
 
@@ -35,28 +34,24 @@ public class Superstructure extends SubsystemBase{
 
         switch(systemState){
             case IDLE:
-                s_intake.setState(IntakeStates.IDLE);
-                s_shooter.setState(ShooterStates.IDLE);
+                s_intake.setState(IntakeStates.IDLE); //setpoint
+                s_shooter.setState(ShooterStates.IDLE); 
                 break;
-            case INTAKE_DOWN:
-                s_intake.RequestSetpoint(90);
+            case INTAKE_MOVE:
+                s_intake.RequestSetpoint(0);
                 s_shooter.setState(ShooterStates.IDLE);
                 break;
             case INTAKE_RUN:
                 s_intake.RequestIntake(90, 5);
                 s_shooter.setState(ShooterStates.IDLE);
                 break;
-            case INTAKE_UP:
-                s_intake.RequestSetpoint(0);
-                s_shooter.setState(ShooterStates.IDLE);
-                break;
-            case SETPOINT_SHOOTER:
+            case PREPARE_SHOOTER:
                 s_intake.setState(IntakeStates.IDLE);
-                s_shooter.requestSetpoint(0);
+                s_shooter.prepShoot(20, 0);//placeholders
                 break;
             case RUN_SHOOTER:
-                s_intake.setState(IntakeStates.IDLE);
-                s_shooter.requestVelocity(20);
+                s_intake.shoot(5);
+                s_shooter.shoot(20,0);//placeholder values
                 break;
         }
     }

@@ -22,6 +22,7 @@ public class OTB_Intake extends SubsystemBase{
     private final SysIdRoutine pivotSysID;
     private double angleSetpoint = 0;
     private double voltsSetpoint = 0;
+    private double handoffVolts = 0;
 
 
     private IntakeStates state = IntakeStates.IDLE;
@@ -29,7 +30,8 @@ public class OTB_Intake extends SubsystemBase{
     public enum IntakeStates{
         IDLE,
         SETPOINT,
-        INTAKE
+        INTAKE,
+        SHOOTING
     }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
@@ -76,14 +78,22 @@ public class OTB_Intake extends SubsystemBase{
             case IDLE:
                 otbIntakeIO.requestPivotVoltage(0);
                 otbIntakeIO.requestIntakeVoltage(0);
+                otbIntakeIO.requestIndexerVoltage(0);
                 break;
             case SETPOINT:
                 otbIntakeIO.requestSetpoint(angleSetpoint);
                 otbIntakeIO.requestIntakeVoltage(0);
+                otbIntakeIO.requestIndexerVoltage(0);
                 break;
             case INTAKE:
                 otbIntakeIO.requestSetpoint(angleSetpoint);
                 otbIntakeIO.requestIntakeVoltage(voltsSetpoint);
+                otbIntakeIO.requestIndexerVoltage(0);
+                break;
+            case SHOOTING:
+                otbIntakeIO.requestPivotVoltage(0);
+                otbIntakeIO.requestIntakeVoltage(0);
+                otbIntakeIO.requestIndexerVoltage(handoffVolts);
                 break;
         }
     }
@@ -102,6 +112,11 @@ public class OTB_Intake extends SubsystemBase{
         this.angleSetpoint = angle;
         this.voltsSetpoint = 0;
         setState(IntakeStates.SETPOINT);
+    }
+
+    public void shoot(double volts){
+        this.handoffVolts = volts;
+        setState(IntakeStates.SHOOTING);
     }
 
     public IntakeStates getState(){return this.state;}
