@@ -16,53 +16,63 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 
-public class OTB_Intake extends SubsystemBase{
+public class OTB_Intake{
     private final OTB_IntakeIO otbIntakeIO;
     private OTB_IntakeIOInputsAutoLogged inputs = new OTB_IntakeIOInputsAutoLogged();
-    private final SysIdRoutine pivotSysID;
+    private IntakeStates intakeState = IntakeStates.IDLE;
+
+    public enum IntakeStates{
+        IDLE,
+        INTAKE,
+        SETPOINT
+    }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
         this.otbIntakeIO = otbIntakeIO;
-        pivotSysID  = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(4), null,
-                    (state) -> SignalLogger.writeString("state", state.toString())),
-            new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> otbIntakeIO.requestPivotVoltage(volts.in(Volts)), null,
-                    this));
       }
-      
-    public Command runSysIdCmd() {
-        return Commands.sequence(
-                this.runOnce(() -> SignalLogger.start()),
-                pivotSysID
-                        .quasistatic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPosDeg) > 110),
-                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-                pivotSysID
-                        .quasistatic(Direction.kReverse)
-                        .until(() -> inputs.pivotPosDeg < 5),
-                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
 
-                pivotSysID
-                        .dynamic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPosDeg) > 110),
-                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
 
-                pivotSysID
-                        .dynamic(Direction.kReverse)
-                        .until(() -> inputs.pivotPosDeg < 5),
-                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-                this.runOnce(() -> SignalLogger.stop()));
-    } 
-    
-    @Override
-    public void periodic() {
+    public void Loop() {
         otbIntakeIO.updateInputs(inputs);
         Logger.processInputs("OTB_Intake", inputs);
+        Logger.recordOutput("OTB_IntakeState", this.intakeState);
+        switch(intakeState){
+            case IDLE:
+                otbIntakeIO.requestPivotVoltage(0);
+                otbIntakeIO.requestIntakeVoltage(0);
+                break;
+            case INTAKE:
+                otbIntakeIO.requestIntakeVoltage(3);
+                otbIntakeIO.requestSetpoint(140);
+                break;
+            case SETPOINT:
+                otbIntakeIO.requestIntakeVoltage(0);
+                otbIntakeIO.requestSetpoint(0);
+            default:
+                break;
+
+        }
     }
+
+    public void requestIdle(){
+        setState(IntakeStates.IDLE);
+    }
+    
+    public void requestIntake(){
+        setState(IntakeStates.INTAKE);
+    }
+
+    public void requestSetpoint(){
+        setState(IntakeStates.SETPOINT);
+    }
+
+    public void setState(IntakeStates nextState){
+        this.intakeState = nextState;
+    }
+      
+    
+    
+    
 
 
 }

@@ -17,9 +17,9 @@ import frc.robot.Subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIOTalonFX;
-import frc.robot.Subsystems.Shooter.Shooter;
-import frc.robot.Subsystems.Shooter.ShooterIO;
-import frc.robot.Subsystems.Shooter.ShooterIOTalonFX;
+import frc.robot.Subsystems.Shooter.ShooterArm;
+import frc.robot.Subsystems.Shooter.ShooterArmIO;
+import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -27,13 +27,13 @@ import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
   public static final CommandXboxController controller = new CommandXboxController(0);
-    private final Shooter shooter = new Shooter(new ShooterIOTalonFX());
+    private final ShooterArm shooter = new ShooterArm(new ShooterArmIOTalonFX());
     private final OTB_Intake otbIntake = new OTB_Intake(new OTB_IntakeIOTalonFX());
     private final Indexer indexer = new Indexer(new IndexerIOTalonFX());
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   
-    //swerve.zeroWheels();
+    swerve.zeroWheels();
     swerve.zeroGyro();
     
     configureBindings();
@@ -41,27 +41,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    /*controller.a()
-      .onTrue(shooter.armSysIdCmd());
-
-    controller.b()
-      .onTrue(shooter.shooterSysIdCmd());
-
-    controller.x()
-      .onTrue(swerve.driveSysIdCmd());
-
-    controller.y()
-      .onTrue(swerve.steerSysIdCmd());
-
-    controller.leftBumper()
-      .onTrue(otbIntake.runSysIdCmd());
-    */
-
-    controller.a() 
-      .onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-
-    controller.b()
-      .whileTrue(new RunCommand(() -> shooter.setShooterVoltage(1)));
+    
 
   }
 

@@ -2,7 +2,7 @@ package frc.robot.Subsystems.Shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ShooterIO {
+public interface ShooterArmIO {
     @AutoLog
     public static class ShooterIOInputs {
         public double shooterAppliedVolts = 0.0;
@@ -34,7 +34,9 @@ public interface ShooterIO {
 
     public default void requestArmVoltage(double voltage) {}
 
-    public default void requestSetpoint(double angleDegrees) {}
+    public default void requestMotionMagicSetpoint(double angleDegrees) {}
+
+    public default void requestPositionSetpoint(double angleDegrees){}
 
     public default void zeroShooterVelocity() {}
 

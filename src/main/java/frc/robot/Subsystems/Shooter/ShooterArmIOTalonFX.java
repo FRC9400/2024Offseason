@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,7 +17,7 @@ import frc.commons.Conversions;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.shooterConstants;
 
-public class ShooterIOTalonFX implements ShooterIO{
+public class ShooterArmIOTalonFX implements ShooterArmIO{
     private final TalonFX leftShooter = new TalonFX(canIDConstants.leftShooterMotor, "rio");
     private final TalonFX rightShooter = new TalonFX(canIDConstants.rightShooterMotor, "rio");
     private final TalonFX leftArm = new TalonFX(canIDConstants.leftArmMotor, "rio");
@@ -42,8 +43,8 @@ public class ShooterIOTalonFX implements ShooterIO{
     private final StatusSignal<Double> leftArmRPS = leftArm.getRotorVelocity();
     private final StatusSignal<Double> rightArmRPS = rightArm.getRotorVelocity();
     
-    private double leftShooterSetpointMPS = 0;
-    private double rightShooterSetpointMPS = 0;
+    private double leftShooterSetpointRPS = 0;
+    private double rightShooterSetpointRPS = 0;
     private double leftArmSetpointDegrees = 0;
 
     private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
@@ -53,7 +54,9 @@ public class ShooterIOTalonFX implements ShooterIO{
     private VoltageOut leftArmRequestVoltage = new VoltageOut(0).withEnableFOC(true);
     private MotionMagicVoltage leftArmMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0).withEnableFOC(true);
     
-    public ShooterIOTalonFX() {
+    private PositionVoltage leftArmPositionRequest = new PositionVoltage(0).withEnableFOC(true);
+
+    public ShooterArmIOTalonFX() {
         leftShooterConfigs = new TalonFXConfiguration();
         rightShooterConfigs = new TalonFXConfiguration();
         leftArmConfigs = new TalonFXConfiguration();
@@ -111,6 +114,16 @@ public class ShooterIOTalonFX implements ShooterIO{
         leftArmSlot0Configs.kA = 0.0;
         leftArmSlot0Configs.kG = 0.0;
         leftArmSlot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
+
+        var leftArmSlot1Configs = leftArmConfigs.Slot1;
+        leftArmSlot1Configs.kP = 0.0;
+        leftArmSlot1Configs.kI = 0.0;
+        leftArmSlot1Configs.kD = 0.0;
+        leftArmSlot1Configs.kS = 0.0;
+        leftArmSlot1Configs.kV = 0.0;
+        leftArmSlot1Configs.kA = 0.0;
+        leftArmSlot1Configs.kG = 0.0;
+        leftArmSlot1Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = leftArmConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 0.0;
@@ -172,10 +185,8 @@ public class ShooterIOTalonFX implements ShooterIO{
                 rightShooterTemp.getValue() };
         inputs.shooterSpeedRPS = new double[] {leftShooterSpeedRPS.getValue(),
                 rightShooterSpeedRPS.getValue() };
-        inputs.shooterSpeedMPS = new double[] {Conversions.RPStoMPS(leftShooterSpeedRPS.getValue(), shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio), Conversions.RPStoMPS(rightShooterSpeedRPS.getValue(), shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)};
-        inputs.shooterSetpointsRPS = new double[] {Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio), Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)};
-        inputs.shooterSetpointsMPS = new double[] {leftShooterSetpointMPS, rightShooterSetpointMPS};
-
+        inputs.shooterSetpointsRPS = new double[] {leftShooterSetpointRPS, rightShooterSetpointRPS};
+    
         inputs.armAppliedVolts = leftArmRequestVoltage.Output;
         inputs.armSetpointDeg = leftArmSetpointDegrees;
         inputs.armSetpointRot = Conversions.DegreesToRotations(leftArmSetpointDegrees, shooterConstants.armGearRatio);
@@ -194,26 +205,25 @@ public class ShooterIOTalonFX implements ShooterIO{
     }
 
     public void requestVelocity(double velocity, double ratio){
-        leftShooterSetpointMPS = velocity;
-        rightShooterSetpointMPS = velocity * ratio;
-        leftShooter.setControl(leftShootRequestVelocity.withVelocity(Conversions.MPStoRPS(leftShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)));
-        rightShooter.setControl(rightShootRequestVelocity.withVelocity(Conversions.MPStoRPS(rightShooterSetpointMPS, shooterConstants.wheelCircumferenceMeters, shooterConstants.shooterGearRatio)));
+        leftShooterSetpointRPS = velocity/2;
+        rightShooterSetpointRPS = leftShooterSetpointRPS * ratio;
+        leftShooter.setControl(leftShootRequestVelocity.withVelocity(leftShooterSetpointRPS));
+        rightShooter.setControl(rightShootRequestVelocity.withVelocity(rightShooterSetpointRPS));
     }
 
     public void requestArmVoltage(double voltage) {
         leftArm.setControl(leftArmRequestVoltage.withOutput(voltage));
     }
 
-    public void requestSetpoint(double angleDegrees) {
+    public void requestMotionMagicSetpoint(double angleDegrees) {
         leftArmSetpointDegrees = angleDegrees;
         double leftArmSetpointRotations = Conversions.DegreesToRotations(angleDegrees, shooterConstants.armGearRatio);
-        leftArm.setControl(leftArmMotionMagicRequest.withPosition(leftArmSetpointRotations));
+        leftArm.setControl(leftArmMotionMagicRequest.withPosition(leftArmSetpointRotations).withSlot(0));
     }
 
-    public void zeroShooterVelocity(){
-        leftShooterSetpointMPS = 0;
-        rightShooterSetpointMPS = 0;
-        leftShooter.setControl(leftShootRequestVelocity.withVelocity(0));
-        rightShooter.setControl(rightShootRequestVelocity.withVelocity(0));
+    public void requestPositionSetpoint(double angleDegrees){
+        leftArmSetpointDegrees = angleDegrees;
+        double leftArmSetpointRotations = Conversions.DegreesToRotations(angleDegrees, shooterConstants.armGearRatio);
+        leftArm.setControl(leftArmPositionRequest.withPosition(leftArmSetpointRotations).withSlot(1));
     }
 }
