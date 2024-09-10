@@ -8,6 +8,8 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose3d;
+
 import java.util.Optional;
 
 public class VisionIOReal implements VisionIO {
@@ -16,6 +18,7 @@ public class VisionIOReal implements VisionIO {
     private final PhotonCamera camera2;
     private final PhotonPoseEstimator poseEstimator1;
     private final PhotonPoseEstimator poseEstimator2;
+    private EstimatedRobotPose lastGoodPose;
 
     public VisionIOReal() {
         camera1 = new PhotonCamera(visionConstants.CAMERA_NAME_1);
@@ -79,6 +82,9 @@ public class VisionIOReal implements VisionIO {
 
         if (chosenPose.isPresent()) {
             var pose = chosenPose.get().estimatedPose;
+
+            pose = smoothPose(pose);
+
             inputs.chosenPoseTranslation[0] = pose.getX();
             inputs.chosenPoseTranslation[1] = pose.getY();
             inputs.chosenPoseTranslation[2] = pose.getZ();
@@ -87,6 +93,8 @@ public class VisionIOReal implements VisionIO {
             inputs.chosenPoseRotation[0] = rotation.getX(); // roll
             inputs.chosenPoseRotation[1] = rotation.getY(); // pitch
             inputs.chosenPoseRotation[2] = rotation.getZ(); // yaw
+
+            lastGoodPose = chosenPose.get();
         }
     }
 
@@ -100,8 +108,20 @@ public class VisionIOReal implements VisionIO {
                     .mapToDouble(t -> t.getPoseAmbiguity())
                     .average().orElse(1.0);
             return ambiguity1 < ambiguity2 ? pose1 : pose2;
+        } else if (!pose1.isPresent() && !pose2.isPresent()) {
+            return Optional.ofNullable(lastGoodPose); 
         } else {
             return pose1.isPresent() ? pose1 : pose2;
         }
     }
+private Pose3d smoothPose(Pose3d newPose) {
+    if (lastGoodPose != null) {
+        var oldPose = lastGoodPose.estimatedPose;
+        var smoothedX = (oldPose.getX() + newPose.getX()) / 2.0;
+        var smoothedY = (oldPose.getY() + newPose.getY()) / 2.0;
+        var smoothedZ = (oldPose.getZ() + newPose.getZ()) / 2.0;
+        return new Pose3d(smoothedX, smoothedY, smoothedZ, newPose.getRotation());
+    }
+    return newPose;
+}
 }

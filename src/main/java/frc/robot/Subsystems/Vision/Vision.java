@@ -7,6 +7,8 @@ public class Vision extends SubsystemBase {
 
     private final VisionIO visionIO;
     private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+    private int logCounter = 0;
+    private static final int LOG_FREQUENCY = 10; //every 10 cycles
 
     public Vision(VisionIO visionIO) {
         this.visionIO = visionIO;
@@ -15,7 +17,10 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         visionIO.updateInputs(inputs);
-        Logger.processInputs("Vision", inputs);
+        if (logCounter++ >= LOG_FREQUENCY) {
+            Logger.processInputs("Vision", inputs);
+            logCounter = 0;
+        }
     }
 
     public double[] getLatestPoseTranslation() {

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.utils.AutoAim;
+import frc.robot.utils.ShotData;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 
@@ -24,13 +26,15 @@ public class Shooter extends SubsystemBase{
     private double[] shooterVelocity = {0, 0}; //velocity, ratio
     private double armSetpointDeg = 0;
     private double armVolts = 0;
+    private double targetDistance = 0.0;
 
     public enum ShooterStates{
         IDLE,
         HOMING,
         SHOOT,
         VOLTAGE,
-        ZEROPOSITION
+        ZEROPOSITION,
+        AUTO_AIM
     }
 
     public Shooter(ShooterIO shooterIO) {
@@ -62,8 +66,29 @@ public class Shooter extends SubsystemBase{
             case ZEROPOSITION:
                 shooterIO.zeroPosition();
                 shooterIO.requestShooterVoltage(0);
+            case AUTO_AIM:
+                handleAutoAim();
+                break;
         }
     }
+
+    public void requestAutoAim(double distanceToSpeaker) {
+        this.targetDistance = distanceToSpeaker;
+        setState(ShooterStates.AUTO_AIM);
+    }
+
+    private void handleAutoAim() {
+        ShotData shotData = AutoAim.getShotData(targetDistance);
+
+        if (shotData != null) {
+            shooterIO.requestVelocity(shotData.velocity(), shotData.ratio());
+            shooterIO.requestSetpoint(shotData.getRotation().getDegrees());
+            setState(ShooterStates.AUTO_AIM);
+        } else {
+            setState(ShooterStates.IDLE);
+        }
+    }
+
 
     public void requestVoltage(double shooterVoltage, double armVoltage){
         this.shooterVolts = shooterVoltage;

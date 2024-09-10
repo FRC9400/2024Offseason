@@ -5,14 +5,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class ShotData {
     
     private final Rotation2d rotation;
-    private final double leftRPS;
-    private final double rightRPS;
+    private final double velocity;
+    private final double ratio;
     private final double flightTimeSeconds;
 
-    public ShotData(Rotation2d rotation, double leftRPS, double rightRPS, double flightTimeSeconds) {
+    public ShotData(Rotation2d rotation, double velocity, double ratio, double flightTimeSeconds) {
         this.rotation = rotation;
-        this.leftRPS = leftRPS;
-        this.rightRPS = rightRPS;
+        this.velocity = velocity;
+        this.ratio = ratio;
         this.flightTimeSeconds = flightTimeSeconds;
     }
 
@@ -20,12 +20,12 @@ public class ShotData {
         return rotation;
     }
 
-    public double getLeftRPS() {
-        return leftRPS;
+    public double velocity() {
+        return velocity;
     }
 
-    public double getRightRPS() {
-        return rightRPS;
+    public double ratio() {
+        return ratio;
     }
 
     public double getFlightTimeSeconds() {

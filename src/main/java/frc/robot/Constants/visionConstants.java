@@ -12,3 +12,4 @@ public final class visionConstants {
                 /* x */ -0.2, /* y */ 0.0, /* z */ 0.5,
                 /* rotation */ new edu.wpi.first.math.geometry.Rotation3d());
         }
+        

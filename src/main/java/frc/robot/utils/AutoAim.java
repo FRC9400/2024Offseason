@@ -7,7 +7,7 @@ public class AutoAim {
     private static final InterpolatingShotTree shotMap = new InterpolatingShotTree();
 
     static {
-        shotMap.put(1.0, new ShotData(Rotation2d.fromDegrees(55), 20.0, 30.0, 1.2));
+        shotMap.put(1.0, new ShotData(Rotation2d.fromDegrees(55), 20.0, 1.5, 1.2));
         //populate this through testing
     }
 

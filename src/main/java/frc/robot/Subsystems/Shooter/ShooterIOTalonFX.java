@@ -187,6 +187,8 @@ public class ShooterIOTalonFX implements ShooterIO{
         inputs.armRPS = new double[] {leftArmRPS.getValue(), rightArmRPS.getValue()};
     }
 
+    
+
 
     public void requestShooterVoltage(double voltage) {
         leftShooter.setControl(shootRequestVoltage.withOutput(voltage));
