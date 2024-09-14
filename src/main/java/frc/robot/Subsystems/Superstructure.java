@@ -47,7 +47,7 @@ public class Superstructure extends SubsystemBase{
         s_intake.Loop();
         s_shooter.Loop();
         Logger.recordOutput("SuperstructureState", this.systemState);
-
+        Logger.recordOutput("State start time", stateStartTime);
         switch(systemState){
             case IDLE:
                 s_indexer.requestIdle();
@@ -105,7 +105,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_intake.requestIdle();
                 s_shooter.requestVoltage();
-                if(stateStartTime > 0.5){
+                if( stateStartTime < 5){
                     setState(SuperstructureStates.TEST_SHOOT_VOLTAGE);
                 }
                 break;
@@ -113,9 +113,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestShoot(4);
                 s_intake.requestIdle();
                 s_shooter.requestVoltage();
-                if(stateStartTime > 0.5){
-                    setState(SuperstructureStates.TEST_IDLE);
-                }
+                
                 break;
                 case TEST_IDLE:
                     s_indexer.requestIdle();

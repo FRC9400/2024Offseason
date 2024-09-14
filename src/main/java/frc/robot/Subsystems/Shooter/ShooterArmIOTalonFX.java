@@ -201,7 +201,9 @@ public class ShooterArmIOTalonFX implements ShooterArmIO{
 
     public void requestShooterVoltage(double voltage) {
         leftShooter.setControl(shootRequestVoltage.withOutput(voltage));
-        rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
+        rightShooter.setControl(shootRequestVoltage.withOutput(voltage));
+
+        //rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
     }
 
     public void requestVelocity(double velocity, double ratio){
