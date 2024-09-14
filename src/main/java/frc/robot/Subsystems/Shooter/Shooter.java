@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase{
     public Shooter(ShooterIO shooterIO) {
         this.shooterIO = shooterIO;
         shooterRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(6),null, 
+            new SysIdRoutine.Config(null, Volts.of(4),null, 
                     (state) -> SignalLogger.writeString("state", state.toString())), 
             new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> shooterIO.requestShooterVoltage(volts.in(Volts)), null, 
                     this));
@@ -40,24 +40,24 @@ public class Shooter extends SubsystemBase{
             this.runOnce(() -> SignalLogger.start()),
             shooterRoutine
                 .quasistatic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 30),
+                .until(() -> inputs.shooterSpeedRPS[0] > 30),
                 this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
                 Commands.waitSeconds(1),
             shooterRoutine
                 .quasistatic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -30),
+                .until(() -> inputs.shooterSpeedRPS[0] < -30),
                 this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
                 Commands.waitSeconds(1),  
 
             shooterRoutine
                 .dynamic(Direction.kForward)
-                .until(() -> inputs.shooterSpeedMPS[0] > 15),
+                .until(() -> inputs.shooterSpeedRPS[0] > 25),
                 this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
                 Commands.waitSeconds(1),  
 
             shooterRoutine
                 .dynamic(Direction.kReverse)
-                .until(() -> inputs.shooterSpeedMPS[0] < -15),
+                .until(() -> inputs.shooterSpeedRPS[0] < -25),
                 this.runOnce(() -> shooterIO.requestShooterVoltage(0)),
                 Commands.waitSeconds(1), 
             this.runOnce(() -> SignalLogger.stop())

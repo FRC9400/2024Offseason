@@ -46,7 +46,8 @@ public class ShooterIOTalonFX implements ShooterIO{
     private double rightShooterSetpointMPS = 0;
     private double leftArmSetpointDegrees = 0;
 
-    private VoltageOut shootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
+    private VoltageOut leftShootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
+    private VoltageOut rightShootRequestVoltage = new VoltageOut(0).withEnableFOC(true);
     private VelocityVoltage leftShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
     private VelocityVoltage rightShootRequestVelocity = new VelocityVoltage(0).withEnableFOC(true);
 
@@ -122,8 +123,8 @@ public class ShooterIOTalonFX implements ShooterIO{
 
         leftShooter.getConfigurator().apply(leftShooterConfigs);
         rightShooter.getConfigurator().apply(rightShooterConfigs);
-        rightArm.setControl(new Follower(leftArm.getDeviceID(), true));
         leftArm.getConfigurator().apply(leftArmConfigs);
+        rightArm.setControl(new Follower(leftArm.getDeviceID(), true));
 
         BaseStatusSignal.setUpdateFrequencyForAll(
             50,
@@ -165,7 +166,7 @@ public class ShooterIOTalonFX implements ShooterIO{
             rightArmRPS
         );
 
-        inputs.shooterAppliedVolts = shootRequestVoltage.Output;
+        inputs.shooterAppliedVolts = leftShootRequestVoltage.Output;
         inputs.shooterCurrent = new double[] {leftShooterCurrent.getValue(),
                 rightShooterCurrent.getValue() };
         inputs.shooterTemp = new double[] {leftShooterTemp.getValue(),
@@ -189,8 +190,8 @@ public class ShooterIOTalonFX implements ShooterIO{
 
 
     public void requestShooterVoltage(double voltage) {
-        leftShooter.setControl(shootRequestVoltage.withOutput(voltage));
-        rightShooter.setControl(new Follower(leftShooter.getDeviceID(), true));
+        leftShooter.setControl(leftShootRequestVoltage.withOutput(voltage));
+        rightShooter.setControl(rightShootRequestVoltage.withOutput(voltage));
     }
 
     public void requestVelocity(double velocity, double ratio){

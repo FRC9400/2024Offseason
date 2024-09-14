@@ -29,6 +29,8 @@ import frc.commons.Conversions;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.moduleConstants;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ModuleIOTalonFX implements ModuleIO {
     private final TalonFX driveMotor;
     private final TalonFX steerMotor;
@@ -289,6 +291,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     }
 
     public void resetToAbsolute() {
+        
         double absolutePositionRotations = angleEncoder.getAbsolutePosition().getValue() - CANcoderOffset;
         double absolutePositionSteerRotations = absolutePositionRotations * moduleConstants.steerGearRatio;
         steerMotor.setPosition(absolutePositionSteerRotations);

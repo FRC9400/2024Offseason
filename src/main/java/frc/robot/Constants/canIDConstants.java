@@ -5,7 +5,6 @@ public class canIDConstants {
     public static final String canivore = "canivore";
     public static final String rio = "rio";
 
-    /* Kinematics */
     public static final int pigeon = 0;
 
     /* Swerve: FL, FR, BL, BR */
@@ -18,7 +17,7 @@ public class canIDConstants {
     public static final int otbIntakeMotor = 14;
     public static final int indexerMotor = 15;
 
-    /* Shooter */
+    /* Shooter Arm*/
     public static final int leftShooterMotor = 16;
     public static final int rightShooterMotor = 17;
     public static final int leftArmMotor = 18;

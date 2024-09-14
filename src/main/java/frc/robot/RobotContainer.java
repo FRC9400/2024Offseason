@@ -33,7 +33,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   
-    //swerve.zeroWheels();
+    swerve.zeroWheels();
     swerve.zeroGyro();
     
     configureBindings();
@@ -41,7 +41,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    /*controller.a()
+    controller.a()
       .onTrue(shooter.armSysIdCmd());
 
     controller.b()
@@ -55,14 +55,11 @@ public class RobotContainer {
 
     controller.leftBumper()
       .onTrue(otbIntake.runSysIdCmd());
-    */
+    
 
-    controller.a() 
+    /*controller.a() 
       .onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-
-    controller.b()
-      .whileTrue(new RunCommand(() -> shooter.setShooterVoltage(1)));
-
+    */
   }
 
   public boolean getAutonomousCommand() {
