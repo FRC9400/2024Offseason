@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Indexer.Indexer;
+import frc.robot.Subsystems.Indexer.IndexerIO;
 import frc.robot.Subsystems.Indexer.IndexerIOTalonFX;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
 import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIO;
@@ -20,6 +22,7 @@ import frc.robot.Subsystems.OTB_Intake.OTB_IntakeIOTalonFX;
 import frc.robot.Subsystems.Shooter.ShooterArm;
 import frc.robot.Subsystems.Shooter.ShooterArmIO;
 import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
+import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -27,9 +30,10 @@ import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
   public static final CommandXboxController controller = new CommandXboxController(0);
-    private final ShooterArm shooter = new ShooterArm(new ShooterArmIOTalonFX());
-    private final OTB_Intake otbIntake = new OTB_Intake(new OTB_IntakeIOTalonFX());
-    private final Indexer indexer = new Indexer(new IndexerIOTalonFX());
+    private final ShooterArmIO shooter = new ShooterArmIOTalonFX();
+    private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
+    private final IndexerIO indexer = new IndexerIOTalonFX();
+    private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter);
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   
@@ -41,7 +45,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
+    controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.TEST_IDLE)));
+    controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.TEST_SHOOT_VOLTAGE)));
 
   }
 
