@@ -55,7 +55,7 @@ public class Superstructure extends SubsystemBase{
             case AMP:
                 indexer.requestOutake(0);//placeholder
                 intake.requestSetpoint(0);//placeholder
-                shooter.setState(ShooterStates.ZEROPOSITION);
+                shooter.setState(ShooterStates.ZEROPOSITION);//kjsadhgjk
         }
     }
 
