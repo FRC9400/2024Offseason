@@ -24,7 +24,7 @@ public class OTB_Intake extends SubsystemBase{
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
         this.otbIntakeIO = otbIntakeIO;
         pivotSysID  = new SysIdRoutine(
-            new SysIdRoutine.Config(null, Volts.of(3), null,
+            new SysIdRoutine.Config(null, Volts.of(2), null,
                     (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> otbIntakeIO.requestPivotVoltage(volts.in(Volts)), null,
                     this));
@@ -34,25 +34,25 @@ public class OTB_Intake extends SubsystemBase{
         return Commands.sequence(
                 this.runOnce(() -> SignalLogger.start()),
                 pivotSysID
-                        .quasistatic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPosDeg) > 40),
-                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
-                Commands.waitSeconds(1),
-                pivotSysID
                         .quasistatic(Direction.kReverse)
-                        .until(() -> inputs.pivotPosDeg < 0),
+                        .until(() -> inputs.pivotPosDeg < -30),
                 this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
-
                 pivotSysID
-                        .dynamic(Direction.kForward)
-                        .until(() -> Math.abs(inputs.pivotPosDeg) > 40),
+                        .quasistatic(Direction.kForward)
+                        .until(() -> inputs.pivotPosDeg > 0),
                 this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
 
                 pivotSysID
                         .dynamic(Direction.kReverse)
-                        .until(() -> inputs.pivotPosDeg < 0),
+                        .until(() -> inputs.pivotPosDeg < -30),
+                this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
+                Commands.waitSeconds(1),
+
+                pivotSysID
+                        .dynamic(Direction.kForward)
+                        .until(() -> inputs.pivotPosDeg > 0),
                 this.runOnce(() -> otbIntakeIO.requestPivotVoltage(0)),
                 Commands.waitSeconds(1),
                 this.runOnce(() -> SignalLogger.stop()));
