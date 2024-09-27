@@ -15,7 +15,7 @@ import frc.robot.Constants.otbIntakeConstants;
 import frc.robot.Constants.canIDConstants;
 
 public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
-    private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor, "rio");
+    private final TalonFX pivot = new TalonFX(canIDConstants.otbIntakePivotMotor, "canivore");
     private final TalonFX intake = new TalonFX(canIDConstants.otbIntakeMotor, "canivore");
 
     private final TalonFXConfiguration pivotConfigs;
@@ -52,19 +52,19 @@ public class OTB_IntakeIOTalonFX implements OTB_IntakeIO {
         pivotCurrentLimitConfigs.StatorCurrentLimitEnable = true;
 
         var slot0Configs = pivotConfigs.Slot0;
-        slot0Configs.kP = 0.0;
+        slot0Configs.kP = 1;
         slot0Configs.kI = 0.0;
         slot0Configs.kD = 0.0;
-        slot0Configs.kS = 0.0;
-        slot0Configs.kV = 0.0;
-        slot0Configs.kA = 0.0;
-        slot0Configs.kG = 0.0;
+        slot0Configs.kS = 0.20835;
+        slot0Configs.kV = 0.0084435;
+        slot0Configs.kA = 0.001;
+        slot0Configs.kG = 0.48633;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = pivotConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 0.0;
-        motionMagicConfigs.MotionMagicAcceleration = 0.0;
-        motionMagicConfigs.MotionMagicJerk = 0.0;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 60.0;
+        motionMagicConfigs.MotionMagicAcceleration = 120.0;
+        motionMagicConfigs.MotionMagicJerk = 10000.0;
 
         var feedbackConfigs = pivotConfigs.Feedback;
         feedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;

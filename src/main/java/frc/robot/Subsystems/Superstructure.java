@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Indexer.Indexer;
 import frc.robot.Subsystems.Indexer.IndexerIO;
@@ -19,7 +20,16 @@ public class Superstructure extends SubsystemBase{
     private ShooterArm s_shooter;
     private double stateStartTime = 0;
 
-    private SuperstructureStates systemState = SuperstructureStates.TEST_IDLE;
+    private SuperstructureStates systemState = SuperstructureStates.IDLE;
+    
+    LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffVoltage", 3);
+    LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
+    LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 4);
+    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5);
+    LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
+    LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
+    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
+    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 20);
 
     public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter){
         this.s_indexer = new Indexer(indexer);
@@ -55,20 +65,23 @@ public class Superstructure extends SubsystemBase{
                 s_shooter.requestZero();
                 break;
             case INTAKE:
-                s_indexer.requestHandoff(0, 0);
+                s_indexer.requestHandoff(2, 2);
                 s_intake.requestIntake();
                 s_shooter.requestZero();
-                if(s_indexer.getAmpCurrent()>40 && stateStartTime > 0.3){//placeholder value
-                    setState(SuperstructureStates.IDLE);
+                if (s_indexer.getIndexerCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                    setState(SuperstructureStates.HANDOFF);
                 }
                 break;
             case HANDOFF:
                 s_indexer.requestHandoff(0, 0);//placeholder value(s)
                 s_intake.requestIdle();
                 s_shooter.requestIdle();
+                if (s_indexer.getAmpCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case AMP_A:
-                s_indexer.requestIdle();//placeholder value(s)
+                s_indexer.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
                 if(Math.abs(s_shooter.getArmDegrees() - 140) < 0.1){
@@ -76,15 +89,18 @@ public class Superstructure extends SubsystemBase{
                 }
                 break;
             case AMP_B:
-                s_indexer.requestAmp(0);//placeholder value(s)
+                s_indexer.requestAmp(-3);//placeholder value(s)
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.75) {
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case SHOOT:
                 s_indexer.requestShoot(0);//placeholder value(s)
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(0, 0,0);//placeholder value(s)
-                if(stateStartTime > 2){//placeholder value
+                s_shooter.requestShoot(20, 0.5,30);//placeholder value(s)
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -96,31 +112,10 @@ public class Superstructure extends SubsystemBase{
             case PREPARE_SHOOT:
                 s_indexer.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(0, shooterConstants.shooterGearRatio, 0);//placeholder value(s)
-                if(s_shooter.atShooterSetpoint() & s_shooter.atArmSetpoint()){
+                s_shooter.requestShoot(20, 0.5, 30);//placeholder value(s)
+                if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
                     setState(SuperstructureStates.SHOOT);
                 }
-                break;
-            case TEST_SHOT_VOLTAGE_PREPARE:
-                s_indexer.requestIdle();
-                s_intake.requestIdle();
-                s_shooter.requestVoltage();
-                if(stateStartTime > 0.5){
-                    setState(SuperstructureStates.TEST_SHOOT_VOLTAGE);
-                }
-                break;
-                case TEST_SHOOT_VOLTAGE:
-                s_indexer.requestShoot(4);
-                s_intake.requestIdle();
-                s_shooter.requestVoltage();
-                if(stateStartTime > 0.5){
-                    setState(SuperstructureStates.TEST_IDLE);
-                }
-                break;
-                case TEST_IDLE:
-                    s_indexer.requestIdle();
-                    s_intake.requestIdle();
-                    s_shooter.requestIdle();
                 break;
             }
         }

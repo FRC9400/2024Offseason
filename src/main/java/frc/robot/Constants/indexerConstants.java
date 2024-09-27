@@ -6,7 +6,7 @@ public class indexerConstants {
 
     /* Motor Inverts */
 
-    public static final InvertedValue indexerInvert = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue indexerInvert = InvertedValue.Clockwise_Positive;
     public static final InvertedValue ampRollerInvert = InvertedValue.CounterClockwise_Positive; 
 
     /* Current Limits */
