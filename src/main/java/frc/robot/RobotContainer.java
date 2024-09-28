@@ -39,14 +39,26 @@ public class RobotContainer {
   
     swerve.zeroWheels();
     swerve.zeroGyro();
-    
+    swerve.setDefaultCommand(
+            new TeleopSwerve(
+                swerve, 
+                () -> -controller.getRawAxis(XboxController.Axis.kLeftY.value),
+                () -> -controller.getRawAxis(XboxController.Axis.kLeftX.value), 
+                () -> -controller.getRawAxis(XboxController.Axis.kRightX.value)
+              
+            )
+        );
     configureBindings();
+
 
   }
 
   private void configureBindings() {
-    controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.TEST_IDLE)));
-    controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.TEST_SHOOT_VOLTAGE)));
+    controller.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
+    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
+    controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A)));
+    controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
+
 
   }
 

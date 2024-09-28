@@ -43,7 +43,7 @@ public class OTB_Intake{
                 break;
             case INTAKE:
                 otbIntakeIO.requestIntakeVoltage(3);
-                otbIntakeIO.requestSetpoint(140);
+                otbIntakeIO.requestSetpoint(39.48);
                 break;
             case SETPOINT:
                 otbIntakeIO.requestIntakeVoltage(0);

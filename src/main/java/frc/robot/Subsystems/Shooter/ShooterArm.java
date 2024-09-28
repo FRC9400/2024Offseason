@@ -61,7 +61,7 @@ public class ShooterArm{
                 break;
             case AMP:
                 shooterArmIO.requestVelocity(0, 0);
-                shooterArmIO.requestMotionMagicSetpoint(140);
+                shooterArmIO.requestMotionMagicSetpoint(130);
                 break;
             case PASS:
                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
