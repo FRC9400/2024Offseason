@@ -10,7 +10,7 @@ public class Amp {
 
     public enum AmpStates{
         IDLE,
-        AMP,
+        RUN,
         SHOOT
     }
 
@@ -19,14 +19,14 @@ public class Amp {
     }
 
     public void Loop(){
-        AmpIO.updateInputs(inputs);
+        ampIO.updateInputs(inputs);
         Logger.processInputs("Amp", inputs);
         Logger.recordOutput("Amp State", this.state);
         switch(state){
             case IDLE:
                 ampIO.setAmpRollerVoltage(0);
                 break;
-            case AMP:
+            case RUN:
                 ampIO.setAmpRollerVoltage(volts);
                 break;
             case SHOOT:
@@ -40,9 +40,9 @@ public class Amp {
         setState(AmpStates.IDLE);
     }
 
-    public void requestAmp(double volts){
+    public void requestRun(double volts){
         this.volts = volts;
-        setState(AmpStates.AMP);
+        setState(AmpStates.RUN);
     }
 
     public void requestShoot(double volts){

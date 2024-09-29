@@ -63,7 +63,7 @@ public class Superstructure extends SubsystemBase{
         switch(systemState){
             case IDLE:
                 s_indexer.requestIdle();
-                
+                s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestZero();
                 break;
@@ -87,6 +87,7 @@ public class Superstructure extends SubsystemBase{
                 break;
             case AMP_A:
                 s_indexer.requestIdle();
+                s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
                 if(Math.abs(s_shooter.getArmDegrees() - 130) < 0.1){
@@ -95,6 +96,7 @@ public class Superstructure extends SubsystemBase{
                 break;
             case AMP_B:
                 s_indexer.requestIdle();//placeholder value(s)
+                s_amp.requestRun(-3);
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.75) {
@@ -102,7 +104,8 @@ public class Superstructure extends SubsystemBase{
                 }
                 break;
             case SHOOT:
-                s_indexer.requestShoot(0);//placeholder value(s)
+                s_indexer.requestIdle();
+                s_amp.requestRun(2);//placeholder value(s)
                 s_intake.requestSetpoint();
                 s_shooter.requestShoot(20, 0.5,30);//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
@@ -110,12 +113,13 @@ public class Superstructure extends SubsystemBase{
                 }
                 break;
             case PASS:
-                s_indexer.requestHandoff(0, 0);//placeholder value(s)
+                //s_indexer.requestHandoff(0, 0);//placeholder value(s)
                 s_intake.requestSetpoint();
                 s_shooter.requestPass(0,0, 0);//placeholder value(s)
                 break;
             case PREPARE_SHOOT:
                 s_indexer.requestIdle();
+                s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestShoot(20, 0.5, 30);//placeholder value(s)
                 if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
