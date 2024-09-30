@@ -359,6 +359,26 @@ public class Swerve extends SubsystemBase{
         gyroIO.setPosition(yawDegrees);
     }
 
+    public Command runChoreoTrajStandard(ChoreoTrajectory trajectory) {
+        return Choreo.choreoSwerveCommand(
+            trajectory,
+            () -> poseRaw,
+            Choreo.choreoSwerveController(
+                    new PIDController(1.5, 0.0, 0.0),
+                    new PIDController(1.5, 0.0, 0.0),
+                    new PIDController(3.0, 0.0, 0.0)),
+            (ChassisSpeeds speeds) -> {
+            Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
+            Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
+            Logger.recordOutput("Auto req Omega", speeds.omegaRadiansPerSecond);
+            this.driveRobotRelative(speeds);},
+            () -> {
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                return alliance.isPresent() && alliance.get() == Alliance.Red;
+              },
+              this);
+    }
+
     public Command runChoreoTraj(ChoreoTrajectory traj) {
         return this.runChoreoTraj(traj, false);
     }
