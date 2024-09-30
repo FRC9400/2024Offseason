@@ -25,7 +25,6 @@ import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
