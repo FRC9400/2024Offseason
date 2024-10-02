@@ -109,42 +109,6 @@ public class Swerve extends SubsystemBase{
         moduleIOs[3] = new ModuleIOTalonFX(canIDConstants.driveMotor[3], canIDConstants.steerMotor[3], canIDConstants.CANcoder[3], swerveConstants.moduleConstants.CANcoderOffsets[3],
         swerveConstants.moduleConstants.driveMotorInverts[3], swerveConstants.moduleConstants.steerMotorInverts[3], swerveConstants.moduleConstants.CANcoderInverts[3]);
 
-        //Pathplanner
-        AutoBuilder.configureHolonomic(
-            this::getPoseRaw,
-            this::resetPose,
-            this::getRobotRelativeSpeeds,
-            this::driveRobotRelative,
-            new HolonomicPathFollowerConfig(
-                new PIDConstants(8, 0.0, 0.0),
-                new PIDConstants(3, 0.0, 0.0), //3 real field
-                3.72,
-                0.295,
-                new ReplanningConfig()
-                ),
-            () -> {
-                var alliance = DriverStation.getAlliance();
-                if(alliance.isPresent()){
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-             return false;
-            },
-        this
-        );
-        PathPlannerLogging.setLogActivePathCallback(
-            (activePath) -> {
-                Logger.recordOutput(
-                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            }
-        );
-        PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose) ->{
-                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            });
-
-            
-
-
         for (int i = 0; i < 4; i++) {
             moduleIOs[i].setDriveBrakeMode(true);
             moduleIOs[i].setTurnBrakeMode(false);
