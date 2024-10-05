@@ -25,14 +25,9 @@ public class Superstructure extends SubsystemBase{
 
     private SuperstructureStates systemState = SuperstructureStates.IDLE;
     
-    LoggedTunableNumber handoffShooterVoltage = new LoggedTunableNumber("Superstructure/handoffVoltage", 3);
-    LoggedTunableNumber handoffIntakeVoltage = new LoggedTunableNumber("Superstructure/handoffIntkaeVoltage", 1);
-    LoggedTunableNumber intakeVoltage = new LoggedTunableNumber("Superstructure/intakeVoltage", 4);
-    LoggedTunableNumber outakeVoltage = new LoggedTunableNumber("Superstructure/outakeVoltage", -3.5);
-    LoggedTunableNumber ampShooterVel = new LoggedTunableNumber("Superstructure/ampShooterVel", 3.2);
-    LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMIDvel", 20);
-    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
-    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 20);
+    
+    LoggedTunableNumber shooterAngle = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 23);
+    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 70);
 
     public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter, AmpIO amp){
         this.s_indexer = new Indexer(indexer);
@@ -69,7 +64,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestZero();
+                s_shooter.requestIdle();
                 break;
             case INTAKE:
                 s_indexer.requestHandoff(2);
@@ -120,7 +115,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestRun(2);//placeholder value(s)
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(20, 0.5,30);//placeholder value(s)
+                s_shooter.requestShoot(shootLeftVel.get(), 0.5,shooterAngle.get());//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
                 }
@@ -134,7 +129,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(20, 0.5, 30);//placeholder value(s)
+                s_shooter.requestShoot(shootLeftVel.get(), 0.5,shooterAngle.get());//placeholder value(s)
                 if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
                     setState(SuperstructureStates.SHOOT);
                 }

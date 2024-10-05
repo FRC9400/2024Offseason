@@ -117,7 +117,8 @@ public class ShooterArm{
     }
 
     public boolean atShooterSetpoint(){
-        if(Math.abs(shooterVelocity[0] - inputs.shooterSpeedRPS[0]) < 0.1 && Math.abs((shooterVelocity[0] * shooterVelocity[1]) - inputs.shooterSpeedRPS[1]) < 0.1){
+        if(Math.abs(shooterVelocity[0]/2.0 - inputs.shooterSpeedRPS[0]) < 0.5 && 
+        Math.abs((shooterVelocity[0] * shooterVelocity[1])/2.0 - inputs.shooterSpeedRPS[1]) < 0.1){
             return true;
         }
         return false;
@@ -128,7 +129,7 @@ public class ShooterArm{
     }
 
     public boolean atArmSetpoint(){
-        if(Math.abs(armAngleDegrees - inputs.armPosDeg[0]) < 0.1){
+        if(Math.abs(armAngleDegrees - inputs.armPosDeg[0]) < 0.3){
             return true;
         }
         return false;
