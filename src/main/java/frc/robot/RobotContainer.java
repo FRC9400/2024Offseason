@@ -25,6 +25,7 @@ import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
+import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -34,6 +35,7 @@ public class RobotContainer {
     private final IndexerIO indexer = new IndexerIOTalonFX();
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter);
     private final Swerve swerve = new Swerve();
+    private AutonomousSelector selector;
   public RobotContainer() {
   
     swerve.zeroWheels();
@@ -61,9 +63,21 @@ public class RobotContainer {
 
   }
 
-  public boolean getAutonomousCommand() {
-    return false;
+  public modes getAutonomousCommand() {
+    return selector.get();
     
+  }
+
+  public void configureAutonomousSelector(){
+    selector = new AutonomousSelector(swerve, superstructure);
+  }
+
+  public Superstructure getSuperstructure(){
+    return superstructure;
+  }
+
+  public Swerve getSwerve(){
+    return swerve;
   }
 
 }
