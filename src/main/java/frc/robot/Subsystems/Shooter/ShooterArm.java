@@ -53,7 +53,7 @@ public class ShooterArm{
                 break;
             case HANDOFF:
                  shooterArmIO.requestMotionMagicSetpoint(0);
-                 shooterArmIO.requestShooterVoltage(0);
+                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
                  break;
             case SHOOT:
                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
@@ -95,7 +95,9 @@ public class ShooterArm{
         setState(ShooterArmStates.ZERO);
     }
 
-    public void requestHandoff(){
+    public void requestHandoff(double velocityRPS, double ratio){
+        shooterVelocity[0] = velocityRPS;
+        shooterVelocity[1] = ratio;
         setState(ShooterArmStates.HANDOFF);
     }
     
@@ -119,6 +121,10 @@ public class ShooterArm{
             return true;
         }
         return false;
+    }
+
+    public double getCurrent(){
+        return inputs.shooterCurrent[0];
     }
 
     public boolean atArmSetpoint(){

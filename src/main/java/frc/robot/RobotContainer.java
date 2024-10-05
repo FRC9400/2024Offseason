@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.Amp.AmpIO;
+import frc.robot.Subsystems.Amp.AmpIOTalonFX;
 import frc.robot.Subsystems.Indexer.Indexer;
 import frc.robot.Subsystems.Indexer.IndexerIO;
 import frc.robot.Subsystems.Indexer.IndexerIOTalonFX;
@@ -33,7 +35,8 @@ public class RobotContainer {
     private final ShooterArmIO shooter = new ShooterArmIOTalonFX();
     private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
     private final IndexerIO indexer = new IndexerIOTalonFX();
-    private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter);
+    private final AmpIO amp = new AmpIOTalonFX();
+    private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter,amp);
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   

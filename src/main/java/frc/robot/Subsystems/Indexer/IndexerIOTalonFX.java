@@ -57,5 +57,7 @@ public class IndexerIOTalonFX implements IndexerIO{
         inputs.indexerRPS = indexerRPS.getValue();
     }
 
-    
+    public void setIndexerVoltage(double voltage){
+        indexer.setControl(indexerVoltageRequest.withOutput(voltage));
+    }
 }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
+import frc.robot.Subsystems.Amp.AmpIO;
 import frc.robot.Subsystems.Indexer.Indexer;
 import frc.robot.Subsystems.Indexer.IndexerIO;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
@@ -33,16 +34,18 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
     LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 20);
 
-    public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter){
+    public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter, AmpIO amp){
         this.s_indexer = new Indexer(indexer);
         this.s_intake = new OTB_Intake(intake);
         this.s_shooter = new ShooterArm(shooter);
+        this.s_amp = new Amp(amp);
     }
 
     public enum SuperstructureStates{
         IDLE,
         INTAKE,
-        HANDOFF,
+        HANDOFF_A,
+        HANDOFF_B,
         AMP_A,
         AMP_B,
         SHOOT,
@@ -58,6 +61,7 @@ public class Superstructure extends SubsystemBase{
         s_indexer.Loop();
         s_intake.Loop();
         s_shooter.Loop();
+        s_amp.Loop();
         Logger.recordOutput("SuperstructureState", this.systemState);
         Logger.recordOutput("State start time", stateStartTime);
         switch(systemState){
@@ -71,17 +75,26 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestHandoff(2);
                 s_amp.requestRun(2);
                 s_intake.requestIntake();
-                s_shooter.requestZero();
-                if (s_indexer.getIndexerCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
-                    setState(SuperstructureStates.HANDOFF);
+                s_shooter.requestHandoff(6, 1);
+                if (s_amp.getAmpCurrent() > 15 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                    setState(SuperstructureStates.HANDOFF_A);
                 }
                 break;
-            case HANDOFF:
+            case HANDOFF_A:
                 s_indexer.requestHandoff(2);//placeholder value(s)
                 s_amp.requestRun(2);
-                s_intake.requestIdle();
-                s_shooter.requestIdle();
-                if (s_amp.getAmpCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                s_intake.requestSetpoint();
+                s_shooter.requestHandoff(6, 1);
+                if (s_shooter.getCurrent() > 40 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                    setState(SuperstructureStates.HANDOFF_B);
+                }
+                break;
+            case HANDOFF_B:
+                s_indexer.requestIdle();//placeholder value(s)
+                s_amp.requestRun(-2);
+                s_intake.requestSetpoint();
+                s_shooter.requestHandoff(-6, 1);
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
