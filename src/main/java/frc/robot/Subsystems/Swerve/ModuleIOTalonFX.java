@@ -158,7 +158,8 @@ public class ModuleIOTalonFX implements ModuleIO {
 
         // CANcoder
         var angleEncoderConfig = new CANcoderConfiguration();
-        angleEncoderConfig.MagnetSensor.MagnetOffset = CANcoderOffset;
+        angleEncoderConfig.MagnetSensor.MagnetOffset = 0;
+        angleEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0to1;
         angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
            
 
