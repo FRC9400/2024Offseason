@@ -24,6 +24,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +61,10 @@ public class Swerve extends SubsystemBase{
             0,
             0,
             new Rotation2d()));
+
+    private final SwerveDrivePoseEstimator m_poseEstimator = 
+        new SwerveDrivePoseEstimator(kinematics, lastGyroYaw, getSwerveModulePositions(), poseRaw);
+    //added ^ to implement vision, i HOPE i did it right but someone should double check that
 
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
@@ -222,9 +228,19 @@ public class Swerve extends SubsystemBase{
                 getRotation2d(),
                 getSwerveModulePositions());
 
+        m_poseEstimator.update(lastGyroYaw, getSwerveModulePositions());
+
         boolean rejectUpdate = false;
         LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if(mt2.tagCount<=1){rejectUpdate=true;}
+        if(Math.abs(gyroInputs.velocityRadPerSec)>Math.PI*4){rejectUpdate=true;}
+        if(!rejectUpdate){
+            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+            m_poseEstimator.addVisionMeasurement(
+                mt2.pose,
+                mt2.timestampSeconds);
+        }
     }
 
     public Pose2d getPoseRaw(){
