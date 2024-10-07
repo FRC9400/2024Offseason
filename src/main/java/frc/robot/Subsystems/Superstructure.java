@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
+import frc.robot.Subsystems.Amp.AmpIO;
 import frc.robot.Subsystems.Indexer.Indexer;
 import frc.robot.Subsystems.Indexer.IndexerIO;
 import frc.robot.Subsystems.OTB_Intake.OTB_Intake;
@@ -33,10 +34,11 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 15);
     LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 20);
 
-    public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter){
+    public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter, AmpIO amp){
         this.s_indexer = new Indexer(indexer);
         this.s_intake = new OTB_Intake(intake);
         this.s_shooter = new ShooterArm(shooter);
+        this.s_amp = new Amp(amp);
     }
 
     public enum SuperstructureStates{

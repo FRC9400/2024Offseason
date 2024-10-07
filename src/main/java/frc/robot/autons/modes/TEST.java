@@ -11,8 +11,8 @@ public class TEST extends SequentialCommandGroup {
     public TEST(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
-            new InstantCommand(() -> swerve.setGyroStartingPosition(0)),
-            swerve.runChoreoTraj(Choreo.getTrajectory("test"),true)
+          //  new InstantCommand(() -> swerve.setGyroStartingPosition(0))
+       swerve.runChoreoTrajStandard(Choreo.getTrajectory("test"))
         );
     }
     
