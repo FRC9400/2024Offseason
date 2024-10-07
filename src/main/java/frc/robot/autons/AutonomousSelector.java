@@ -21,6 +21,8 @@ public class AutonomousSelector {
             "TEST", modes.TEST
         );
 
+        autonomousSelector.addOption("HELp", modes.TEST);
+
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 

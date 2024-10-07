@@ -37,6 +37,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private AutonomousSelector selector;
   public RobotContainer() {
+    configureAutonomousSelector();
   
     swerve.zeroWheels();
     swerve.zeroGyro();
