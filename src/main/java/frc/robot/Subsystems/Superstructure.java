@@ -39,6 +39,7 @@ public class Superstructure extends SubsystemBase{
     public enum SuperstructureStates{
         IDLE,
         INTAKE,
+        OUTTAKE,
         HANDOFF_A,
         HANDOFF_B,
         AMP_A,
@@ -74,6 +75,11 @@ public class Superstructure extends SubsystemBase{
                 if (s_amp.getAmpCurrent() > 15 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.HANDOFF_A);
                 }
+                break;
+            case OUTTAKE:
+                s_indexer.requestHandoff(-2);
+                s_amp.requestRun(-2);
+                s_intake.requestOuttake();
                 break;
             case HANDOFF_A:
                 s_indexer.requestHandoff(2);//placeholder value(s)

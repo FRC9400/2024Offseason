@@ -157,9 +157,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         steerCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.steerStatorCurrentLimit;
 
         // CANcoder
-        var angleEncoderConfig = new CANcoderConfiguration();
-        angleEncoderConfig.MagnetSensor.MagnetOffset = CANcoderOffset;
-        angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
+        // var angleEncoderConfig = new CANcoderConfiguration();
+        // angleEncoderConfig.MagnetSensor.MagnetOffset = CANcoderOffset;
+        // angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
            
 
         driveConfigurator.apply(driveConfigs);
