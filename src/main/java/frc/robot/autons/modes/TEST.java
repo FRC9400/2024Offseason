@@ -12,7 +12,7 @@ public class TEST extends SequentialCommandGroup {
         addRequirements(swerve, superstructure);
         addCommands(
           //  new InstantCommand(() -> swerve.setGyroStartingPosition(0))
-       swerve.runChoreoTrajStandard(Choreo.getTrajectory("test"))
+       swerve.runChoreoTrajStandard(Choreo.getTrajectory("help.1"))
         );
     }
     
