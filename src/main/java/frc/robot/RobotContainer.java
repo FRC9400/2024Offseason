@@ -40,7 +40,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
   public RobotContainer() {
   
-    // swerve.zeroWheels();
+    swerve.zeroWheels();
     swerve.zeroGyro();
     swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -62,7 +62,7 @@ public class RobotContainer {
     controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A)));
     controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE)));
-
+controller.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
   }
 
   public boolean getAutonomousCommand() {
