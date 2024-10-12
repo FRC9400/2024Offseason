@@ -6,13 +6,14 @@ import frc.robot.Subsystems.Superstructure;
 import com.choreo.lib.Choreo;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class TEST extends SequentialCommandGroup {
+public class TestAuto extends SequentialCommandGroup {
 
-    public TEST(Swerve swerve, Superstructure superstructure){
+    public TestAuto(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
-          //  new InstantCommand(() -> swerve.setGyroStartingPosition(0))
-       swerve.runChoreoTrajStandard(Choreo.getTrajectory("help.1"))
+            new InstantCommand(() -> swerve.setGyroStartingPosition(0)),
+            new InstantCommand(() -> superstructure.requestPreShoot())//,
+            //swerve.runChoreoTraj(Choreo.getTrajectory("TestPath"),true)
         );
     }
     
