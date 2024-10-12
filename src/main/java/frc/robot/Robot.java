@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autons.AutonomousSelector.modes;
-import frc.robot.autons.modes.TEST;
+import frc.robot.autons.modes.TestAuto;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -71,7 +71,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      test = new TEST(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      test = new TestAuto(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       built = true;
     }
   }
@@ -85,11 +85,13 @@ public class Robot extends LoggedRobot {
 
     /*if(m_robotContainer.getAutonomousCommand() == modes.TEST){
       m_autonomousCommand = test;
-    }
+    }*/
+
+    m_autonomousCommand = test;
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
-    }*/
+    }
 
     test.schedule();
   }

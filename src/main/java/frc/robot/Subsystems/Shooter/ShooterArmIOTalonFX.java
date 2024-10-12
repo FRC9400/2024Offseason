@@ -207,7 +207,7 @@ public class ShooterArmIOTalonFX implements ShooterArmIO{
     }
 
     public void requestVelocity(double velocity, double ratio){
-        leftShooterSetpointRPS = velocity/2;
+        leftShooterSetpointRPS = velocity;
         rightShooterSetpointRPS = leftShooterSetpointRPS * ratio;
         leftShooter.setControl(leftShootRequestVelocity.withVelocity(leftShooterSetpointRPS));
         rightShooter.setControl(rightShootRequestVelocity.withVelocity(rightShooterSetpointRPS));

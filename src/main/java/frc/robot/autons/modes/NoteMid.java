@@ -6,9 +6,9 @@ import frc.robot.Subsystems.Superstructure;
 import com.choreo.lib.Choreo;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class 4NoteMid extends SequentialCommandGroup {
+public class NoteMid extends SequentialCommandGroup {
 
-    public 4NoteMid(Swerve swerve, Superstructure superstructure){
+    public NoteMid(Swerve swerve, Superstructure superstructure){/* 
         addRequirements(swerve, superstructure);
         addCommands(
             new InstantCommand(() -> swerve.setGyroStartingPosition(0)),
@@ -28,7 +28,7 @@ public class 4NoteMid extends SequentialCommandGroup {
             new WaitUntilCommand(superstructure.getState()==SuperstructureStates.IDLE),
             swerve.runChoreoTraj(Choreo.getTrajectory("4NoteMidE"), true),
             new InstantCommand(() -> superstructure.requestPreShoot())
-        );
+        );*/
     }
     
 }
