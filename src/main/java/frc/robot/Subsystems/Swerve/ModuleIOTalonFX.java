@@ -123,12 +123,12 @@ public class ModuleIOTalonFX implements ModuleIO {
 
         //field carpet
         
-        driveSlot0Configs.kP = 0.12006; // 0.13995
+        driveSlot0Configs.kP = 0.14922; //0.12006; // 0.13995
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.21146; //  0.011412
-        driveSlot0Configs.kV = 0.12209;// 0.12125
-        driveSlot0Configs.kA = 0.013607; // 0.042716*/
+        driveSlot0Configs.kS = 0.18123; //0.21146; //  0.011412
+        driveSlot0Configs.kV = 0.14061; //0.12209;// 0.12125
+        driveSlot0Configs.kA = 0.0096859;// 0.013607; // 0.042716*/
 
         // STEER
 
@@ -157,9 +157,10 @@ public class ModuleIOTalonFX implements ModuleIO {
         steerCurrentLimitConfigs.StatorCurrentLimit = swerveConstants.moduleConstants.steerStatorCurrentLimit;
 
         // CANcoder
-         var angleEncoderConfig = new CANcoderConfiguration();
-         angleEncoderConfig.MagnetSensor.MagnetOffset = 0;
-         angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
+        var angleEncoderConfig = new CANcoderConfiguration();
+        angleEncoderConfig.MagnetSensor.MagnetOffset = 0;
+      //  angleEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+        angleEncoderConfig.MagnetSensor.SensorDirection =  SensorDirectionValue.CounterClockwise_Positive;
            
 
         driveConfigurator.apply(driveConfigs);
