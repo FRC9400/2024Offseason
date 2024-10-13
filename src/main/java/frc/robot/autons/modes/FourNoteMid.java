@@ -6,12 +6,13 @@ import frc.robot.Subsystems.Superstructure;
 import com.choreo.lib.Choreo;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class NoteMid extends SequentialCommandGroup {
+public class FourNoteMid extends SequentialCommandGroup {
 
-    public NoteMid(Swerve swerve, Superstructure superstructure){/* 
+    public FourNoteMid(Swerve swerve, Superstructure superstructure){
         addRequirements(swerve, superstructure);
         addCommands(
-            new InstantCommand(() -> swerve.setGyroStartingPosition(0)),
+            new InstantCommand(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 0)),
+            new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d(1.3615734577178962,5.555154800415039),new Rotation2d(0)))),
             new InstantCommand(() -> superstructure.requestPreShoot()),
             new WaitUntilCommand(superstructure.getState()==SuperstructureStates.IDLE),
             swerve.runChoreoTraj(Choreo.getTrajectory("4NoteMidA"), true),
@@ -28,7 +29,7 @@ public class NoteMid extends SequentialCommandGroup {
             new WaitUntilCommand(superstructure.getState()==SuperstructureStates.IDLE),
             swerve.runChoreoTraj(Choreo.getTrajectory("4NoteMidE"), true),
             new InstantCommand(() -> superstructure.requestPreShoot())
-        );*/
+        );
     }
     
 }
