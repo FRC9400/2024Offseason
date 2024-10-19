@@ -46,7 +46,7 @@ public class TeleopSwerve extends Command {
             y_speed,
             rot_speed, 
             true,
-            true
+            false
         );
     }
 }
