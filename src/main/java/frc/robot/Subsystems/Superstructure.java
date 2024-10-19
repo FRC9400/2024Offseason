@@ -65,7 +65,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestIdle();
+                s_shooter.requestZero();
                 break;
             case INTAKE:
                 s_indexer.requestHandoff(2);
@@ -95,7 +95,7 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestRun(-2);
                 s_intake.requestSetpoint();
                 s_shooter.requestHandoff(-6, 1);
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3) {
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
@@ -104,12 +104,10 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
-                if(Math.abs(s_shooter.getArmDegrees() - 130) < 0.1){
-                    setState(SuperstructureStates.AMP_B);
-                }
+                
                 break;
             case AMP_B:
-                s_indexer.requestIdle();//placeholder value(s)
+                s_indexer.requestIdle();
                 s_amp.requestRun(-3);
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();

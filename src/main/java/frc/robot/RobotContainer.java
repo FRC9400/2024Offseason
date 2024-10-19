@@ -25,6 +25,7 @@ import frc.robot.Subsystems.Shooter.ShooterArm;
 import frc.robot.Subsystems.Shooter.ShooterArmIO;
 import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
+import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -57,12 +58,15 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    controller.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
+    controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
     controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
-    controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A)));
+    controller.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
+
+    controller.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
     controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE)));
-controller.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
+    controller.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
+    controller.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
   }
 
   public boolean getAutonomousCommand() {

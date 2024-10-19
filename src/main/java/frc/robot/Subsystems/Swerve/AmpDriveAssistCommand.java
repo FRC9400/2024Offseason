@@ -14,7 +14,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 public class AmpDriveAssistCommand extends Command{
     private final Swerve swerve;
     private final Superstructure superstructure;
-    private final PIDController thetaController = new PIDController(4, 0, 0.25);
+    private final PIDController thetaController = new PIDController(3, 0, 0);
     private Rotation2d headingGoal;
     
     public AmpDriveAssistCommand(Swerve swerve, Superstructure superstructure){

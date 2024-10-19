@@ -48,8 +48,8 @@ public class ShooterArm{
                 shooterArmIO.requestShooterVoltage(0);
                 break;
             case ZERO:
-                shooterArmIO.requestMotionMagicSetpoint(armAngleDegrees);
-                shooterArmIO.requestShooterVoltage(0);
+                shooterArmIO.requestMotionMagicSetpoint(0);
+                shooterArmIO.requestVelocity(0.0, 0.5);
                 break;
             case HANDOFF:
                  shooterArmIO.requestMotionMagicSetpoint(0);
