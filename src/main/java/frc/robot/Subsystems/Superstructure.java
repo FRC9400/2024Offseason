@@ -3,8 +3,11 @@ package frc.robot.Subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commons.LoggedTunableNumber;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Amp.AmpIO;
@@ -82,12 +85,14 @@ public class Superstructure extends SubsystemBase{
                 }
                 break;
             case NOTE:
+                RobotContainer.controller.setRumble(RumbleType.kLeftRumble, 1);
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestIdle();
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
+                    RobotContainer.controller.setRumble(RumbleType.kLeftRumble, 0);
                 }
                 break;
             case OUTTAKE:
