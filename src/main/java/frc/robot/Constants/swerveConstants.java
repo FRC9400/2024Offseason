@@ -10,11 +10,11 @@ import edu.wpi.first.math.util.Units;
 public final class swerveConstants {
     public static final class moduleConstants {
         /* Inverts FL, FR, BL, BR */
-        public static final InvertedValue[] driveMotorInverts = {InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive};
+        public static final InvertedValue[] driveMotorInverts = {InvertedValue.Clockwise_Positive, InvertedValue.CounterClockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.CounterClockwise_Positive};
         public static final InvertedValue[] steerMotorInverts = {InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive, InvertedValue.Clockwise_Positive};
         public static final SensorDirectionValue[] CANcoderInverts = {SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive, SensorDirectionValue.CounterClockwise_Positive};
         /* CANcoder Offset FL, FR, BL, BR */
-        public static final double[] CANcoderOffsets = {0.088379, 0.099584, 0.269043, 0.103516};//{-0.010986,0.098145,0.000244,0.105713}; 
+        public static final double[] CANcoderOffsets = {0.184570, 0.099584, 0.334229, 0.103516};//{-0.010986,0.098145,0.000244,0.105713}; 
       //  {0.989014,0.098145,0.000244,0.15469};
     
         

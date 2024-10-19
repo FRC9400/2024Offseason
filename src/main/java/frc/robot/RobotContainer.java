@@ -64,9 +64,12 @@ public class RobotContainer {
 
     controller.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
     controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-    controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE)));
+   // controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE)));
     controller.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-    controller.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+    controller.b().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+
+    controller.y().onTrue(swerve.driveSysIdCmd());
+    
   }
 
   public boolean getAutonomousCommand() {
