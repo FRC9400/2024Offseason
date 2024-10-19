@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,7 +34,7 @@ import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
-  public static final CommandXboxController controller = new CommandXboxController(0);
+  public static final XboxController controller = new XboxController(0);
     private final ShooterArmIO shooter = new ShooterArmIOTalonFX();
     private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
     private final IndexerIO indexer = new IndexerIOTalonFX();
@@ -58,18 +60,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    controller.rightTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
-    controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
-    controller.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
+    controller.leftBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE))));
+    controller.rightBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT))));
+    controller.leftTrigger(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A))));
+    controller.a(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))));
+    controller.b(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))));
+    controller.x(onTrue(new InstantCommand(() -> swerve.zeroWheels())));
 
-    controller.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
-    controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-   // controller.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE)));
-    controller.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-    controller.b().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+    if(superstructure.getState() == SuperstructureStates.NOTE){
+      controller.setRumble(RumbleType.kBothRumble, 1);
+    }else{
+      controller.setRumble(RumbleType.kBothRumble, 0);
+    }
+  }
 
-    controller.y().onTrue(swerve.driveSysIdCmd());
-    
+  private EventLoop onTrue(InstantCommand instantCommand) {
+    return null;
   }
 
   public boolean getAutonomousCommand() {
