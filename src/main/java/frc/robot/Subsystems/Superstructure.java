@@ -86,6 +86,9 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestIdle();
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3) {
+                    setState(SuperstructureStates.IDLE);
+                }
                 break;
             case OUTTAKE:
                 s_indexer.requestHandoff(-2);
@@ -107,7 +110,7 @@ public class Superstructure extends SubsystemBase{
                 s_intake.requestSetpoint();
                 s_shooter.requestHandoff(-6, 1);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.NOTE);
                 }
                 break;
             case AMP_A:

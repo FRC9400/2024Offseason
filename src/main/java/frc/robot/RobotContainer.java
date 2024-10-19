@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,8 @@ public class RobotContainer {
     private final AmpIO amp = new AmpIOTalonFX();
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter,amp);
     private final Swerve swerve = new Swerve();
+
+    public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
   public RobotContainer() {
   
     swerve.zeroWheels();
@@ -60,12 +63,30 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    controller.leftBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE))));
+    /*controller.leftBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE))));
     controller.rightBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT))));
     controller.leftTrigger(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A))));
     controller.a(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))));
     controller.b(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))));
-    controller.x(onTrue(new InstantCommand(() -> swerve.zeroWheels())));
+    controller.x(onTrue(new InstantCommand(() -> swerve.zeroWheels())));*/
+
+    BooleanEvent leftBumper = new BooleanEvent(m_loop, () -> controller.getLeftBumper());
+    leftBumper.ifHigh(() -> superstructure.setState(SuperstructureStates.INTAKE));
+
+    BooleanEvent rightBumper = new BooleanEvent(m_loop, () -> controller.getRightBumper());
+    rightBumper.ifHigh(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT));
+
+    BooleanEvent leftTrigger = new BooleanEvent(m_loop, () -> controller.getLeftTriggerAxis()>0.5);
+    leftTrigger.ifHigh(() -> superstructure.setState(SuperstructureStates.AMP_A));
+
+    BooleanEvent aPressed = new BooleanEvent(m_loop, () -> controller.getAButton());
+    aPressed.ifHigh(() -> superstructure.setState(SuperstructureStates.IDLE));
+
+    BooleanEvent bPressed = new BooleanEvent(m_loop, () -> controller.getBButton());
+    bPressed.ifHigh(() -> superstructure.setState(SuperstructureStates.OUTTAKE));
+
+    BooleanEvent xPressed = new BooleanEvent(m_loop, () -> controller.getXButton());
+    xPressed.ifHigh(() -> swerve.zeroWheels());
 
     if(superstructure.getState() == SuperstructureStates.NOTE){
       controller.setRumble(RumbleType.kBothRumble, 1);
@@ -74,14 +95,13 @@ public class RobotContainer {
     }
   }
 
-  private EventLoop onTrue(InstantCommand instantCommand) {
+  /*private EventLoop onTrue(InstantCommand instantCommand) {
     return null;
-  }
+  }*/
 
   public boolean getAutonomousCommand() {
     return false;
     
   }
-
 }
 
