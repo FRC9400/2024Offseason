@@ -204,9 +204,9 @@ public class Swerve extends SubsystemBase{
         return odometry.getPoseMeters();
     }
 
-    public void resetPose(Pose2d pose){
-        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
-        poseRaw = pose;
+    public void resetPose(Pose2d pose2d){
+        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose2d);
+        poseRaw = pose2d;
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){

@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 
-import com.choreo.lib.Choreo;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class TestAuto extends SequentialCommandGroup {

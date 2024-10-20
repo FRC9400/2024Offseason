@@ -24,6 +24,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autons.AutonomousSelector.modes;
+import frc.robot.autons.modes.PreloadAmp;
+import frc.robot.autons.modes.PreloadMid;
+import frc.robot.autons.modes.PreloadSource;
 import frc.robot.autons.modes.TestAuto;
 
 public class Robot extends LoggedRobot {
@@ -32,6 +35,10 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   
   SequentialCommandGroup test;
+  SequentialCommandGroup preloadAmp = new PreloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+  SequentialCommandGroup preloadMid = new PreloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+  SequentialCommandGroup preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+
 
   private boolean built = false;
 
@@ -83,17 +90,24 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    /*if(m_robotContainer.getAutonomousCommand() == modes.TEST){
+    if(m_robotContainer.getAutonomousCommand() == modes.TEST){
       m_autonomousCommand = test;
-    }*/
-
-    m_autonomousCommand = test;
+    }
+    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_AMP){
+      m_autonomousCommand = preloadAmp;
+    }
+    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_MID){
+      m_autonomousCommand = preloadMid;
+    }
+    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_SOURCE){
+      m_autonomousCommand = preloadSource;
+    }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
 
-    test.schedule();
+    //test.schedule();
   }
 
   @Override
