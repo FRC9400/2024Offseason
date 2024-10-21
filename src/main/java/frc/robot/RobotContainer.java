@@ -88,6 +88,9 @@ public class RobotContainer {
     BooleanEvent xPressed = new BooleanEvent(m_loop, () -> controller.getXButton());
     xPressed.ifHigh(() -> swerve.zeroWheels());
 
+    BooleanEvent yPressed = new BooleanEvent(m_loop, () -> controller.getYButton());
+    yPressed.ifHigh(() -> swerve.zeroGyro());
+
     if(superstructure.getState() == SuperstructureStates.NOTE){
       controller.setRumble(RumbleType.kBothRumble, 1);
     }else{
