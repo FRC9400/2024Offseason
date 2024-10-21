@@ -7,14 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoControlFunction;
 import com.choreo.lib.ChoreoTrajectory;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -31,16 +27,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -76,7 +68,7 @@ public class Swerve extends SubsystemBase{
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
         null, 
         Volts.of(3), 
-        Seconds.of(4), 
+        Seconds.of(2), 
         (state) -> SignalLogger.writeString("state", state.toString())), 
         new SysIdRoutine.Mechanism((
             Measure<Voltage> volts) -> driveVoltage(volts.in(Volts)),
@@ -108,6 +100,41 @@ public class Swerve extends SubsystemBase{
 
         moduleIOs[3] = new ModuleIOTalonFX(canIDConstants.driveMotor[3], canIDConstants.steerMotor[3], canIDConstants.CANcoder[3], swerveConstants.moduleConstants.CANcoderOffsets[3],
         swerveConstants.moduleConstants.driveMotorInverts[3], swerveConstants.moduleConstants.steerMotorInverts[3], swerveConstants.moduleConstants.CANcoderInverts[3]);
+
+        AutoBuilder.configureHolonomic(
+            this::getPoseRaw,
+            this::resetPose,
+            this::getRobotRelativeSpeeds,
+            this::driveRobotRelative,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(8, 0.0, 0.0),
+                new PIDConstants(3, 0.0, 0.0), //3 real field
+                3.72,
+                0.295,
+                new ReplanningConfig()
+                ),
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                if(alliance.isPresent()){
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+             return false;
+            },
+        this
+        );
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+                Logger.recordOutput(
+                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            }
+        );
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) ->{
+                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
+
+            
+
 
         for (int i = 0; i < 4; i++) {
             moduleIOs[i].setDriveBrakeMode(true);
@@ -204,9 +231,9 @@ public class Swerve extends SubsystemBase{
         return odometry.getPoseMeters();
     }
 
-    public void resetPose(Pose2d pose2d){
-        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose2d);
-        poseRaw = pose2d;
+    public void resetPose(Pose2d pose){
+        odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
+        poseRaw = pose;
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
@@ -245,7 +272,25 @@ public class Swerve extends SubsystemBase{
         return measuredStates;
     }
 
-  
+    public Command runChoreoTrajStandard(ChoreoTrajectory trajectory) {
+        return Choreo.choreoSwerveCommand(
+            trajectory,
+            () -> poseRaw,
+            Choreo.choreoSwerveController(
+                    new PIDController(1.5, 0.0, 0.0),
+                    new PIDController(1.5, 0.0, 0.0),
+                    new PIDController(3.0, 0.0, 0.0)),
+            (ChassisSpeeds speeds) -> {
+            Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
+            Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
+            Logger.recordOutput("Auto req Omega", speeds.omegaRadiansPerSecond);
+            this.driveRobotRelative(speeds);},
+            () -> {
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                return alliance.isPresent() && alliance.get() == Alliance.Red;
+              },
+              this);
+    }  
 
     public void driveVoltage(double volts){
         for( int i = 0; i < 4; i++){
@@ -321,106 +366,6 @@ public class Swerve extends SubsystemBase{
 
     public void setGyroStartingPosition(double yawDegrees){
         gyroIO.setPosition(yawDegrees);
-    }
-
-    public Command runChoreoTrajStandard(ChoreoTrajectory trajectory) {
-        return Choreo.choreoSwerveCommand(
-            trajectory,
-            () -> poseRaw,
-            Choreo.choreoSwerveController(
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(3.0, 0.0, 0.0)),
-            (ChassisSpeeds speeds) -> {
-            Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
-            Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
-            Logger.recordOutput("Auto req Omega", speeds.omegaRadiansPerSecond);
-            this.driveRobotRelative(speeds);},
-            () -> {
-                Optional<Alliance> alliance = DriverStation.getAlliance();
-                return alliance.isPresent() && alliance.get() == Alliance.Red;
-              },
-              this);
-    }
-
-    public Command runChoreoTraj(ChoreoTrajectory traj) {
-        return this.runChoreoTraj(traj, false);
-    }
-
-    public Command runChoreoTraj(ChoreoTrajectory traj, boolean resetPose) {
-        return choreoFullFollowSwerveCommand(
-                traj,
-                () -> poseRaw,
-                Choreo.choreoSwerveController(
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(3.0, 0.0, 0.0)),
-                (ChassisSpeeds speeds) -> this.driveRobotRelative(speeds),
-                () -> {
-                Optional<Alliance> alliance = DriverStation.getAlliance();
-                return alliance.isPresent() && alliance.get() == Alliance.Red;
-                },
-                this)
-            .beforeStarting(
-                Commands.runOnce(
-                        () -> {
-                        if (DriverStation.getAlliance().isPresent()
-                            && DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                            resetPose(traj.getInitialState().flipped().getPose());
-                        } else {
-                            resetPose(traj.getInitialPose());
-                        }
-                        })
-                    .onlyIf(() -> resetPose));
-    }
-    public static Command choreoFullFollowSwerveCommand(
-        ChoreoTrajectory trajectory,
-        Supplier<Pose2d> poseSupplier,
-        ChoreoControlFunction controller,
-        Consumer<ChassisSpeeds> outputChassisSpeeds,
-        BooleanSupplier mirrorTrajectory,
-        Subsystem... requirements) {
-        var timer = new Timer();
-        return new FunctionalCommand(
-            () -> {
-            timer.restart();
-                Logger.recordOutput(
-                    "Choreo/Active Traj",
-                    (mirrorTrajectory.getAsBoolean() ? trajectory.flipped() : trajectory).getPoses());
-            
-            },
-            () -> {
-            Logger.recordOutput(
-                "Choreo/Target Pose",
-                trajectory.sample(timer.get(), mirrorTrajectory.getAsBoolean()).getPose());
-            Logger.recordOutput(
-                "Choreo/Target Speeds",
-                trajectory.sample(timer.get(), mirrorTrajectory.getAsBoolean()).getChassisSpeeds());
-            outputChassisSpeeds.accept(
-                controller.apply(
-                    poseSupplier.get(),
-                    trajectory.sample(timer.get(), mirrorTrajectory.getAsBoolean())));
-            },
-            (interrupted) -> {
-            timer.stop();
-            outputChassisSpeeds.accept(new ChassisSpeeds());
-            },
-            () -> {
-            var finalPose =
-                mirrorTrajectory.getAsBoolean()
-                    ? trajectory.getFinalState().flipped().getPose()
-                    : trajectory.getFinalState().getPose();
-            Logger.recordOutput("Swerve/Current Traj End Pose", finalPose);
-            return timer.hasElapsed(trajectory.getTotalTime())
-                && (MathUtil.isNear(finalPose.getX(), poseSupplier.get().getX(), 0.4)
-                    && MathUtil.isNear(finalPose.getY(), poseSupplier.get().getY(), 0.4)
-                    && Math.abs(
-                            (poseSupplier.get().getRotation().getDegrees()
-                                    - finalPose.getRotation().getDegrees())
-                                % 360)
-                        < 20.0);
-            },
-            requirements);
     }
 
     private void logModuleStates(String key, SwerveModuleState[] states) {

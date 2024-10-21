@@ -123,12 +123,12 @@ public class ModuleIOTalonFX implements ModuleIO {
 
         //field carpet
         
-        driveSlot0Configs.kP = 0.12006; // 0.13995
+        driveSlot0Configs.kP = 0.14922; //0.12006; // 0.13995
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
-        driveSlot0Configs.kS = 0.21146; //  0.011412
-        driveSlot0Configs.kV = 0.12209;// 0.12125
-        driveSlot0Configs.kA = 0.013607; // 0.042716*/
+        driveSlot0Configs.kS = 0.18123; //0.21146; //  0.011412
+        driveSlot0Configs.kV = 0.14061; //0.12209;// 0.12125
+        driveSlot0Configs.kA = 0.0096859;// 0.013607; // 0.042716*/
 
         // STEER
 
@@ -144,13 +144,22 @@ public class ModuleIOTalonFX implements ModuleIO {
         // steerFeedbackConfigs.SensorToMechanismRatio = 1.0;
         // steerFeedbackConfigs.FeedbackRotorOffset = 0;
 
-        var steerSlot0Configs = steerConfigs.Slot0;
+        /*var steerSlot0Configs = steerConfigs.Slot0;
         steerSlot0Configs.kP = 10.309;
         steerSlot0Configs.kI = 0.0;
         steerSlot0Configs.kD = 0.11175;
         steerSlot0Configs.kS = 0.30895;
         steerSlot0Configs.kV = 0.12641;
-        steerSlot0Configs.kA = 0.0016487;
+        steerSlot0Configs.kA = 0.0016487;*/
+
+        
+        var steerSlot0Configs = steerConfigs.Slot0;
+        steerSlot0Configs.kP = 8.5142;
+        steerSlot0Configs.kI = 0.0;
+        steerSlot0Configs.kD = 0.069397;
+        steerSlot0Configs.kS = 0.21052;
+        steerSlot0Configs.kV = 0.1202;
+        steerSlot0Configs.kA = 0.0010619;
 
         var steerCurrentLimitConfigs = steerConfigs.CurrentLimits;
         steerCurrentLimitConfigs.StatorCurrentLimitEnable = true;

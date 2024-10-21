@@ -35,9 +35,9 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   
   SequentialCommandGroup test;
-  SequentialCommandGroup preloadAmp = new PreloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-  SequentialCommandGroup preloadMid = new PreloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-  SequentialCommandGroup preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+  SequentialCommandGroup preloadAmp;
+  SequentialCommandGroup preloadMid;
+  SequentialCommandGroup preloadSource;
 
 
   private boolean built = false;
@@ -79,6 +79,9 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
       test = new TestAuto(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preloadAmp = new PreloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preloadMid = new PreloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       built = true;
     }
   }
