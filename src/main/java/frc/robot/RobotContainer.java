@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import com.choreo.lib.Choreo;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,8 +34,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.PassAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.AutonomousSelector.modes;
+import frc.robot.autons.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -46,6 +48,7 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
 
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
+        private SendableChooser<Command> autoChooser;
   public RobotContainer() {
   
     swerve.zeroWheels();
@@ -61,25 +64,37 @@ public class RobotContainer {
         );
     configureBindings();
 
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.addOption(
+      "Preload Mid", Autos.preloadMid(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Preload Amp", Autos.preloadAmp(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Preload Source", Autos.preloadSource(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Mid", Autos.fourNoteMid(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Amp", Autos.fourNoteAmp(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Source", Autos.fourNoteSource(swerve, superstructure)
+    );
+    autoChooser.addOption(
+      "Test", Autos.TestAuto(swerve, superstructure, "mid", Choreo.getTrajectory("test"))
+      );
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
   }
 
   private void configureBindings() {
-    /*controller.leftBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE))));
-    controller.rightBumper(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT))));
-    controller.leftTrigger(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A))));
-    controller.a(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))));
-    controller.b(onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))));*/
     driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
     driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-    /* 
-    BooleanEvent leftBumper = new BooleanEvent(m_loop, () -> controller.getLeftBumper());
-    leftBumper.ifHigh(() -> superstructure.setState(SuperstructureStates.INTAKE));
-
-    BooleanEvent bPressed = new BooleanEvent(m_loop, () -> controller.getBButton());
-    bPressed.ifHigh(() -> superstructure.setState(SuperstructureStates.OUTTAKE));
-    */
-    //driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
     driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
     driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
@@ -88,11 +103,9 @@ public class RobotContainer {
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
 
   }
-  public boolean getAutonomousCommand() {
-    return false;
-    
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
-
   public Superstructure getSuperstructure(){
     return superstructure;
   }
