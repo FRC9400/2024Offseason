@@ -78,10 +78,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
-      test = new TestAuto(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+     /* test = new TestAuto(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preloadAmp = new PreloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preloadMid = new PreloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());*/ 
       built = true;
     }
   }
@@ -93,24 +93,25 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    if(m_robotContainer.getAutonomousCommand() == modes.TEST){
+   /*  if(m_robotContainer.getAutoCommand() == modes.TEST){
       m_autonomousCommand = test;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_AMP){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
       m_autonomousCommand = preloadAmp;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_MID){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
       m_autonomousCommand = preloadMid;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_SOURCE){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_SOURCE){
       m_autonomousCommand = preloadSource;
     }
+*/
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
 
-    //test.schedule();
   }
 
   @Override

@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import com.choreo.lib.Choreo;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,10 +31,12 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
+import frc.robot.autons.modes.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
-  public static final CommandXboxController controller = new CommandXboxController(0);
+    private SendableChooser<Command> autoChooser;
+    public static final CommandXboxController controller = new CommandXboxController(0);
     private final ShooterArmIO shooter = new ShooterArmIOTalonFX();
     private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
     private final IndexerIO indexer = new IndexerIOTalonFX();
@@ -55,7 +60,30 @@ public class RobotContainer {
         );
     configureBindings();
 
-
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.addOption(
+      "Preload Mid", Autos.preloadMid(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Preload Amp", Autos.preloadAmp(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Preload Source", Autos.preloadSource(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Mid", Autos.fourNoteMid(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Amp", Autos.fourNoteAmp(swerve, superstructure)
+      );
+    autoChooser.addOption(
+      "Four Note Source", Autos.fourNoteSource(swerve, superstructure)
+    );
+    autoChooser.addOption(
+      "Test", Autos.TestAuto(swerve, superstructure, "mid", Choreo.getTrajectory("test"))
+      );
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   private void configureBindings() {
@@ -67,9 +95,13 @@ public class RobotContainer {
 
   }
 
-  public modes getAutonomousCommand() {
+  public modes getAutoCommand() {
     return selector.get();
     
+  }
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
   }
 
   public void configureAutonomousSelector(){

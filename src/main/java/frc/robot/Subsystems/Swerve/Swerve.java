@@ -276,10 +276,9 @@ public class Swerve extends SubsystemBase{
         return Choreo.choreoSwerveCommand(
             trajectory,
             () -> poseRaw,
-            Choreo.choreoSwerveController(
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(1.5, 0.0, 0.0),
-                    new PIDController(3.0, 0.0, 0.0)),
+                swerveConstants.moduleConstants.choreoTransController,
+                swerveConstants.moduleConstants.choreoTransController,
+                swerveConstants.moduleConstants.choreoRotController,
             (ChassisSpeeds speeds) -> {
             Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
             Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);

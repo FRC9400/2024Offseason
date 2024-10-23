@@ -31,7 +31,7 @@ public class AutonomousSelector {
 
         autonomousSelector.addOption("Preload Source", modes.PRELOAD_SOURCE);
 
-        SmartDashboard.putData("Auto Choices", autonomousSelector);
+    //    SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 
     public modes get(){
