@@ -24,7 +24,8 @@ public class OTB_Intake{
     public enum IntakeStates{
         IDLE,
         INTAKE,
-        SETPOINT
+        SETPOINT,
+        OUTTAKE
     }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
@@ -48,6 +49,11 @@ public class OTB_Intake{
             case SETPOINT:
                 otbIntakeIO.requestIntakeVoltage(0);
                 otbIntakeIO.requestSetpoint(0);
+                break;
+            case OUTTAKE:
+                otbIntakeIO.requestIntakeVoltage(-3);
+                otbIntakeIO.requestSetpoint(39.48);
+                break;
             default:
                 break;
 
@@ -64,6 +70,10 @@ public class OTB_Intake{
 
     public void requestSetpoint(){
         setState(IntakeStates.SETPOINT);
+    }
+
+    public void requestOuttake(){
+        setState(IntakeStates.OUTTAKE);
     }
 
     public void setState(IntakeStates nextState){

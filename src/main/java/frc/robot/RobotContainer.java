@@ -29,8 +29,6 @@ import frc.robot.Subsystems.Shooter.ShooterArmIO;
 import frc.robot.Subsystems.Shooter.ShooterArmIOTalonFX;
 import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.autons.modes.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
@@ -43,9 +41,7 @@ public class RobotContainer {
     private final AmpIO amp = new AmpIOTalonFX();
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter, amp);
     private final Swerve swerve = new Swerve();
-    private AutonomousSelector selector;
   public RobotContainer() {
-    configureAutonomousSelector();
   
     swerve.zeroWheels();
     swerve.zeroGyro();
@@ -95,17 +91,10 @@ public class RobotContainer {
 
   }
 
-  public modes getAutoCommand() {
-    return selector.get();
-    
-  }
+  
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
-  }
-
-  public void configureAutonomousSelector(){
-    selector = new AutonomousSelector(swerve, superstructure);
   }
 
   public Superstructure getSuperstructure(){

@@ -25,72 +25,72 @@ public class Autos {
     public static Command preloadMid(Swerve swerve, Superstructure superstructure){
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
-            new InstantCommand(() -> superstructure.requestPreShoot())
+            new InstantCommand(() -> superstructure.requestAutoShootSubwooferM())
         );
     }
 
     public static Command preloadAmp(Swerve swerve, Superstructure superstructure){
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
-            new InstantCommand(() -> superstructure.requestPreShoot())
+            requestAmpSubwooferShoot(superstructure)
         );
     }
 
     public static Command preloadSource(Swerve swerve, Superstructure superstructure){
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
-            new InstantCommand(() -> superstructure.requestPreShoot())
+            requestSourceSubwooferShoot(superstructure)
         );
     }
 
     public static Command fourNoteMid(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("X");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteMidA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteMidB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteMidC");
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(trajA, swerve),
-            shoot(swerve, superstructure),
+            new InstantCommand(() -> superstructure.requestAutoShootSubwooferM()),
             intakeIn(swerve, superstructure, trajA),
-            shoot(swerve, superstructure),
+            new InstantCommand(() -> superstructure.requestAutoShootMid()),
             intakeIn(swerve, superstructure, trajB),
-            shoot(swerve, superstructure),
+            requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
-            shoot(swerve, superstructure)
+            requestSourceShoot(superstructure)
         );
     }
 
     public static Command fourNoteAmp(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("X");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteAmpA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteAmpB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteAmpC");
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
-            shoot(swerve, superstructure),
+            requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
-            shoot(swerve, superstructure),
+            requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajB),
-            shoot(swerve, superstructure),
+            new InstantCommand(() -> superstructure.requestAutoShootMid()),
             intakeIn(swerve, superstructure, trajC),
-            shoot(swerve, superstructure)
+            requestSourceShoot(superstructure)
         );
     }
 
     public static Command fourNoteSource(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("X");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("X");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteSourceA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteSourceB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteSourceC");
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(trajA, swerve),
-            shoot(swerve, superstructure),
+            requestSourceSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
-            shoot(swerve, superstructure),
+            requestSourceShoot(superstructure),
             intakeIn(swerve, superstructure, trajB),
-            shoot(swerve, superstructure),
+            new InstantCommand(() -> superstructure.requestAutoShootMid()),
             intakeIn(swerve, superstructure, trajC),
-            shoot(swerve, superstructure)
+            requestAmpShoot(superstructure)
         );
     }
     
@@ -119,13 +119,58 @@ public class Autos {
     }
 
     public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
-        return Commands.runOnce(() -> superstructure.requestIntake())
+        return Commands.runOnce(() -> superstructure.requestAutoIntake())
             .deadlineWith(new InstantCommand(() -> swerve.runChoreoTrajStandard(traj)));
     }
 
     public static Command shoot(Swerve swerve, Superstructure superstructure){
         return Commands.runOnce(() -> superstructure.requestPreShoot());
     }
+
+    public static Command idleCommand(Superstructure superstructure){
+        return Commands.runOnce(() -> superstructure.requestAutoIdle());
+    }
+
+    public static Command requestAmpShoot(Superstructure superstructure) {
+        return Commands.runOnce(() -> {
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+                superstructure.requestAutoShootRight();
+            } else {
+                superstructure.requestAutoShootLeft();
+            }
+        });
+    }
+
+    public static Command requestSourceShoot(Superstructure superstructure) {
+        return Commands.runOnce(() -> {
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+                superstructure.requestAutoShootLeft();
+            } else {
+                superstructure.requestAutoShootRight();
+            }
+        });
+    }
+
+    public static Command requestAmpSubwooferShoot(Superstructure superstructure) {
+        return Commands.runOnce(() -> {
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+                superstructure.requestAutoShootSubwooferR();
+            } else {
+                superstructure.requestAutoShootSubwooferL();
+            }
+        });
+    }
+
+    public static Command requestSourceSubwooferShoot(Superstructure superstructure) {
+        return Commands.runOnce(() -> {
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+                superstructure.requestAutoShootSubwooferL();
+            } else {
+                superstructure.requestAutoShootSubwooferR();
+            }
+        });
+    }
+    
     
     }
     

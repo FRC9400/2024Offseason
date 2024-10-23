@@ -23,22 +23,11 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.autons.AutonomousSelector.modes;
-import frc.robot.autons.modes.PreloadAmp;
-import frc.robot.autons.modes.PreloadMid;
-import frc.robot.autons.modes.PreloadSource;
-import frc.robot.autons.modes.TestAuto;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  
-  SequentialCommandGroup test;
-  SequentialCommandGroup preloadAmp;
-  SequentialCommandGroup preloadMid;
-  SequentialCommandGroup preloadSource;
-
 
   private boolean built = false;
 
@@ -93,19 +82,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-   /*  if(m_robotContainer.getAutoCommand() == modes.TEST){
-      m_autonomousCommand = test;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
-      m_autonomousCommand = preloadAmp;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
-      m_autonomousCommand = preloadMid;
-    }
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_SOURCE){
-      m_autonomousCommand = preloadSource;
-    }
-*/
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

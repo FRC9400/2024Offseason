@@ -30,7 +30,8 @@ public class ShooterArm{
         SHOOT,
         AMP,
         PASS,
-        VOLTAGE
+        VOLTAGE,
+        AUTOS
     }
 
     public ShooterArm(ShooterArmIO shooterArmIO) {
@@ -48,12 +49,12 @@ public class ShooterArm{
                 shooterArmIO.requestShooterVoltage(0);
                 break;
             case ZERO:
-                shooterArmIO.requestMotionMagicSetpoint(armAngleDegrees);
-                shooterArmIO.requestShooterVoltage(0);
+                shooterArmIO.requestMotionMagicSetpoint(0);
+                shooterArmIO.requestVelocity(0.0, 0.5);
                 break;
             case HANDOFF:
                  shooterArmIO.requestMotionMagicSetpoint(0);
-                 shooterArmIO.requestShooterVoltage(0);
+                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
                  break;
             case SHOOT:
                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
@@ -70,6 +71,9 @@ public class ShooterArm{
             case VOLTAGE:
                 shooterArmIO.requestShooterVoltage(4);
                 shooterArmIO.requestArmVoltage(0);
+            case AUTOS:
+                shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
+                shooterArmIO.requestMotionMagicSetpoint(0);
             default:
                 break;
 
@@ -95,7 +99,9 @@ public class ShooterArm{
         setState(ShooterArmStates.ZERO);
     }
 
-    public void requestHandoff(){
+    public void requestHandoff(double velocityRPS, double ratio){
+        shooterVelocity[0] = velocityRPS;
+        shooterVelocity[1] = ratio;
         setState(ShooterArmStates.HANDOFF);
     }
     
@@ -115,17 +121,29 @@ public class ShooterArm{
     }
 
     public boolean atShooterSetpoint(){
-        if(Math.abs(shooterVelocity[0] - inputs.shooterSpeedRPS[0]) < 0.1 && Math.abs((shooterVelocity[0] * shooterVelocity[1]) - inputs.shooterSpeedRPS[1]) < 0.1){
+        if(Math.abs(shooterVelocity[0]/2.0 - inputs.shooterSpeedRPS[0]) < 0.5 && 
+        Math.abs((shooterVelocity[0] * shooterVelocity[1])/2.0 - inputs.shooterSpeedRPS[1]) < 0.1){
             return true;
         }
         return false;
     }
 
+    public double getCurrent(){
+        return inputs.shooterCurrent[0];
+    }
+
     public boolean atArmSetpoint(){
-        if(Math.abs(armAngleDegrees - inputs.armPosDeg[0]) < 0.1){
+        if(Math.abs(armAngleDegrees - inputs.armPosDeg[0]) < 0.3){
             return true;
         }
         return false;
+    }
+
+    public void requestAutos(double shootervel, double ratio){
+        shooterVelocity[0] = shootervel;
+        shooterVelocity[1] = ratio;
+        setState(shooterArmState.AUTOS);
+        
     }
 
     public double getArmDegrees(){
