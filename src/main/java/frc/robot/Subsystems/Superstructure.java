@@ -153,20 +153,20 @@ public class Superstructure extends SubsystemBase{
                 }
                 break;
             case PRE_PASS:
-                //s_indexer.requestHandoff(0, 0);//placeholder value(s)
+            
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(passVel.get(), 0.5,passAngle.get());//placeholder value(s)
+                s_shooter.requestShoot(80, 0.5, 40);//placeholder value(s)
                 if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
-                    setState(SuperstructureStates.SHOOT);
+                    setState(SuperstructureStates.PASS);
                 }
                 break;
             case PASS:
                 s_indexer.requestIdle();
                 s_amp.requestRun(2);
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(passVel.get(), 0.5,passAngle.get());//placeholder value(s)
+                s_shooter.requestShoot(80, 0.5,40);//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
                 }

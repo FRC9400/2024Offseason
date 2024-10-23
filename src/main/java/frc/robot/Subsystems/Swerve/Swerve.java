@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -24,6 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,12 +34,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
 
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
+
 
 public class Swerve extends SubsystemBase{
+
+    LoggedTunableNumber XControllerkP = new LoggedTunableNumber("XControllerkP", 3);
+    LoggedTunableNumber YControllerkP = new LoggedTunableNumber("YControllerkP", 3);
+    LoggedTunableNumber ThetaControllerkP = new LoggedTunableNumber("ThetaControllerkP", 3);
+
+
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
@@ -353,6 +366,26 @@ public class Swerve extends SubsystemBase{
         }
         Logger.recordOutput(key, dataArray.stream().mapToDouble(Double::doubleValue).toArray());
     }
+
+    public Command runChoreoTrajStandard(ChoreoTrajectory trajectory) {
+        return Choreo.choreoSwerveCommand(
+            trajectory,
+            () -> poseRaw,
+            Choreo.choreoSwerveController(
+                    new PIDController(XControllerkP.get(), 0.0, 0.0),
+                    new PIDController(YControllerkP.get(), 0.0, 0.0),
+                    new PIDController(ThetaControllerkP.get(), 0.0, 0.0)),
+            (ChassisSpeeds speeds) -> {
+            Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
+            Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
+            Logger.recordOutput("Auto req Omega", speeds.omegaRadiansPerSecond);
+            this.driveRobotRelative(speeds);},
+            () -> {
+                Optional<Alliance> alliance = DriverStation.getAlliance();
+                return alliance.isPresent() && alliance.get() == Alliance.Red;
+              },
+              this);
+    }  
 
  
 }

@@ -15,11 +15,11 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 public class PassAssistCommand extends Command{
     private final Swerve swerve;
     private final Superstructure superstructure;
-    private PIDController thetaController;
+    private PIDController thetaController = new PIDController(3, 0, 0);
     private Rotation2d headingGoal;
 
-    LoggedTunableNumber kP = new LoggedTunableNumber("PassingkP", 2);
-    LoggedTunableNumber kD = new LoggedTunableNumber("PassingkD", 0.25);
+    LoggedTunableNumber kP = new LoggedTunableNumber("PassingkP", 3);
+    LoggedTunableNumber kD = new LoggedTunableNumber("PassingkD", 0);
 
     
     public PassAssistCommand(Swerve swerve, Superstructure superstructure){
@@ -27,14 +27,14 @@ public class PassAssistCommand extends Command{
         this.swerve = swerve;
         this.superstructure = superstructure;
         addRequirements(swerve, superstructure);
-        thetaController = new PIDController(kP.get(), 0, kD.get());
+       
     }
 
     @Override
     public void initialize(){
-        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d(0) : new Rotation2d(0);
-        superstructure.requestPreShoot();
-        thetaController = new PIDController(kP.get(), 0, kD.get());
+        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d((180-34.92)*Math.PI/180.0) : new Rotation2d((180+34.92)* Math.PI/180.0);
+        superstructure.setState(SuperstructureStates.PRE_PASS);
+    
 
     }
 
