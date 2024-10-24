@@ -3,6 +3,7 @@ package frc.robot.Constants;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -42,6 +43,11 @@ public final class swerveConstants {
         public static final double anglekD = 0.0;
         public static final double anglekS = 0.0;
         public static final double anglekV = 0.0;
+
+        /* Choreo PIDs */
+
+        public static final PIDController choreoTransController = new PIDController(6, 0, 0);
+        public static final PIDController choreoRotController = new PIDController(1.5,0,0);
 
         /* Wheel Circumference */
         public static final double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI;
