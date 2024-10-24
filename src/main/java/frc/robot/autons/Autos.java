@@ -109,10 +109,10 @@ public class Autos {
             return Commands.runOnce(() -> swerve.setGyroStartingPosition(0));
         }
         else if (startingPos.equals("source")) {
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -60 : -60));
+            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
         }
         else if (startingPos.equals("amp")){
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 60 : - 60));
+            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -120 : 120));
         }
 
         return Commands.none();
