@@ -23,11 +23,22 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.autons.Autos;
+import frc.robot.autons.AutonomousSelector.modes;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  Command preload_mid;
+  Command preload_amp;
+  Command preload_source;
+  Command four_note_mid;
+  Command four_note_source;
+  Command four_note_amp;
+
+  private boolean built = false;
 
   @Override
   public void robotInit() {
@@ -64,6 +75,15 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if (DriverStation.getAlliance().isPresent() && !built){
+      preload_mid = Autos.preloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preload_amp = Autos.preloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      preload_source = Autos.preloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      four_note_mid = Autos.fourNoteMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      four_note_amp = Autos.fourNoteAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      four_note_source = Autos.fourNoteSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      built = true;
+    }
   }
 
   @Override
@@ -73,8 +93,24 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
+      m_autonomousCommand = preload_mid;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
+      m_autonomousCommand = preload_amp;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_SOURCE){
+      m_autonomousCommand = preload_source;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_MID){
+      m_autonomousCommand = four_note_mid;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_AMP){
+      m_autonomousCommand = four_note_amp;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_SOURCE){
+      m_autonomousCommand = four_note_source;
+    }
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

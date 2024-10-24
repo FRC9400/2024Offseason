@@ -106,7 +106,7 @@ public class Autos {
 
     public static Command resetGyroAuto(Swerve swerve, String startingPos) {
         if (startingPos.equals("mid")) {
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(0));
+            return Commands.runOnce(() -> swerve.setGyroStartingPosition(180));
         }
         else if (startingPos.equals("source")) {
             return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));

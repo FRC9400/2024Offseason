@@ -34,6 +34,8 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.PassAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.autons.AutonomousSelector;
+import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.autons.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
@@ -46,10 +48,11 @@ public class RobotContainer {
     private final AmpIO amp = new AmpIOTalonFX();
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter,amp);
     private final Swerve swerve = new Swerve();
+    private AutonomousSelector selector;
 
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
-        private SendableChooser<Command> autoChooser;
   public RobotContainer() {
+    configureAutonomousSelector();
   
     swerve.zeroWheels();
     swerve.zeroGyro();
@@ -63,31 +66,6 @@ public class RobotContainer {
             )
         );
     configureBindings();
-
-    autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
-    autoChooser.addOption(
-      "Preload Mid", Autos.preloadMid(swerve, superstructure)
-      );
-    autoChooser.addOption(
-      "Preload Amp", Autos.preloadAmp(swerve, superstructure)
-      );
-    autoChooser.addOption(
-      "Preload Source", Autos.preloadSource(swerve, superstructure)
-      );
-    autoChooser.addOption(
-      "Four Note Mid", Autos.fourNoteMid(swerve, superstructure)
-      );
-    autoChooser.addOption(
-      "Four Note Amp", Autos.fourNoteAmp(swerve, superstructure)
-      );
-    autoChooser.addOption(
-      "Four Note Source", Autos.fourNoteSource(swerve, superstructure)
-    );
-    autoChooser.addOption(
-      "Test", Autos.TestAuto(swerve, superstructure, "mid", Choreo.getTrajectory("test"))
-      );
-    SmartDashboard.putData("Auto Chooser", autoChooser);
 
 
   }
@@ -111,9 +89,15 @@ public class RobotContainer {
     driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferL()));
 
   }
-  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+  public modes getAutoCommand() {
+    return selector.get();
+    
   }
+
+  public void configureAutonomousSelector(){
+    selector = new AutonomousSelector(swerve, superstructure);
+  }
+
   public Superstructure getSuperstructure(){
     return superstructure;
   }
