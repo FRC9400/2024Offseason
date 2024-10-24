@@ -21,7 +21,7 @@ public class FourNoteMid extends SequentialCommandGroup {
             new InstantCommand(() -> swerve.resetPose(new Pose2d(new Translation2d(1.3615734577178962,5.555154800415039),new Rotation2d(0)))),
             new InstantCommand(() -> superstructure.requestPreShoot()),
             new WaitCommand(2),
-            swerve.runChoreoTrajStandard(Choreo.getTrajectory("4NoteMidA")),
+            swerve.runChoreoTrajStandard(Choreo.getTrajectory("4NoteMidA"))/*,
             new InstantCommand(() -> superstructure.requestPreShoot()),
             new WaitCommand(2),
             swerve.runChoreoTrajStandard(Choreo.getTrajectory("4NoteMidB")),
@@ -34,7 +34,7 @@ public class FourNoteMid extends SequentialCommandGroup {
             new InstantCommand(() -> superstructure.requestIntake()),
             new WaitCommand(2),
             swerve.runChoreoTrajStandard(Choreo.getTrajectory("4NoteMidE")),
-            new InstantCommand(() -> superstructure.requestPreShoot())
+            new InstantCommand(() -> superstructure.requestPreShoot())*/
         );
     }
     

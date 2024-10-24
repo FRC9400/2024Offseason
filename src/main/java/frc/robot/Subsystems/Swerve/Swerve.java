@@ -254,7 +254,7 @@ public class Swerve extends SubsystemBase{
         ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
         double x_speed = desiredChassisSpeeds.vxMetersPerSecond/1.5;
         double y_speed = desiredChassisSpeeds.vyMetersPerSecond/1.5;
-        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond/1.5;
+        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond/1;
 
         requestDesiredState(x_speed, y_speed, rot_speed, false, false);
 

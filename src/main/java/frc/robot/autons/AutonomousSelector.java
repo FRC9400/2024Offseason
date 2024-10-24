@@ -15,7 +15,8 @@ public class AutonomousSelector {
             PRELOAD_AMP,
             PRELOAD_MID,
             PRELOAD_SOURCE,
-            TUNING
+            TUNING,
+            FOURMID
         };
     
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
@@ -33,6 +34,8 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Preload Source", modes.PRELOAD_SOURCE);
 
         autonomousSelector.addOption("Tune Choreo", modes.TUNING);
+
+        autonomousSelector.addOption("4note", modes.FOURMID);
 
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
