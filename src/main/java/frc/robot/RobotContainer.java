@@ -38,8 +38,8 @@ import frc.robot.autons.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
-  public static final XboxController controller = new XboxController(0);
-  public static final CommandXboxController driver = new CommandXboxController(1);
+  public static final XboxController controller = new XboxController(1);
+  public static final CommandXboxController driver = new CommandXboxController(0);
     private final ShooterArmIO shooter = new ShooterArmIOTalonFX();
     private final OTB_IntakeIO otbIntake = new OTB_IntakeIOTalonFX();
     private final IndexerIO indexer = new IndexerIOTalonFX();
@@ -93,15 +93,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-    driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-    driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
+    //driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
+    driver.leftTrigger().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+   /*  driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
     driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
     driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     driver.rightBumper().onTrue(new InstantCommand(()-> superstructure.setState(SuperstructureStates.INTAKE)));
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
+*/
+    driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_IDLE)));
+    driver.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
+    driver.y().onTrue(new InstantCommand(() -> superstructure.requestAutoIntake()));
 
+    driver.b().onTrue(new InstantCommand(() -> superstructure.requestAutoShootLeft()));
+    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootRight()));
+    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootMid()));
   }
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();

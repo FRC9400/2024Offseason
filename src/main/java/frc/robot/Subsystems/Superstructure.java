@@ -34,8 +34,8 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber passAngle = new LoggedTunableNumber("Superstructure/passAngle", 23);
     LoggedTunableNumber passVel = new LoggedTunableNumber("Superstructure/passVel", 70);
     
-    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Superstructure/shootRIGHTvel", 70);
-    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Superstructure/shootLEFTvel", 70);
+    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Autos/shootRIGHTvel", 70);
+    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Autos/shootLEFTvel", 70);
 
     LoggedTunableNumber AutoShootVelocity = new LoggedTunableNumber("Autos/AutoIntakeVelocity", 20);
     LoggedTunableNumber shootRightAngle = new LoggedTunableNumber("Autos/shootRightAngle", 30);
@@ -49,6 +49,7 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber shootSubwooferRightAngle = new LoggedTunableNumber("Autos/shootSubwooferRightAngle", 30);
     LoggedTunableNumber shootSubwooferLeftAngle = new LoggedTunableNumber("Autos/shootSubwooferLeftAngle", 30);
 
+    LoggedTunableNumber shootSubwooferRightRatio = new LoggedTunableNumber("Autos/right ratio", 1.0);
     private double[] autoShooterVelocity = {0,0}; //left vel + ratio
     private double autoArmAngleDegrees = 0;
 
@@ -214,14 +215,14 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestRun(2);
                 s_intake.requestSetpoint();
                 s_shooter.requestAutos(AutoShootVelocity.get(), 0.5);
-                if (s_amp.getAmpCurrent() > 25 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                if (s_amp.getAmpCurrent() > 22 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.AUTO_HANDOFF_B);
                 }
                 break;
             
             case AUTO_HANDOFF_B:
                 s_indexer.requestIdle();//placeholder value(s)
-                s_amp.requestRun(-3);
+                s_amp.requestRun(-1);
                 s_intake.requestSetpoint();
                 s_shooter.requestAutos(AutoShootVelocity.get(), 0.5);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3) {
@@ -241,7 +242,7 @@ public class Superstructure extends SubsystemBase{
 
             case SHOOT_AUTO:
                 s_indexer.requestIdle();
-                s_amp.requestRun(2);
+                s_amp.requestRun(3.6);
                 s_intake.requestSetpoint();
                 s_shooter.requestShoot(autoShooterVelocity[0], autoShooterVelocity[1],autoArmAngleDegrees);
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
