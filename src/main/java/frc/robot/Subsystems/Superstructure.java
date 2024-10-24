@@ -38,18 +38,19 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Autos/shootLEFTvel", 70);
 
     LoggedTunableNumber AutoShootVelocity = new LoggedTunableNumber("Autos/AutoIntakeVelocity", 20);
-    LoggedTunableNumber shootRightAngle = new LoggedTunableNumber("Autos/shootRightAngle", 30);
-    LoggedTunableNumber shootLeftAngle = new LoggedTunableNumber("Autos/shootLeftAngle", 30);
+    LoggedTunableNumber shootRightAngle = new LoggedTunableNumber("Autos/shootRightAngle", 28);
+    LoggedTunableNumber shootLeftAngle = new LoggedTunableNumber("Autos/shootLeftAngle", 35);
 
-    LoggedTunableNumber shootSubwooferMidVel = new LoggedTunableNumber("Autos/shootSubwooferMidVel", 50);
-    LoggedTunableNumber shootSubwooferRightVel = new LoggedTunableNumber("Autos/shootSubwooferRightVel", 50);
-    LoggedTunableNumber shootSubwooferLeftVel = new LoggedTunableNumber("Autos/shootSubwooferLeftVel", 50);
+    LoggedTunableNumber shootSubwooferMidVel = new LoggedTunableNumber("Autos/shootSubwooferMidVel", 70);
+    LoggedTunableNumber shootSubwooferRightVel = new LoggedTunableNumber("Autos/shootSubwooferRightVel", 70);
+    LoggedTunableNumber shootSubwooferLeftVel = new LoggedTunableNumber("Autos/shootSubwooferLeftVel", 60);
 
-    LoggedTunableNumber shootSubwooferMidAngle = new LoggedTunableNumber("Autos/shootSubwooferMidAngle", 30);
-    LoggedTunableNumber shootSubwooferRightAngle = new LoggedTunableNumber("Autos/shootSubwooferRightAngle", 30);
-    LoggedTunableNumber shootSubwooferLeftAngle = new LoggedTunableNumber("Autos/shootSubwooferLeftAngle", 30);
+    LoggedTunableNumber shootSubwooferMidAngle = new LoggedTunableNumber("Autos/shootSubwooferMidAngle", 47);
+    LoggedTunableNumber shootSubwooferRightAngle = new LoggedTunableNumber("Autos/shootSubwooferRightAngle", 45);
+    LoggedTunableNumber shootSubwooferLeftAngle = new LoggedTunableNumber("Autos/shootSubwooferLeftAngle", 58);
 
-    LoggedTunableNumber shootSubwooferRightRatio = new LoggedTunableNumber("Autos/right ratio", 1.0);
+    LoggedTunableNumber shootSubwooferRightRatio = new LoggedTunableNumber("Autos/SUB right ratio", 0.1);
+    LoggedTunableNumber shootRightRatio = new LoggedTunableNumber("Autos/right ratio", 0.1);
     private double[] autoShooterVelocity = {0,0}; //left vel + ratio
     private double autoArmAngleDegrees = 0;
 
@@ -281,44 +282,44 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void requestAutoShootRight(){
-        autoShooterVelocity[0] = 70;
+        autoShooterVelocity[0] = shootRightVel.get();
         autoShooterVelocity[1] = 0.1;
-        autoArmAngleDegrees = 30; //ANGLE 14.88
+        autoArmAngleDegrees = shootRightAngle.get(); //ANGLE 14.88
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootLeft(){
-        autoShooterVelocity[0] = 70;
+        autoShooterVelocity[0] = shootLeftVel.get();
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 35; //-2
+        autoArmAngleDegrees = shootLeftAngle.get(); //-2
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootMid(){
-        autoShooterVelocity[0] = 20;
+        autoShooterVelocity[0] = shootMidVel.get();
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 30;
+        autoArmAngleDegrees = shooterMidAngle.get();
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootSubwooferM(){
-        autoShooterVelocity[0] = 70;
+        autoShooterVelocity[0] = shootSubwooferMidVel.get();
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 47;
+        autoArmAngleDegrees = shootSubwooferMidAngle.get();
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootSubwooferL(){
-        autoShooterVelocity[0] = 60;
+        autoShooterVelocity[0] = shootSubwooferLeftVel.get();
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 58;
+        autoArmAngleDegrees = shootSubwooferLeftAngle.get();
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootSubwooferR(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.1;
-        autoArmAngleDegrees = 45;
+        autoShooterVelocity[0] = shootSubwooferRightVel.get();
+        autoShooterVelocity[1] = shootSubwooferRightRatio.get();
+        autoArmAngleDegrees = shootSubwooferRightAngle.get();
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
