@@ -216,7 +216,7 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestRun(2);
                 s_intake.requestSetpoint();
                 s_shooter.requestAutos(AutoShootVelocity.get(), 0.5);
-                if (s_amp.getAmpCurrent() > 22 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                if (s_amp.getAmpCurrent() > 24 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.AUTO_HANDOFF_B);
                 }
                 break;
@@ -295,7 +295,7 @@ public class Superstructure extends SubsystemBase{
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
-    public void requestAutoShootMid(){
+    public void requestAutoShootMidNote(){
         autoShooterVelocity[0] = shootMidVel.get();
         autoShooterVelocity[1] = 0.5;
         autoArmAngleDegrees = shooterMidAngle.get();
@@ -311,7 +311,7 @@ public class Superstructure extends SubsystemBase{
 
     public void requestAutoShootSubwooferL(){
         autoShooterVelocity[0] = shootSubwooferLeftVel.get();
-        autoShooterVelocity[1] = 0.5;
+        autoShooterVelocity[1] = 0.9;
         autoArmAngleDegrees = shootSubwooferLeftAngle.get();
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }

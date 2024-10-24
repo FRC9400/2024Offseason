@@ -52,7 +52,7 @@ public class Autos {
             resetPoseAuto(trajA, swerve),
             new InstantCommand(() -> superstructure.requestAutoShootSubwooferM()),
             intakeIn(swerve, superstructure, trajA),
-            new InstantCommand(() -> superstructure.requestAutoShootMid()),
+            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
             intakeIn(swerve, superstructure, trajB),
             requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
@@ -71,7 +71,7 @@ public class Autos {
             intakeIn(swerve, superstructure, trajA),
             requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajB),
-            new InstantCommand(() -> superstructure.requestAutoShootMid()),
+            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
             intakeIn(swerve, superstructure, trajC),
             requestSourceShoot(superstructure)
         );
@@ -88,7 +88,7 @@ public class Autos {
             intakeIn(swerve, superstructure, trajA),
             requestSourceShoot(superstructure),
             intakeIn(swerve, superstructure, trajB),
-            new InstantCommand(() -> superstructure.requestAutoShootMid()),
+            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
             intakeIn(swerve, superstructure, trajC),
             requestAmpShoot(superstructure)
         );

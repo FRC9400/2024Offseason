@@ -106,9 +106,10 @@ public class RobotContainer {
     driver.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     driver.y().onTrue(new InstantCommand(() -> superstructure.requestAutoIntake()));
 
-    driver.b().onTrue(new InstantCommand(() -> superstructure.requestAutoShootLeft()));
-    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootRight()));
-    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootMid()));
+    driver.b().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferM()));
+    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferR()));
+    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferL()));
+
   }
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
