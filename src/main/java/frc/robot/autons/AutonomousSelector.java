@@ -14,7 +14,8 @@ public class AutonomousSelector {
             TEST,
             PRELOAD_AMP,
             PRELOAD_MID,
-            PRELOAD_SOURCE
+            PRELOAD_SOURCE,
+            TUNING
         };
     
     public AutonomousSelector(Swerve swerve, Superstructure superstructure){
@@ -30,6 +31,8 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Preload Mid", modes.PRELOAD_MID);
 
         autonomousSelector.addOption("Preload Source", modes.PRELOAD_SOURCE);
+
+        autonomousSelector.addOption("Tune Choreo", modes.TUNING);
 
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }

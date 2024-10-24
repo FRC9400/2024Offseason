@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autons.AutonomousSelector.modes;
+import frc.robot.autons.modes.ChoreoTuning;
 import frc.robot.autons.modes.PreloadAmp;
 import frc.robot.autons.modes.PreloadMid;
 import frc.robot.autons.modes.PreloadSource;
@@ -38,6 +39,7 @@ public class Robot extends LoggedRobot {
   SequentialCommandGroup preloadAmp;
   SequentialCommandGroup preloadMid;
   SequentialCommandGroup preloadSource;
+  SequentialCommandGroup tuning;
 
 
   private boolean built = false;
@@ -82,6 +84,7 @@ public class Robot extends LoggedRobot {
       preloadAmp = new PreloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preloadMid = new PreloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preloadSource = new PreloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      tuning = new ChoreoTuning(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       built = true;
     }
   }
@@ -104,6 +107,9 @@ public class Robot extends LoggedRobot {
     }
     if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_SOURCE){
       m_autonomousCommand = preloadSource;
+    }
+    if(m_robotContainer.getAutonomousCommand() == modes.TUNING){
+      m_autonomousCommand = tuning;
     }
 
     if (m_autonomousCommand != null) {
