@@ -281,16 +281,16 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void requestAutoShootRight(){
-        autoShooterVelocity[0] = shootRightVel.get();
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shootRightAngle.get();
+        autoShooterVelocity[0] = 70;
+        autoShooterVelocity[1] = 0.1;
+        autoArmAngleDegrees = 30; //ANGLE 14.88
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootLeft(){
-        autoShooterVelocity[0] = shootLeftVel.get();
+        autoShooterVelocity[0] = 70;
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shootLeftAngle.get();
+        autoArmAngleDegrees = 35; //-2
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
@@ -302,23 +302,23 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void requestAutoShootSubwooferM(){
-        autoShooterVelocity[0] = shootSubwooferMidVel.get();
+        autoShooterVelocity[0] = 70;
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shootSubwooferMidAngle.get();
+        autoArmAngleDegrees = 47;
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootSubwooferL(){
-        autoShooterVelocity[0] = shootSubwooferLeftVel.get();
+        autoShooterVelocity[0] = 60;
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shootSubwooferLeftAngle.get();
+        autoArmAngleDegrees = 58;
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
     public void requestAutoShootSubwooferR(){
-        autoShooterVelocity[0] = shootSubwooferRightVel.get();
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shootSubwooferRightAngle.get();
+        autoShooterVelocity[0] = 70;
+        autoShooterVelocity[1] = 0.1;
+        autoArmAngleDegrees = 45;
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
