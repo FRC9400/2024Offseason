@@ -83,7 +83,7 @@ public class RobotContainer {
     autoChooser.addOption(
       "Test", Autos.TestAuto(swerve, superstructure, "mid", Choreo.getTrajectory("test"))
       );
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+   // SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   private void configureBindings() {
@@ -91,7 +91,7 @@ public class RobotContainer {
     controller.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
     controller.leftTrigger().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A)));
     controller.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-
+    controller.b().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
   }
 

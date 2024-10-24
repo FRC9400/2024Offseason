@@ -36,12 +36,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
 
 
 public class Swerve extends SubsystemBase{
+    LoggedTunableNumber XkP = new LoggedTunableNumber("Choreo/X translation kP", 5);
+    LoggedTunableNumber YkP = new LoggedTunableNumber("Choreo/Y translation kP", 5);
+    LoggedTunableNumber ThetakP = new LoggedTunableNumber("Choreo/ Rotation Theta kP", 1);
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
@@ -246,6 +250,16 @@ public class Swerve extends SubsystemBase{
 
     }
 
+    public void driveRobotRelative2(ChassisSpeeds robotRelativeSpeeds){
+        ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        double x_speed = desiredChassisSpeeds.vxMetersPerSecond/1.5;
+        double y_speed = desiredChassisSpeeds.vyMetersPerSecond/1.5;
+        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond/1.5;
+
+        requestDesiredState(x_speed, y_speed, rot_speed, false, false);
+
+    }
+
     public ChassisSpeeds getRobotRelativeSpeeds(){
         return kinematics.toChassisSpeeds(getMeasuredStates());
     }
@@ -276,14 +290,14 @@ public class Swerve extends SubsystemBase{
         return Choreo.choreoSwerveCommand(
             trajectory,
             () -> poseRaw,
-                swerveConstants.moduleConstants.choreoTransController,
-                swerveConstants.moduleConstants.choreoTransController,
-                swerveConstants.moduleConstants.choreoRotController,
+            new PIDController(XkP.get(), 0, 0),
+            new PIDController(YkP.get(), 0, 0),
+            new PIDController(ThetakP.get(), 0, 0),
             (ChassisSpeeds speeds) -> {
             Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
             Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
             Logger.recordOutput("Auto req Omega", speeds.omegaRadiansPerSecond);
-            this.driveRobotRelative(speeds);},
+            this.driveRobotRelative2(speeds);},
             () -> {
                 Optional<Alliance> alliance = DriverStation.getAlliance();
                 return alliance.isPresent() && alliance.get() == Alliance.Red;

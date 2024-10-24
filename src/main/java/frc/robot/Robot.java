@@ -96,19 +96,19 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
 
-    if(m_robotContainer.getAutonomousCommand() == modes.TEST){
+    if(m_robotContainer.getAutoCommand() == modes.TEST){
       m_autonomousCommand = test;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_AMP){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
       m_autonomousCommand = preloadAmp;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_MID){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
       m_autonomousCommand = preloadMid;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.PRELOAD_SOURCE){
+    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_SOURCE){
       m_autonomousCommand = preloadSource;
     }
-    if(m_robotContainer.getAutonomousCommand() == modes.TUNING){
+    if(m_robotContainer.getAutoCommand() == modes.TUNING){
       m_autonomousCommand = tuning;
     }
 

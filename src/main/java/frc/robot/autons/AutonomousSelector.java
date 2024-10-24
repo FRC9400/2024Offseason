@@ -34,7 +34,7 @@ public class AutonomousSelector {
 
         autonomousSelector.addOption("Tune Choreo", modes.TUNING);
 
-    //    SmartDashboard.putData("Auto Choices", autonomousSelector);
+        SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 
     public modes get(){
