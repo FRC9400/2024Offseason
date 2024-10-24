@@ -44,9 +44,9 @@ public class Autos {
     }
 
     public static Command fourNoteMid(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteMidA");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteMidB");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteMidC");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("MidA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("MidB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("MidC");
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(trajA, swerve),
@@ -61,9 +61,9 @@ public class Autos {
     }
 
     public static Command fourNoteAmp(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteAmpA");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteAmpB");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteAmpC");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("AmpA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("AmpB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("AmpC");
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
@@ -78,9 +78,9 @@ public class Autos {
     }
 
     public static Command fourNoteSource(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("FourNoteSourceA");
-        ChoreoTrajectory trajB = Choreo.getTrajectory("FourNoteSourceB");
-        ChoreoTrajectory trajC = Choreo.getTrajectory("FourNoteSourceC");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("SourceA");
+        ChoreoTrajectory trajB = Choreo.getTrajectory("SourceB");
+        ChoreoTrajectory trajC = Choreo.getTrajectory("SourceC");
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(trajA, swerve),
@@ -120,7 +120,7 @@ public class Autos {
 
     public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
         return Commands.runOnce(() -> superstructure.requestAutoIntake())
-            .deadlineWith(new InstantCommand(() -> swerve.runChoreoTrajStandard(traj)));
+            .alongWith(new InstantCommand(() -> swerve.runChoreoTrajStandard(traj))); //Changed this from deadline to parallel
     }
 
     public static Command shoot(Swerve swerve, Superstructure superstructure){
