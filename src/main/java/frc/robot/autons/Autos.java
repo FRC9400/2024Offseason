@@ -61,35 +61,35 @@ public class Autos {
     }
 
     public static Command fourNoteAmp(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("AmpA");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("tuneX");
         ChoreoTrajectory trajB = Choreo.getTrajectory("AmpB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("AmpC");
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
            // requestAmpSubwooferShoot(superstructure),
-            intakeIn(swerve, superstructure, trajA),
+            intakeIn(swerve, superstructure, trajA)
          //   requestAmpShoot(superstructure),
-           intakeIn(swerve, superstructure, trajB)
+          // intakeIn(swerve, superstructure, trajB)
           //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
            // intakeIn(swerve, superstructure, trajC)          //  requestSourceShoot(superstructure)
         );
     }
 
     public static Command fourNoteSource(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("SourceA");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("tuneY");
         ChoreoTrajectory trajB = Choreo.getTrajectory("SourceB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("SourceC");
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(trajA, swerve),
-            requestSourceSubwooferShoot(superstructure),
-            intakeIn(swerve, superstructure, trajA),
-            requestSourceShoot(superstructure),
-            intakeIn(swerve, superstructure, trajB),
-            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
-            intakeIn(swerve, superstructure, trajC),
-            requestAmpShoot(superstructure)
+         //   requestSourceSubwooferShoot(superstructure),
+            intakeIn(swerve, superstructure, trajA)
+         //   requestSourceShoot(superstructure),
+         //   intakeIn(swerve, superstructure, trajB),
+        //    new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
+         //   intakeIn(swerve, superstructure, trajC),
+         //   requestAmpShoot(superstructure)
         );
     }
     

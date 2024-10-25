@@ -35,9 +35,9 @@ public class AutonomousSelector {
 
         autonomousSelector.addOption("Four Note Mid", modes.FOUR_NOTE_MID);
 
-        autonomousSelector.addOption("Four Note Amp", modes.FOUR_NOTE_AMP);
+        autonomousSelector.addOption("Tune X", modes.FOUR_NOTE_AMP);
 
-        autonomousSelector.addOption("Four Note Source", modes.FOUR_NOTE_SOURCE);
+        autonomousSelector.addOption("Tune Y", modes.FOUR_NOTE_SOURCE);
 
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
