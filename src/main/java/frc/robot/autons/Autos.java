@@ -67,13 +67,12 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
-            requestAmpSubwooferShoot(superstructure),
+           // requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
-            requestAmpShoot(superstructure),
-            intakeIn(swerve, superstructure, trajB),
-            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
-            intakeIn(swerve, superstructure, trajC),
-            requestSourceShoot(superstructure)
+         //   requestAmpShoot(superstructure),
+           intakeIn(swerve, superstructure, trajB)
+          //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
+           // intakeIn(swerve, superstructure, trajC)          //  requestSourceShoot(superstructure)
         );
     }
 
@@ -118,10 +117,16 @@ public class Autos {
         return Commands.none();
     }
 
-    public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
-        return Commands.runOnce(() -> superstructure.requestAutoIntake())
-            .alongWith(new InstantCommand(() -> swerve.runChoreoTrajStandard(traj))); //Changed this from deadline to parallel
+    public static Command intakeIn2(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
+        return Commands.run(() -> superstructure.requestAutoIntake())
+            .alongWith(swerve.runChoreoTrajStandard(traj)); //Changed this from deadline to parallel
     }
+
+    
+    public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
+        return swerve.runChoreoTrajStandard(traj); //Changed this from deadline to parallel
+    }
+
 
     public static Command shoot(Swerve swerve, Superstructure superstructure){
         return Commands.runOnce(() -> superstructure.requestPreShoot());

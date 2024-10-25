@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autons.Autos;
 import frc.robot.autons.AutonomousSelector.modes;
@@ -30,6 +31,8 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  Command do_nothing;
 
   Command preload_mid;
   Command preload_amp;
@@ -76,6 +79,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
+      do_nothing = new InstantCommand();
       preload_mid = Autos.preloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preload_amp = Autos.preloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       preload_source = Autos.preloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
@@ -92,6 +96,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
+
+    if(m_robotContainer.getAutoCommand() == modes.DO_NOTHING){
+      m_autonomousCommand = do_nothing;
+    }
 
     if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
       m_autonomousCommand = preload_mid;

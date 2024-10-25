@@ -45,9 +45,9 @@ import com.choreo.lib.ChoreoTrajectory;
 
 public class Swerve extends SubsystemBase{
 
-    LoggedTunableNumber XControllerkP = new LoggedTunableNumber("XControllerkP", 3);
+    LoggedTunableNumber XControllerkP = new LoggedTunableNumber("XControllerkP", 3.);
     LoggedTunableNumber YControllerkP = new LoggedTunableNumber("YControllerkP", 3);
-    LoggedTunableNumber ThetaControllerkP = new LoggedTunableNumber("ThetaControllerkP", 3);
+    LoggedTunableNumber ThetaControllerkP = new LoggedTunableNumber("ThetaControllerkP", 1.3);
 
 
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
@@ -248,6 +248,16 @@ public class Swerve extends SubsystemBase{
         ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
         double x_speed = desiredChassisSpeeds.vxMetersPerSecond;
         double y_speed = desiredChassisSpeeds.vyMetersPerSecond;
+        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond;
+
+        requestDesiredState(x_speed, y_speed, rot_speed, false, false);
+
+    }
+
+    public void driveRobotRelative2(ChassisSpeeds robotRelativeSpeeds){
+        ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        double x_speed = desiredChassisSpeeds.vxMetersPerSecond/1.5;
+        double y_speed = desiredChassisSpeeds.vyMetersPerSecond/1.5;
         double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond;
 
         requestDesiredState(x_speed, y_speed, rot_speed, false, false);
