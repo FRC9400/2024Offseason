@@ -23,8 +23,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.autons.AutonomousSelector.modes;
-import frc.robot.autons.modes.TestAuto;
+
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -45,7 +44,7 @@ public class Robot extends LoggedRobot {
   SequentialCommandGroup source_two_piece_three;
   SequentialCommandGroup source_preload;
   SequentialCommandGroup source_preload_leave;
-  SequentialCommandGroup test = new TestAuto(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+  
   private boolean built = false;
 
   @Override
@@ -92,8 +91,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-
-    test.schedule(); 
   }
 
   @Override

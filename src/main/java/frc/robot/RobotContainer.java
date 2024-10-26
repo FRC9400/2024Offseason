@@ -31,8 +31,6 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.PassAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.autons.AutonomousSelector;
-import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -87,6 +85,17 @@ public class RobotContainer {
     driver.rightBumper().onTrue(new InstantCommand(()-> superstructure.setState(SuperstructureStates.INTAKE)));
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
 
+    BooleanEvent xPressed = new BooleanEvent(m_loop, () -> controller.getXButton());
+    xPressed.ifHigh(() -> swerve.zeroWheels());
+
+    BooleanEvent yPressed = new BooleanEvent(m_loop, () -> controller.getYButton());
+    yPressed.ifHigh(() -> swerve.zeroGyro());
+
+    if(superstructure.getState() == SuperstructureStates.NOTE){
+      controller.setRumble(RumbleType.kBothRumble, 10);
+    }else{
+      controller.setRumble(RumbleType.kBothRumble, 0);
+    }
   }
   public boolean getAutonomousCommand() {
     return false;
