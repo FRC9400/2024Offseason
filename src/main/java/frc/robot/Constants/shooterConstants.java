@@ -15,7 +15,7 @@ public class shooterConstants {
     public static final InvertedValue rightArmInvert = InvertedValue.CounterClockwise_Positive;
 
     /* Current Limits */
-    public static final double shooterCurrentLimit = 90;
+    public static final double shooterCurrentLimit = 85;
     public static final double armCurrentLimit = 60;
 
     public static double wheelCircumferenceMeters = Units.inchesToMeters(4) * Math.PI; 

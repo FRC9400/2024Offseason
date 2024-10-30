@@ -19,55 +19,61 @@ import frc.robot.Subsystems.Swerve.Swerve;
 
 public class Autos {
 
-    public static Command TestAuto(Swerve swerve, Superstructure superstructure, String startingPos, ChoreoTrajectory traj){
-        return Commands.sequence(
-            resetGyroAuto(swerve, "startingPos"),
-            resetPoseAuto(traj, swerve),
-            new InstantCommand(() -> swerve.runChoreoTrajStandard(traj))
-
-        );
-    }
-
     public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("MidA");
-         BooleanSupplier bool = () -> {
+         BooleanSupplier boolIntake = () -> {
             return superstructure.getState() == SuperstructureStates.NOTE;
+         };
+         BooleanSupplier boolShoot = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
          };
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(traj, swerve),
+            requestMidSubwooferShoot(superstructure),
+            new WaitUntilCommand(boolShoot),
             intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(bool),
-            new InstantCommand(() -> superstructure.requestAutoShootMidNote())
+            new WaitUntilCommand(boolIntake),
+            requestMidShoot(superstructure)
         );
     }
 
     public static Command twoNoteAmp(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("AmpA");
-        BooleanSupplier bool = () -> {
+        BooleanSupplier boolIntake = () -> {
             return superstructure.getState() == SuperstructureStates.NOTE;
         };
+        BooleanSupplier boolShoot = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(traj, swerve),
+            requestAmpSubwooferShoot(superstructure),
+            new WaitUntilCommand(boolShoot),
             intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(bool),
+            new WaitUntilCommand(boolIntake),
             requestAmpShoot(superstructure)
         );
     }
     public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("SourceA");
-        BooleanSupplier bool = () -> {
+        BooleanSupplier boolIntake = () -> {
             return superstructure.getState() == SuperstructureStates.NOTE;
         };
+        BooleanSupplier boolShoot = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(traj, swerve),
+            requestSourceSubwooferShoot(superstructure),
+            new WaitUntilCommand(boolShoot),
             intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(bool),
+            new WaitUntilCommand(boolIntake),
             requestAmpShoot(superstructure)
         );
     }
@@ -75,7 +81,7 @@ public class Autos {
     public static Command preloadMid(Swerve swerve, Superstructure superstructure){
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
-            new InstantCommand(() -> superstructure.requestAutoShootSubwooferM())
+            requestMidSubwooferShoot(superstructure)
         );
     }
 
@@ -100,9 +106,9 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(trajA, swerve),
-            new InstantCommand(() -> superstructure.requestAutoShootSubwooferM()),
+            requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
-            new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
+          //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
             intakeIn(swerve, superstructure, trajB),
             requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
@@ -184,21 +190,24 @@ public class Autos {
             new WaitCommand(0.5));
     }
 
-
-    public static Command shoot(Swerve swerve, Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestPreShoot());
-    }
-
     public static Command idleCommand(Superstructure superstructure){
         return Commands.runOnce(() -> superstructure.requestIdle());
+    }
+
+    public static Command requestMidShoot(Superstructure superstructure){
+        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM));
+    }
+
+    public static Command requestMidSubwooferShoot(Superstructure superstructure){
+        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.subwooferVelM, AutoConstants.subwooferRatioM, AutoConstants.subwooferDegM));
     }
 
     public static Command requestAmpShoot(Superstructure superstructure) {
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoShootRight();
+                superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             } else {
-                superstructure.requestAutoShootLeft();
+                superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             }
         });
     }
@@ -206,9 +215,9 @@ public class Autos {
     public static Command requestSourceShoot(Superstructure superstructure) {
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoShootLeft();
+                superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             } else {
-                superstructure.requestAutoShootRight();
+                superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             }
         });
     }
@@ -216,9 +225,9 @@ public class Autos {
     public static Command requestAmpSubwooferShoot(Superstructure superstructure) {
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoShootSubwooferR();
+                superstructure.requestPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
             } else {
-                superstructure.requestAutoShootSubwooferL();
+                superstructure.requestPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
             }
         });
     }
@@ -226,14 +235,12 @@ public class Autos {
     public static Command requestSourceSubwooferShoot(Superstructure superstructure) {
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestAutoShootSubwooferL();
+                superstructure.requestPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
             } else {
-                superstructure.requestAutoShootSubwooferR();
+                superstructure.requestPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
             }
         });
     }
-    
-    
     }
     
 

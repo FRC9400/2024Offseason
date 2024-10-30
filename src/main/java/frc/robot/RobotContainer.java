@@ -36,6 +36,7 @@ import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.AmpDriveAssistCommand;
 import frc.robot.Subsystems.Swerve.PassAssistCommand;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.autons.AutoConstants;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
 import frc.robot.autons.Autos;
@@ -77,7 +78,7 @@ public class RobotContainer {
     driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
     driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
     driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
-    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
+    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
 
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
@@ -85,7 +86,7 @@ public class RobotContainer {
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
       );
     new JoystickButton(controller, Button.kY.value).onTrue(
-      new InstantCommand(() -> superstructure.requestAutoShootSubwooferM())
+      new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.subwooferVelM, AutoConstants.subwooferRatioM, AutoConstants.subwooferDegM))
       );
     new JoystickButton(controller, Button.kRightBumper.value).onTrue(
       new InstantCommand(() -> superstructure.requestIntake())

@@ -51,8 +51,8 @@ public class Superstructure extends SubsystemBase{
 
     LoggedTunableNumber shootSubwooferRightRatio = new LoggedTunableNumber("Autos/SUB right ratio", 0.1);
     LoggedTunableNumber shootRightRatio = new LoggedTunableNumber("Autos/right ratio", 0.1);
-    private double[] autoShooterVelocity = {0,0}; //left vel + ratio
-    private double autoArmAngleDegrees = 0;
+    private double[] shooterVelocity = {0,0}; //left vel + ratio
+    private double armAngleDegrees = 0;
 
     public Superstructure(IndexerIO indexer, OTB_IntakeIO intake, ShooterArmIO shooter, AmpIO amp){
         this.s_indexer = new Indexer(indexer);
@@ -75,11 +75,7 @@ public class Superstructure extends SubsystemBase{
         PASS,
         PRE_PASS,
         PREPARE_SHOOT,
-        TEST_SHOT_VOLTAGE_PREPARE,
-        TEST_SHOOT_VOLTAGE,
-        TEST_IDLE,
-        PREPARE_SHOOT_AUTO,
-        SHOOT_AUTO
+        POST_SHOOT
     }
 
     @Override
@@ -167,20 +163,29 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(shootMidVel.get(), 0.5,shooterMidAngle.get());//placeholder value(s)
+                s_shooter.requestShoot(shooterVelocity[0], shooterVelocity[1], armAngleDegrees);
                 if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
                     setState(SuperstructureStates.SHOOT);
                 }
                 break;
             case SHOOT:
                 s_indexer.requestIdle();
-                s_amp.requestRun(2);//placeholder value(s)
+                s_amp.requestRun(3.6);
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(shootMidVel.get(), 0.5,shooterMidAngle.get());//placeholder value(s)
+                s_shooter.requestShoot(shooterVelocity[0], shooterVelocity[1], armAngleDegrees);//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
-                    setState(SuperstructureStates.IDLE);
+                    setState(SuperstructureStates.POST_SHOOT);
                 }
                 break;
+            case POST_SHOOT:
+                s_indexer.requestIdle();
+                s_amp.requestIdle();
+                s_intake.requestSetpoint();
+                s_shooter.requestZero();
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.2) {
+                    setState(SuperstructureStates.IDLE);
+                }
+
             case PRE_PASS:
             
                 s_indexer.requestIdle();
@@ -200,25 +205,6 @@ public class Superstructure extends SubsystemBase{
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
-            case PREPARE_SHOOT_AUTO:
-                s_indexer.requestIdle();
-                s_amp.requestIdle();
-                s_intake.requestSetpoint();
-                s_shooter.requestShoot(autoShooterVelocity[0], autoShooterVelocity[1],autoArmAngleDegrees);
-                if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
-                    setState(SuperstructureStates.SHOOT_AUTO);
-                }
-                break;
-
-            case SHOOT_AUTO:
-                s_indexer.requestIdle();
-                s_amp.requestRun(3.6);
-                s_intake.requestSetpoint();
-                s_shooter.requestShoot(autoShooterVelocity[0], autoShooterVelocity[1],autoArmAngleDegrees);
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
-                    setState(SuperstructureStates.IDLE);
-                }
-                break;
             }
         }
 
@@ -234,57 +220,16 @@ public class Superstructure extends SubsystemBase{
         setState(SuperstructureStates.INTAKE);
     }
 
-    public void requestPreShoot(){
+    public void requestPreShoot(double velocity, double ratio, double angleDeg){
+        shooterVelocity[0] = velocity;
+        shooterVelocity[1] = ratio;
+        armAngleDegrees = angleDeg;
         setState(SuperstructureStates.PREPARE_SHOOT);
     }
 
     public void requestPass(){
         setState(SuperstructureStates.PASS);
-    }
-
-    public void requestAutoShootRight(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 30;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-
-    public void requestAutoShootLeft(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 30;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-
-    public void requestAutoShootMidNote(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 27;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-
-    public void requestAutoShootSubwooferM(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 45;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-
-    public void requestAutoShootSubwooferL(){
-        autoShooterVelocity[0] = 45.6;
-        autoShooterVelocity[1] = 1.5;
-        autoArmAngleDegrees = 50;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-
-    public void requestAutoShootSubwooferR(){
-        autoShooterVelocity[0] = 70;
-        autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = 45;
-        setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
-    }
-    
-    
+    }    
 
     public void setState(SuperstructureStates next){
         systemState=next;

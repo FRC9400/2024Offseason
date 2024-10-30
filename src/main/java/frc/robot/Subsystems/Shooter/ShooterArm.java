@@ -31,7 +31,6 @@ public class ShooterArm{
         AMP,
         PASS,
         VOLTAGE,
-        AUTOS,
         OUTTAKE
     }
 
@@ -72,9 +71,6 @@ public class ShooterArm{
             case VOLTAGE:
                 shooterArmIO.requestShooterVoltage(4);
                 shooterArmIO.requestArmVoltage(0);
-            case AUTOS:
-                shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
-                shooterArmIO.requestMotionMagicSetpoint(0);
             case OUTTAKE:
                 shooterArmIO.requestShooterVoltage(-1.2);
                 shooterArmIO.requestArmVoltage(0);
@@ -145,13 +141,7 @@ public class ShooterArm{
             return true;
         }
         return false;
-    }
     
-    public void requestAutos(double shootervel, double ratio){
-        shooterVelocity[0] = shootervel;
-        shooterVelocity[1] = ratio;
-        setState(shooterArmState.AUTOS);
-        
     }
 
     public double getArmDegrees(){

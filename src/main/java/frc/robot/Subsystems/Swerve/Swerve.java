@@ -38,6 +38,7 @@ import frc.commons.LoggedTunableNumber;
 import frc.robot.Constants.canIDConstants;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Constants.swerveConstants.kinematicsConstants;
+import frc.robot.autons.AutoConstants;
 
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
@@ -382,9 +383,9 @@ public class Swerve extends SubsystemBase{
             trajectory,
             () -> poseRaw,
             Choreo.choreoSwerveController(
-                    new PIDController(XControllerkP.get(), 0.0, 0.0),
-                    new PIDController(YControllerkP.get(), 0.0, 0.0),
-                    new PIDController(ThetaControllerkP.get(), 0.0, 0.0)),
+                    AutoConstants.choreoTransController,
+                    AutoConstants.choreoTransController,
+                    AutoConstants.choreoRotController),
             (ChassisSpeeds speeds) -> {
             Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
             Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);
