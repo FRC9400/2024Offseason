@@ -43,6 +43,35 @@ public class Autos {
         );
     }
 
+    public static Command twoNoteAmp(Swerve swerve, Superstructure superstructure){
+        ChoreoTrajectory traj = Choreo.getTrajectory("AmpA");
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.NOTE;
+        };
+        return Commands.sequence(
+            resetGyroAuto(swerve, "amp"),
+            resetPoseAuto(traj, swerve),
+            intake(swerve, superstructure),
+            intakeIn(swerve, superstructure, traj),
+            new WaitUntilCommand(bool),
+            requestAmpShoot(superstructure)
+        );
+    }
+    public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
+        ChoreoTrajectory traj = Choreo.getTrajectory("SourceA");
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.NOTE;
+        };
+        return Commands.sequence(
+            resetGyroAuto(swerve, "source"),
+            resetPoseAuto(traj, swerve),
+            intake(swerve, superstructure),
+            intakeIn(swerve, superstructure, traj),
+            new WaitUntilCommand(bool),
+            requestAmpShoot(superstructure)
+        );
+    }
+
     public static Command preloadMid(Swerve swerve, Superstructure superstructure){
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
