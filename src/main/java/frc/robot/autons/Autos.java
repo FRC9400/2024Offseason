@@ -40,7 +40,6 @@ public class Autos {
             intakeIn(swerve, superstructure, traj),
             new WaitUntilCommand(bool),
             new InstantCommand(() -> superstructure.requestAutoShootMidNote())
-
         );
     }
 

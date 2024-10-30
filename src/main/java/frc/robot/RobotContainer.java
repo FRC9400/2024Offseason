@@ -80,7 +80,7 @@ public class RobotContainer {
     driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
 
-
+    driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
     new JoystickButton(controller, Button.kA.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
       );

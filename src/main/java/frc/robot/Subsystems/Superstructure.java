@@ -113,8 +113,8 @@ public class Superstructure extends SubsystemBase{
                 s_intake.requestSetpoint();
                 s_shooter.requestIdle();
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
-                    setState(SuperstructureStates.IDLE);
                     RobotContainer.controller.setRumble(RumbleType.kLeftRumble, 0);
+                    setState(SuperstructureStates.IDLE);
                 }
                 break;
             case OUTTAKE:
@@ -257,9 +257,9 @@ public class Superstructure extends SubsystemBase{
     }
 
     public void requestAutoShootMidNote(){
-        autoShooterVelocity[0] = shootMidVel.get();
+        autoShooterVelocity[0] = 70;
         autoShooterVelocity[1] = 0.5;
-        autoArmAngleDegrees = shooterMidAngle.get();
+        autoArmAngleDegrees = 27;
         setState(SuperstructureStates.PREPARE_SHOOT_AUTO);
     }
 
