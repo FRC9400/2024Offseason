@@ -17,7 +17,8 @@ public class AutonomousSelector {
             PRELOAD_SOURCE,
             FOUR_NOTE_MID,
             FOUR_NOTE_AMP,
-            FOUR_NOTE_SOURCE
+            FOUR_NOTE_SOURCE,
+            TWO_NOTE_MID
 
         };
     
@@ -35,9 +36,7 @@ public class AutonomousSelector {
 
         autonomousSelector.addOption("Four Note Mid", modes.FOUR_NOTE_MID);
 
-        autonomousSelector.addOption("Tune X", modes.FOUR_NOTE_AMP);
-
-        autonomousSelector.addOption("Tune Y", modes.FOUR_NOTE_SOURCE);
+        autonomousSelector.addOption("Two Note Mid", modes.TWO_NOTE_MID);
 
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }

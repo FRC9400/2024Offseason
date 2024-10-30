@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Subsystems.Superstructure;
 import frc.robot.Subsystems.Amp.AmpIO;
 import frc.robot.Subsystems.Amp.AmpIOTalonFX;
@@ -71,23 +73,26 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    //driver.x().onTrue(new InstantCommand(() -> swerve.zeroWheels()));
-    driver.leftTrigger().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-   /*  driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
-    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
-    driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
+    driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
     driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-    driver.rightBumper().onTrue(new InstantCommand(()-> superstructure.setState(SuperstructureStates.INTAKE)));
-    driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
-*/
-    driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_IDLE)));
-    driver.x().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-    driver.y().onTrue(new InstantCommand(() -> superstructure.requestAutoIntake()));
+    driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
+    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
+    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.PREPARE_SHOOT)));
+    driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
 
-    driver.b().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferM()));
-    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferR()));
-    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.requestAutoShootSubwooferL()));
 
+    new JoystickButton(controller, Button.kA.value).onTrue(
+      new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
+      );
+    new JoystickButton(controller, Button.kY.value).onTrue(
+      new InstantCommand(() -> superstructure.requestAutoShootSubwooferM())
+      );
+    new JoystickButton(controller, Button.kRightBumper.value).onTrue(
+      new InstantCommand(() -> superstructure.requestIntake())
+    );
+    new JoystickButton(controller, Button.kB.value).onTrue(
+      new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))
+    );
   }
   public modes getAutoCommand() {
     return selector.get();

@@ -31,7 +31,8 @@ public class ShooterArm{
         AMP,
         PASS,
         VOLTAGE,
-        AUTOS
+        AUTOS,
+        OUTTAKE
     }
 
     public ShooterArm(ShooterArmIO shooterArmIO) {
@@ -74,6 +75,9 @@ public class ShooterArm{
             case AUTOS:
                 shooterArmIO.requestVelocity(shooterVelocity[0], shooterVelocity[1]);
                 shooterArmIO.requestMotionMagicSetpoint(0);
+            case OUTTAKE:
+                shooterArmIO.requestShooterVoltage(-1.2);
+                shooterArmIO.requestArmVoltage(0);
             default:
                 break;
 
@@ -93,6 +97,10 @@ public class ShooterArm{
 
     public void requestAmp(){
         setState(shooterArmState.AMP);
+    }
+
+    public void requestOuttake(){
+        setState(shooterArmState.OUTTAKE);
     }
 
     public void requestZero(){

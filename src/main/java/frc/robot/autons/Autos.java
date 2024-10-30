@@ -1,5 +1,7 @@
 package frc.robot.autons;
 
+import java.util.function.BooleanSupplier;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
@@ -8,7 +10,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Subsystems.Superstructure;
+import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 import frc.robot.Subsystems.Swerve.Swerve;
 
 public class Autos {
@@ -18,6 +24,22 @@ public class Autos {
             resetGyroAuto(swerve, "startingPos"),
             resetPoseAuto(traj, swerve),
             new InstantCommand(() -> swerve.runChoreoTrajStandard(traj))
+
+        );
+    }
+
+    public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){
+        ChoreoTrajectory traj = Choreo.getTrajectory("MidA");
+         BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.NOTE;
+         };
+        return Commands.sequence(
+            resetGyroAuto(swerve, "mid"),
+            resetPoseAuto(traj, swerve),
+            intake(swerve, superstructure),
+            intakeIn(swerve, superstructure, traj),
+            new WaitUntilCommand(bool),
+            new InstantCommand(() -> superstructure.requestAutoShootMidNote())
 
         );
     }
@@ -69,6 +91,7 @@ public class Autos {
             resetPoseAuto(trajA, swerve),
            // requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA)
+            
          //   requestAmpShoot(superstructure),
           // intakeIn(swerve, superstructure, trajB)
           //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
@@ -118,13 +141,19 @@ public class Autos {
     }
 
     public static Command intakeIn2(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
-        return Commands.run(() -> superstructure.requestAutoIntake())
-            .alongWith(swerve.runChoreoTrajStandard(traj)); //Changed this from deadline to parallel
+        return Commands.run(() -> superstructure.requestIntake())
+            .deadlineWith(swerve.runChoreoTrajStandard(traj)); //Changed this from deadline to parallel
     }
 
     
     public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
         return swerve.runChoreoTrajStandard(traj); //Changed this from deadline to parallel
+    }
+
+    public static Command intake(Swerve swerve, Superstructure superstructure) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> superstructure.requestIntake()),
+            new WaitCommand(0.5));
     }
 
 
@@ -133,7 +162,7 @@ public class Autos {
     }
 
     public static Command idleCommand(Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestAutoIdle());
+        return Commands.runOnce(() -> superstructure.requestIdle());
     }
 
     public static Command requestAmpShoot(Superstructure superstructure) {

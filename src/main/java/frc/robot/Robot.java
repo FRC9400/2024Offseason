@@ -40,6 +40,7 @@ public class Robot extends LoggedRobot {
   Command four_note_mid;
   Command four_note_source;
   Command four_note_amp;
+  Command two_note_mid;
 
   private boolean built = false;
 
@@ -86,6 +87,7 @@ public class Robot extends LoggedRobot {
       four_note_mid = Autos.fourNoteMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       four_note_amp = Autos.fourNoteAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       four_note_source = Autos.fourNoteSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      two_note_mid = Autos.twoNoteMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
       built = true;
     }
   }
@@ -118,6 +120,9 @@ public class Robot extends LoggedRobot {
     }
     if(m_robotContainer.getAutoCommand() == modes.FOUR_NOTE_SOURCE){
       m_autonomousCommand = four_note_source;
+    }
+    if(m_robotContainer.getAutoCommand() == modes.TWO_NOTE_MID){
+      m_autonomousCommand = two_note_mid;
     }
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
