@@ -64,7 +64,8 @@ public class RobotContainer {
                 swerve, 
                 () -> -driver.getRawAxis(XboxController.Axis.kLeftY.value),
                 () -> -driver.getRawAxis(XboxController.Axis.kLeftX.value), 
-                () -> -driver.getRawAxis(XboxController.Axis.kRightX.value)
+                () -> -driver.getRawAxis(XboxController.Axis.kRightX.value),
+                () -> driver.getRawAxis(XboxController.Axis.kLeftTrigger.value)
               
             )
         );
@@ -76,7 +77,6 @@ public class RobotContainer {
   private void configureBindings() {
     driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
     driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-    driver.leftTrigger().whileTrue(new AmpDriveAssistCommand(swerve, superstructure));
     driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
     driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
