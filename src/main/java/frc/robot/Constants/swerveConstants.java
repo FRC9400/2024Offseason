@@ -23,7 +23,7 @@ public final class swerveConstants {
 
         /* Max Speeds */
         public static final double maxSpeedMeterPerSecond = Units.feetToMeters(16); 
-        public static final double maxAngularVelocity = 2.5; 
+        public static final double maxAngularVelocity = 4;
         
         /* Current Limits */
         public static final double driveStatorCurrentLimit = 80;
