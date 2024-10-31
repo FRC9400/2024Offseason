@@ -28,8 +28,8 @@ public class AutoConstants {
     public static double DegR = 25;
 
     public static double VelL = 70;
-    public static double RatioL = 0.5;
-    public static double DegL = 25;
+    public static double RatioL = 0.4;
+    public static double DegL = 37;
 
     
 }
