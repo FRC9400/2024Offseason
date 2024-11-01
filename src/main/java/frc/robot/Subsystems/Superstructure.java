@@ -6,9 +6,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.commons.LoggedTunableNumber;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Amp.AmpIO;
 import frc.robot.Subsystems.Indexer.Indexer;
@@ -142,7 +140,9 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestAmp();
-                
+                if (s_shooter.atArmSetpoint()){
+                    setState(SuperstructureStates.AMP_B);
+                }
                 break;
             case AMP_B:
                 s_indexer.requestIdle();

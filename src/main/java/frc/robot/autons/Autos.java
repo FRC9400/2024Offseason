@@ -21,59 +21,32 @@ public class Autos {
 
     public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("MidA");
-         BooleanSupplier boolIntake = () -> {
-            return superstructure.getState() == SuperstructureStates.NOTE;
-         };
-         BooleanSupplier boolShoot = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
-         };
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(traj, swerve),
             requestMidSubwooferShoot(superstructure),
-            new WaitUntilCommand(boolShoot),
-            intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(boolIntake),
             requestMidShoot(superstructure)
         );
     }
 
     public static Command twoNoteAmp(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("AmpA");
-        BooleanSupplier boolIntake = () -> {
-            return superstructure.getState() == SuperstructureStates.NOTE;
-        };
-        BooleanSupplier boolShoot = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
-         };
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(traj, swerve),
             requestAmpSubwooferShoot(superstructure),
-            new WaitUntilCommand(boolShoot),
-            intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(boolIntake),
             requestAmpShoot(superstructure)
         );
     }
     public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("SourceA");
-        BooleanSupplier boolIntake = () -> {
-            return superstructure.getState() == SuperstructureStates.NOTE;
-        };
-        BooleanSupplier boolShoot = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
-         };
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(traj, swerve),
             requestSourceSubwooferShoot(superstructure),
-            new WaitUntilCommand(boolShoot),
-            intake(swerve, superstructure),
             intakeIn(swerve, superstructure, traj),
-            new WaitUntilCommand(boolIntake),
             requestAmpShoot(superstructure)
         );
     }
@@ -108,7 +81,7 @@ public class Autos {
             resetPoseAuto(trajA, swerve),
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
-          //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
+            requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajB),
             requestAmpShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
@@ -123,13 +96,13 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
-           // requestAmpSubwooferShoot(superstructure),
-            intakeIn(swerve, superstructure, trajA)
-            
-         //   requestAmpShoot(superstructure),
-          // intakeIn(swerve, superstructure, trajB)
-          //  new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
-           // intakeIn(swerve, superstructure, trajC)          //  requestSourceShoot(superstructure)
+            requestAmpSubwooferShoot(superstructure),
+            intakeIn(swerve, superstructure, trajA),
+            requestAmpShoot(superstructure),
+            intakeIn(swerve, superstructure, trajB),
+            requestMidShoot(superstructure),
+            intakeIn(swerve, superstructure, trajC),
+            requestSourceShoot(superstructure)
         );
     }
 
@@ -140,13 +113,13 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             resetPoseAuto(trajA, swerve),
-         //   requestSourceSubwooferShoot(superstructure),
-            intakeIn(swerve, superstructure, trajA)
-         //   requestSourceShoot(superstructure),
-         //   intakeIn(swerve, superstructure, trajB),
-        //    new InstantCommand(() -> superstructure.requestAutoShootMidNote()),
-         //   intakeIn(swerve, superstructure, trajC),
-         //   requestAmpShoot(superstructure)
+            requestSourceSubwooferShoot(superstructure),
+            intakeIn(swerve, superstructure, trajA),
+            requestSourceShoot(superstructure),
+            intakeIn(swerve, superstructure, trajB),
+            requestMidShoot(superstructure),
+            intakeIn(swerve, superstructure, trajC),
+            requestAmpShoot(superstructure)
         );
     }
     
@@ -174,20 +147,16 @@ public class Autos {
         return Commands.none();
     }
 
-    public static Command intakeIn2(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
-        return Commands.run(() -> superstructure.requestIntake())
-            .deadlineWith(swerve.runChoreoTrajStandard(traj)); //Changed this from deadline to parallel
-    }
-
-    
     public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
-        return swerve.runChoreoTrajStandard(traj); //Changed this from deadline to parallel
-    }
-
-    public static Command intake(Swerve swerve, Superstructure superstructure) {
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.NOTE;
+        };
         return new SequentialCommandGroup(
             new InstantCommand(() -> superstructure.requestIntake()),
-            new WaitCommand(0.5));
+            new WaitCommand(0.5),
+            swerve.runChoreoTrajStandard(traj),
+            new WaitUntilCommand(bool)
+            );
     }
 
     public static Command idleCommand(Superstructure superstructure){
@@ -195,52 +164,75 @@ public class Autos {
     }
 
     public static Command requestMidShoot(Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM));
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
+        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM))
+            .andThen(new WaitUntilCommand(bool));
     }
 
     public static Command requestMidSubwooferShoot(Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.subwooferVelM, AutoConstants.subwooferRatioM, AutoConstants.subwooferDegM));
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
+        return Commands.runOnce(() -> superstructure.requestPreShoot(AutoConstants.subwooferVelM, AutoConstants.subwooferRatioM, AutoConstants.subwooferDegM))
+            .andThen(new WaitUntilCommand(bool));
+
     }
 
     public static Command requestAmpShoot(Superstructure superstructure) {
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
                 superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             } else {
                 superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             }
-        });
+        })
+            .andThen(new WaitUntilCommand(bool));
     }
 
     public static Command requestSourceShoot(Superstructure superstructure) {
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
                 superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             } else {
                 superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             }
-        });
+        })
+            .andThen(new WaitUntilCommand(bool));
     }
 
     public static Command requestAmpSubwooferShoot(Superstructure superstructure) {
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
                 superstructure.requestPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
             } else {
                 superstructure.requestPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
             }
-        });
+        })
+            .andThen(new WaitUntilCommand(bool));
     }
 
     public static Command requestSourceSubwooferShoot(Superstructure superstructure) {
+        BooleanSupplier bool = () -> {
+            return superstructure.getState() == SuperstructureStates.POST_SHOOT;
+         };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
                 superstructure.requestPreShoot(AutoConstants.subwooferVelL, AutoConstants.subwooferRatioL, AutoConstants.subwooferDegL);
             } else {
                 superstructure.requestPreShoot(AutoConstants.subwooferVelR, AutoConstants.subwooferRatioR, AutoConstants.subwooferDegR);
             }
-        });
+        })
+            .andThen(new WaitUntilCommand(bool));
     }
     }
-    
-

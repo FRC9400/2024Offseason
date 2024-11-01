@@ -9,11 +9,11 @@ public class AutoConstants {
 
     public static double subwooferVelM = 70;
     public static double subwooferRatioM = 0.6;
-    public static double subwooferDegM = 45; //done
+    public static double subwooferDegM = 45; 
 
     public static double subwooferVelR = 60;
     public static double subwooferRatioR = 0.7;
-    public static double subwooferDegR = 45; //done
+    public static double subwooferDegR = 45; 
 
     public static double subwooferVelL = 45.6;
     public static double subwooferRatioL = 1.5;

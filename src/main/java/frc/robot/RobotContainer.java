@@ -39,7 +39,6 @@ import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutoConstants;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
-import frc.robot.autons.Autos;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -75,14 +74,21 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-    driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
-    driver.leftBumper().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B)));
-    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
-    driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
-    driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(70,0.4,37)));
 
+    driver.y().onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+
+    driver.a().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE)));
+
+    driver.leftBumper().onTrue(new AmpDriveAssistCommand(swerve));
+
+    driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
+    
+    driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
+    
+    driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM,AutoConstants.RatioM,AutoConstants.DegM)));
+    
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
+    
     new JoystickButton(controller, Button.kA.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
       );
@@ -91,6 +97,9 @@ public class RobotContainer {
       );
     new JoystickButton(controller, Button.kRightBumper.value).onTrue(
       new InstantCommand(() -> superstructure.requestIntake())
+    );
+    new JoystickButton(controller, Button.kLeftBumper.value).onTrue(
+      new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A))
     );
     new JoystickButton(controller, Button.kB.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))
