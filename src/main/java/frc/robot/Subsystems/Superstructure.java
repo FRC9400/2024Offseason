@@ -182,7 +182,7 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
                 s_shooter.requestZero();
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.2) {
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.03) {
                     setState(SuperstructureStates.IDLE);
                 }
 
