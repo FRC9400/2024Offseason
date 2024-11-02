@@ -1,33 +1,31 @@
 package frc.robot.Subsystems.Swerve;
 
-import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.RobotContainer;
-import frc.robot.Subsystems.Superstructure;
-import frc.robot.Subsystems.Superstructure.SuperstructureStates;
 
 public class AmpDriveAssistCommand extends Command{
     private final Swerve swerve;
-    private final Superstructure superstructure;
+    LoggedTunableNumber kP = new LoggedTunableNumber("AmpkP", 3);
+    LoggedTunableNumber kD = new LoggedTunableNumber("AmpkD", 0);
+
     private final PIDController thetaController = new PIDController(3, 0, 0);
     private Rotation2d headingGoal;
     
-    public AmpDriveAssistCommand(Swerve swerve, Superstructure superstructure){
+    public AmpDriveAssistCommand(Swerve swerve){
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.swerve = swerve;
-        this.superstructure = superstructure;
-        addRequirements(swerve, superstructure);
+        addRequirements(swerve);
     }
 
     @Override
     public void initialize(){
         headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d( Math.PI/2.0) : new Rotation2d( - Math.PI/2.0);
-        superstructure.setState(SuperstructureStates.AMP_A); 
     }
 
     @Override

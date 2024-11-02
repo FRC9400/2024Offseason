@@ -2,20 +2,6 @@ package frc.robot.Subsystems.Shooter;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.SignalLogger;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Subsystems.Superstructure.SuperstructureStates;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
-
-import static edu.wpi.first.units.Units.Volts;
-
-
 public class ShooterArm{
     private final ShooterArmIO shooterArmIO;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();

@@ -8,7 +8,6 @@
 package frc.commons;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.commons.Alert;
 import frc.commons.Alert.AlertType;
 
 /**

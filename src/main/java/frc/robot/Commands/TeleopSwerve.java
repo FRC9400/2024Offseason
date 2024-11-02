@@ -3,11 +3,9 @@ package frc.robot.Commands;
 import frc.robot.Constants.swerveConstants;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -17,16 +15,18 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
+    private DoubleSupplier brakeSup; 
 
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup) {
+
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
-   
+        this.brakeSup = brakeSup; 
     }
 
     @Override
@@ -39,6 +39,11 @@ public class TeleopSwerve extends Command {
         double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
         double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
         double rot_speed = rotationVal * swerveConstants.moduleConstants.maxAngularVelocity;
+
+        double brakeFactor = 1.0 - brakeSup.getAsDouble(); 
+        x_speed *= brakeFactor;
+        y_speed *= brakeFactor;
+        rot_speed *= brakeFactor;
 
         /* Drive */
         s_Swerve.requestDesiredState(
