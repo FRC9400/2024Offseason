@@ -39,6 +39,7 @@ import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.autons.AutoConstants;
 import frc.robot.autons.AutonomousSelector;
 import frc.robot.autons.AutonomousSelector.modes;
+import frc.commons.LoggedTunableNumber;
 import frc.robot.Commands.TeleopSwerve;
 
 public class RobotContainer {
@@ -51,6 +52,10 @@ public class RobotContainer {
     private final Superstructure superstructure = new Superstructure(indexer, otbIntake, shooter,amp);
     private final Swerve swerve = new Swerve();
     private AutonomousSelector selector;
+
+    LoggedTunableNumber vel = new LoggedTunableNumber("VELOCITY", 70);
+    LoggedTunableNumber ratio = new LoggedTunableNumber("RATIO", 0.5);
+    LoggedTunableNumber angle = new LoggedTunableNumber("ANGLE", 25);
 
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
   public RobotContainer() {
@@ -85,7 +90,7 @@ public class RobotContainer {
     
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
     
-    driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM,AutoConstants.RatioM,AutoConstants.DegM)));
+    driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
     
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
     
