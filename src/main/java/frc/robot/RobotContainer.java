@@ -90,8 +90,9 @@ public class RobotContainer {
     
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
     
-    driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
+    //driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
     
+    driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
     
     new JoystickButton(controller, Button.kA.value).onTrue(

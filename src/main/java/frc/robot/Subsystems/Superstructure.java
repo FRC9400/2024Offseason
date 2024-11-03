@@ -73,7 +73,9 @@ public class Superstructure extends SubsystemBase{
         PASS,
         PRE_PASS,
         PREPARE_SHOOT,
-        POST_SHOOT
+        POST_SHOOT,
+        AUTO_INTAKE,
+        AUTO_HANDOFF
     }
 
     @Override
@@ -205,6 +207,23 @@ public class Superstructure extends SubsystemBase{
                     setState(SuperstructureStates.IDLE);
                 }
                 break;
+            case AUTO_INTAKE:
+                s_indexer.requestHandoff(2);
+                s_amp.requestIdle();
+                s_intake.requestSetpoint();
+                s_shooter.requestIdle();
+                if (s_amp.getAmpCurrent() > 20 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25){
+                    setState(SuperstructureStates.AUTO_HANDOFF);
+                }
+                break;
+            case AUTO_HANDOFF:
+                s_indexer.requestHandoff(3);
+                s_amp.requestRun(3);
+                s_intake.requestSetpoint();
+                s_shooter.requestIdle();
+                if (s_amp.getAmpCurrent() > 27 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3){
+                    setState(SuperstructureStates.NOTE);
+                }
             }
         }
 
