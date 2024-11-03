@@ -90,7 +90,7 @@ public class Autos {
     }
 
     public static Command fourNoteAmp(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("tuneX");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("AmpA");
         ChoreoTrajectory trajB = Choreo.getTrajectory("AmpB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("AmpC");
         return Commands.sequence(
@@ -107,7 +107,7 @@ public class Autos {
     }
 
     public static Command fourNoteSource(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory trajA = Choreo.getTrajectory("tuneY");
+        ChoreoTrajectory trajA = Choreo.getTrajectory("SourceA");
         ChoreoTrajectory trajB = Choreo.getTrajectory("SourceB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("SourceC");
         return Commands.sequence(
