@@ -186,9 +186,9 @@ public class Autos {
          };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestPreShoot(AutoConstants.BlueVelR, AutoConstants.BlueRatioR, AutoConstants.BlueDegR);
+                superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             } else {
-                superstructure.requestPreShoot(AutoConstants.RedVelL, AutoConstants.RedRatioR, AutoConstants.RedAngleR);
+                superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             }
         })
             .andThen(new WaitUntilCommand(bool));
@@ -200,9 +200,9 @@ public class Autos {
          };
         return Commands.runOnce(() -> {
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-                superstructure.requestPreShoot(AutoConstants.BlueVelL, AutoConstants.BlueRatioL, AutoConstants.BlueDegL);
+                superstructure.requestPreShoot(AutoConstants.VelL, AutoConstants.RatioL, AutoConstants.DegL);
             } else {
-                superstructure.requestPreShoot(AutoConstants.RedVelR, AutoConstants.RedRatioR, AutoConstants.RedAngleR);
+                superstructure.requestPreShoot(AutoConstants.VelR, AutoConstants.RatioR, AutoConstants.DegR);
             }
         })
             .andThen(new WaitUntilCommand(bool));
