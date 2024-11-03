@@ -53,9 +53,9 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private AutonomousSelector selector;
 
-    LoggedTunableNumber vel = new LoggedTunableNumber("VELOCITY", 70);
-    LoggedTunableNumber ratio = new LoggedTunableNumber("RATIO", 0.5);
-    LoggedTunableNumber angle = new LoggedTunableNumber("ANGLE", 25);
+    LoggedTunableNumber vel = new LoggedTunableNumber("Container/VELOCITY", 70);
+    LoggedTunableNumber ratio = new LoggedTunableNumber("Container/RATIO", 0.5);
+    LoggedTunableNumber angle = new LoggedTunableNumber("Container/ANGLE", 25);
 
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
   public RobotContainer() {
