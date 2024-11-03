@@ -209,8 +209,8 @@ public class Superstructure extends SubsystemBase{
                 break;
             case AUTO_INTAKE:
                 s_indexer.requestHandoff(2);
-                s_amp.requestIdle();
-                s_intake.requestSetpoint();
+                s_amp.requestRun(2);
+                s_intake.requestIntake();
                 s_shooter.requestIdle();
                 if (s_amp.getAmpCurrent() > 20 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25){
                     setState(SuperstructureStates.AUTO_HANDOFF);
