@@ -26,7 +26,8 @@ public class Autos {
             resetPoseAuto(traj, swerve),
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
-            requestMidShoot(superstructure)
+            requestMidShoot(superstructure),
+            preloadIdle(superstructure)
         );
     }
 
@@ -37,7 +38,8 @@ public class Autos {
             resetPoseAuto(traj, swerve),
             requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
-            requestAmpShoot(superstructure)
+            requestAmpShoot(superstructure),
+            preloadIdle(superstructure)
         );
     }
     public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
@@ -47,7 +49,9 @@ public class Autos {
             resetPoseAuto(traj, swerve),
             requestSourceSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
-            requestAmpShoot(superstructure)
+            requestAmpShoot(superstructure),
+            preloadIdle(superstructure)
+
         );
     }
 
@@ -88,7 +92,8 @@ public class Autos {
             intakeIn(swerve, superstructure, trajB),
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
-            requestSourceShoot(superstructure)
+            requestSourceShoot(superstructure),
+            preloadIdle(superstructure)
         );
     }
 
@@ -105,7 +110,8 @@ public class Autos {
             intakeIn(swerve, superstructure, trajB),
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
-            requestSourceShoot(superstructure)
+            requestSourceShoot(superstructure),
+            preloadIdle(superstructure)
         );
     }
 
@@ -122,7 +128,8 @@ public class Autos {
             intakeIn(swerve, superstructure, trajB),
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
-            requestAmpShoot(superstructure)
+            requestAmpShoot(superstructure),
+            preloadIdle(superstructure)
         );
     }
     
