@@ -27,7 +27,7 @@ public class Autos {
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
             requestMidShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -39,7 +39,7 @@ public class Autos {
             requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
             requestAmpShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
     public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
@@ -50,7 +50,7 @@ public class Autos {
             requestSourceSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
             requestAmpShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
 
         );
     }
@@ -59,7 +59,7 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             requestMidSubwooferShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -67,7 +67,7 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "amp"),
             requestAmpSubwooferShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -75,7 +75,7 @@ public class Autos {
         return Commands.sequence(
             resetGyroAuto(swerve, "source"),
             requestSourceSubwooferShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -93,7 +93,7 @@ public class Autos {
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
             requestSourceShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -111,7 +111,7 @@ public class Autos {
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
             requestSourceShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
 
@@ -129,7 +129,7 @@ public class Autos {
             requestMidShoot(superstructure),
             intakeIn(swerve, superstructure, trajC),
             requestAmpShoot(superstructure),
-            preloadIdle(superstructure)
+            idleCommand(superstructure)
         );
     }
     
@@ -168,12 +168,8 @@ public class Autos {
             );
     }
 
-    public static Command preloadIdle(Superstructure superstructure){
-        BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
-        };
-        return new WaitUntilCommand(bool)
-            .andThen(() -> superstructure.requestIdle());
+    public static Command idleCommand(Superstructure superstructure){
+        return Commands.runOnce(() -> superstructure.requestIdle());
     }
 
     public static Command requestMidShoot(Superstructure superstructure){
