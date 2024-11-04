@@ -46,11 +46,6 @@ import com.choreo.lib.ChoreoTrajectory;
 
 public class Swerve extends SubsystemBase{
 
-    LoggedTunableNumber XControllerkP = new LoggedTunableNumber("XControllerkP", 3.);
-    LoggedTunableNumber YControllerkP = new LoggedTunableNumber("YControllerkP", 3);
-    LoggedTunableNumber ThetaControllerkP = new LoggedTunableNumber("ThetaControllerkP", 1.3);
-
-
     private final GyroIO gyroIO = new GyroIOPigeon2(canIDConstants.pigeon);
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
@@ -109,41 +104,6 @@ public class Swerve extends SubsystemBase{
 
         moduleIOs[3] = new ModuleIOTalonFX(canIDConstants.driveMotor[3], canIDConstants.steerMotor[3], canIDConstants.CANcoder[3], swerveConstants.moduleConstants.CANcoderOffsets[3],
         swerveConstants.moduleConstants.driveMotorInverts[3], swerveConstants.moduleConstants.steerMotorInverts[3], swerveConstants.moduleConstants.CANcoderInverts[3]);
-
-        AutoBuilder.configureHolonomic(
-            this::getPoseRaw,
-            this::resetPose,
-            this::getRobotRelativeSpeeds,
-            this::driveRobotRelative,
-            new HolonomicPathFollowerConfig(
-                new PIDConstants(8, 0.0, 0.0),
-                new PIDConstants(3, 0.0, 0.0), //3 real field
-                3.72,
-                0.295,
-                new ReplanningConfig()
-                ),
-            () -> {
-                var alliance = DriverStation.getAlliance();
-                if(alliance.isPresent()){
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-             return false;
-            },
-        this
-        );
-        PathPlannerLogging.setLogActivePathCallback(
-            (activePath) -> {
-                Logger.recordOutput(
-                    "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            }
-        );
-        PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose) ->{
-                Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            });
-
-            
-
 
         for (int i = 0; i < 4; i++) {
             moduleIOs[i].setDriveBrakeMode(true);
@@ -249,16 +209,6 @@ public class Swerve extends SubsystemBase{
         ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
         double x_speed = desiredChassisSpeeds.vxMetersPerSecond;
         double y_speed = desiredChassisSpeeds.vyMetersPerSecond;
-        double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond;
-
-        requestDesiredState(x_speed, y_speed, rot_speed, false, false);
-
-    }
-
-    public void driveRobotRelative2(ChassisSpeeds robotRelativeSpeeds){
-        ChassisSpeeds desiredChassisSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-        double x_speed = desiredChassisSpeeds.vxMetersPerSecond/1.5;
-        double y_speed = desiredChassisSpeeds.vyMetersPerSecond/1.5;
         double rot_speed = desiredChassisSpeeds.omegaRadiansPerSecond;
 
         requestDesiredState(x_speed, y_speed, rot_speed, false, false);
