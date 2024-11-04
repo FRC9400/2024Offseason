@@ -8,7 +8,7 @@ public class AutoConstants {
     public static final PIDController choreoRotController = new PIDController(1.25,0,0);
 
     public static double subwooferVelM = 70;
-    public static double subwooferRatioM = 0.5;
+    public static double subwooferRatioM = 0.6;
     public static double subwooferDegM = 45; 
 
     public static double subwooferVelR = 60;

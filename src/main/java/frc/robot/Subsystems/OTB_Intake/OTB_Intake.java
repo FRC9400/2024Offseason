@@ -12,7 +12,8 @@ public class OTB_Intake{
         IDLE,
         INTAKE,
         SETPOINT,
-        OUTTAKE
+        OUTTAKE,
+        DOWN
     }
 
     public OTB_Intake(OTB_IntakeIO otbIntakeIO) {
@@ -41,6 +42,9 @@ public class OTB_Intake{
                 otbIntakeIO.requestIntakeVoltage(-3);
                 otbIntakeIO.requestSetpoint(39.48);
                 break;
+            case DOWN:
+                otbIntakeIO.requestSetpoint(39.48);
+                otbIntakeIO.requestIntakeVoltage(0);
             default:
                 break;
 
@@ -61,6 +65,10 @@ public class OTB_Intake{
 
     public void requestOuttake(){
         setState(IntakeStates.OUTTAKE);
+    }
+
+    public void requestDown(){
+        setState(IntakeStates.DOWN);
     }
 
     public void setState(IntakeStates nextState){
