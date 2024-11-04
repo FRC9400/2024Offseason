@@ -115,7 +115,7 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestRun(2);
                 s_intake.requestSetpoint();
                 s_shooter.requestOuttake();
-                if (s_shooter.getCurrent() > 44 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
+                if (s_amp.getAmpCurrent() < 20 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.25) {
                     setState(SuperstructureStates.HANDOFF_B);
                 }
                 break;
@@ -209,7 +209,7 @@ public class Superstructure extends SubsystemBase{
                 s_amp.requestRun(2.5);
                 s_intake.requestDown();
                 s_shooter.requestAutos(autosVel.get(), autosRatio.get());
-                if (s_amp.getAmpCurrent() > 27 && RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.3){
+                if (s_amp.getAmpCurrent() > 27){
                     setState(SuperstructureStates.AUTO_POST_INDEX);
                 }
                 break;
