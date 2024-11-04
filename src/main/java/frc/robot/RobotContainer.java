@@ -93,7 +93,7 @@ public class RobotContainer {
     //driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
     
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
-    driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
+   // driver.x().onTrue(new InstantCommand(() -> superstructure.requestIntake()));
     
     new JoystickButton(controller, Button.kA.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
@@ -106,6 +106,9 @@ public class RobotContainer {
     );
     new JoystickButton(controller, Button.kLeftBumper.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_A))
+    );
+    new JoystickButton(controller, Button.kX.value).onTrue(
+      new InstantCommand(() -> superstructure.setState(SuperstructureStates.AMP_B))
     );
     new JoystickButton(controller, Button.kB.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))

@@ -31,7 +31,7 @@ public class PassAssistCommand extends Command{
 
     @Override
     public void initialize(){
-        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d((180-34.92)*Math.PI/180.0) : new Rotation2d((180+34.92)* Math.PI/180.0);
+        headingGoal = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? new Rotation2d((180-34.92)* Math.PI/180.0) : new Rotation2d((180+34.92)*Math.PI/180.0) ;
         superstructure.setState(SuperstructureStates.PRE_PASS);
     
 
