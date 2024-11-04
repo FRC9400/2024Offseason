@@ -31,24 +31,7 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber shootMidVel = new LoggedTunableNumber("Superstructure/shootMidvel", 70);
     LoggedTunableNumber passAngle = new LoggedTunableNumber("Superstructure/passAngle", 23);
     LoggedTunableNumber passVel = new LoggedTunableNumber("Superstructure/passVel", 70);
-    
-    LoggedTunableNumber shootRightVel = new LoggedTunableNumber("Autos/shootRIGHTvel", 70);
-    LoggedTunableNumber shootLeftVel = new LoggedTunableNumber("Autos/shootLEFTvel", 70);
 
-    LoggedTunableNumber AutoShootVelocity = new LoggedTunableNumber("Autos/AutoIntakeVelocity", 20);
-    LoggedTunableNumber shootRightAngle = new LoggedTunableNumber("Autos/shootRightAngle", 28);
-    LoggedTunableNumber shootLeftAngle = new LoggedTunableNumber("Autos/shootLeftAngle", 35);
-
-    LoggedTunableNumber shootSubwooferMidVel = new LoggedTunableNumber("Autos/shootSubwooferMidVel", 70);
-    LoggedTunableNumber shootSubwooferRightVel = new LoggedTunableNumber("Autos/shootSubwooferRightVel", 70);
-    LoggedTunableNumber shootSubwooferLeftVel = new LoggedTunableNumber("Autos/shootSubwooferLeftVel", 60);
-
-    LoggedTunableNumber shootSubwooferMidAngle = new LoggedTunableNumber("Autos/shootSubwooferMidAngle", 47);
-    LoggedTunableNumber shootSubwooferRightAngle = new LoggedTunableNumber("Autos/shootSubwooferRightAngle", 45);
-    LoggedTunableNumber shootSubwooferLeftAngle = new LoggedTunableNumber("Autos/shootSubwooferLeftAngle", 58);
-
-    LoggedTunableNumber shootSubwooferRightRatio = new LoggedTunableNumber("Autos/SUB right ratio", 0.1);
-    LoggedTunableNumber shootRightRatio = new LoggedTunableNumber("Autos/right ratio", 0.1);
     private double[] shooterVelocity = {0,0}; //left vel + ratio
     private double armAngleDegrees = 0;
 
@@ -193,7 +176,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestIdle();
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(passVel.get(), 1, 40);//placeholder value(s)
+                s_shooter.requestShoot(passVel.get(), 1, passAngle.get());//placeholder value(s)
                 if(s_shooter.atShooterSetpoint() && s_shooter.atArmSetpoint()){
                     setState(SuperstructureStates.PASS);
                 }
@@ -202,7 +185,7 @@ public class Superstructure extends SubsystemBase{
                 s_indexer.requestIdle();
                 s_amp.requestRun(2);
                 s_intake.requestSetpoint();
-                s_shooter.requestShoot(passVel.get(), 1,40);//placeholder value(s)
+                s_shooter.requestShoot(passVel.get(), 1,passAngle.get());//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
                     setState(SuperstructureStates.IDLE);
                 }
@@ -237,6 +220,10 @@ public class Superstructure extends SubsystemBase{
 
     public void requestIntake(){
         setState(SuperstructureStates.INTAKE);
+    }
+
+    public void requestAutoIntake(){
+        setState(SuperstructureStates.AUTO_INTAKE);
     }
 
     public void requestPreShoot(double velocity, double ratio, double angleDeg){

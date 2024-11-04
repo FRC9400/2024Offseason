@@ -152,7 +152,7 @@ public class Autos {
             return superstructure.getState() == SuperstructureStates.NOTE;
         };
         return new SequentialCommandGroup(
-            new InstantCommand(() -> superstructure.requestIntake()),
+            new InstantCommand(() -> superstructure.requestAutoIntake()),
             new WaitCommand(0.5),
             swerve.runChoreoTrajStandard(traj),
             new WaitUntilCommand(bool)
