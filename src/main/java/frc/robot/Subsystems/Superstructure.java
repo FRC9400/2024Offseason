@@ -32,7 +32,7 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber passAngle = new LoggedTunableNumber("Superstructure/passAngle", 23);
     LoggedTunableNumber passVel = new LoggedTunableNumber("Superstructure/passVel", 70);
 
-    LoggedTunableNumber autosVel = new LoggedTunableNumber("Autos/velocity", 40);
+    LoggedTunableNumber autosVel = new LoggedTunableNumber("Autos/velocity", 50);
     LoggedTunableNumber autosRatio = new LoggedTunableNumber("Autos/ratio", 0.6);
 
     private double[] shooterVelocity = {0,0}; //left vel + ratio
@@ -230,7 +230,7 @@ public class Superstructure extends SubsystemBase{
                 break;
             case SHOOT_AUTO:
                 s_indexer.requestIdle();
-                s_amp.requestRun(4);
+                s_amp.requestRun(5);
                 s_intake.requestDown();
                 s_shooter.requestShoot(shooterVelocity[0], shooterVelocity[1], armAngleDegrees);//placeholder value(s)
                 if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 1) {
