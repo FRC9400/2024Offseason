@@ -164,7 +164,7 @@ public class Autos {
         return new SequentialCommandGroup(
             new InstantCommand(() -> superstructure.requestAutoIntake()),
             swerve.runChoreoTrajStandard(traj),
-            new WaitUntilCommand(bool)
+            new WaitUntilCommand(bool).withTimeout(3)
             );
     }
 
