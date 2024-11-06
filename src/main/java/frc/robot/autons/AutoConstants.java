@@ -21,7 +21,7 @@ public class AutoConstants {
 
     public static double VelM = 70;
     public static double RatioM = 0.6;
-    public static double DegM = 29;
+    public static double DegM = 28;
 
     public static double VelR = 70;
     public static double RatioR = 0.6;
@@ -29,7 +29,7 @@ public class AutoConstants {
 
     public static double VelL = 70;
     public static double RatioL = 0.6;
-    public static double DegL = 29;
+    public static double DegL = 28;
 /* 
     public static double BlueVelR = 70;
     public static double BlueRatioR = 0.6;

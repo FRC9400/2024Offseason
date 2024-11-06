@@ -32,7 +32,7 @@ public class Superstructure extends SubsystemBase{
     LoggedTunableNumber passAngle = new LoggedTunableNumber("Superstructure/passAngle", 23);
     LoggedTunableNumber passVel = new LoggedTunableNumber("Superstructure/passVel", 70);
 
-    LoggedTunableNumber autosVel = new LoggedTunableNumber("Autos/velocity", 50);
+    LoggedTunableNumber autosVel = new LoggedTunableNumber("Autos/velocity", 40);
     LoggedTunableNumber autosRatio = new LoggedTunableNumber("Autos/ratio", 0.6);
 
     private double[] shooterVelocity = {0,0}; //left vel + ratio
