@@ -20,7 +20,7 @@ import frc.robot.Subsystems.Swerve.Swerve;
 public class Autos {
 
     public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){
-        ChoreoTrajectory traj = Choreo.getTrajectory("MidA");
+        ChoreoTrajectory traj = Choreo.getTrajectory("MidA2");
         return Commands.sequence(
             resetGyroAuto(swerve, "mid"),
             resetPoseAuto(traj, swerve),
