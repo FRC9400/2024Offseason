@@ -92,7 +92,7 @@ public class RobotContainer {
     
     //driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
     
-    driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.INTAKE)));
+    driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
     
     new JoystickButton(controller, Button.kA.value).onTrue(

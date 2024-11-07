@@ -230,10 +230,10 @@ public class Superstructure extends SubsystemBase{
                 break;
             case SHOOT_AUTO:
                 s_indexer.requestIdle();
-                s_amp.requestRun(5); //WHAT THE FUCK!!!!
+                s_amp.requestRun(3.6); 
                 s_intake.requestDown();
-                s_shooter.requestShoot(shooterVelocity[0], shooterVelocity[1], armAngleDegrees);//placeholder value(s)
-                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.5) {
+                s_shooter.requestShoot(shooterVelocity[0], shooterVelocity[1], armAngleDegrees);
+                if (RobotController.getFPGATime() / 1.0E6 - stateStartTime > 0.6) {
                     setState(SuperstructureStates.POST_SHOOT_AUTO);
                 }
                 break;
