@@ -172,6 +172,11 @@ public class Autos {
         return Commands.runOnce(() -> superstructure.requestIdle());
     }
 
+    public static Command finishGyro(Swerve swerve){
+        return Commands.runOnce(() -> swerve.setGyro180());
+    }
+    
+
     public static Command requestMidShoot(Superstructure superstructure){
         BooleanSupplier bool = () -> {
             return superstructure.getState() == SuperstructureStates.POST_SHOOT_AUTO;
