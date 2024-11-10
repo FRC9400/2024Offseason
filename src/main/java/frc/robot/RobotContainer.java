@@ -53,10 +53,6 @@ public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private AutonomousSelector selector;
 
-    LoggedTunableNumber vel = new LoggedTunableNumber("Container/VELOCITY", 70);
-    LoggedTunableNumber ratio = new LoggedTunableNumber("Container/RATIO", 0.5);
-    LoggedTunableNumber angle = new LoggedTunableNumber("Container/ANGLE", 25);
-
     public final EventLoop m_loop = new EventLoop();//¯\_(ツ)_/¯
   public RobotContainer() {
     configureAutonomousSelector();
@@ -89,11 +85,9 @@ public class RobotContainer {
     driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
-    
-    //driver.b().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
-    
+      
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
-    driver.x().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(vel.get(),ratio.get(),angle.get())));
+    driver.x().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     
     new JoystickButton(controller, Button.kA.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))

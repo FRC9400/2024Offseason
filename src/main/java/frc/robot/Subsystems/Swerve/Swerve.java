@@ -319,10 +319,6 @@ public class Swerve extends SubsystemBase{
         gyroIO.setPosition(yawDegrees);
     }
 
-    public void setGyro180(){
-        gyroIO.setPosition(gyroInputs.positionDegRaw + 180);
-    }
-
     private void logModuleStates(String key, SwerveModuleState[] states) {
         List<Double> dataArray = new ArrayList<Double>();
         for (int i = 0; i < 4; i++) {

@@ -27,8 +27,8 @@ public class Autos {
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
             requestMidShoot(superstructure),
-            idleCommand(swerve, superstructure)
-        );
+            idleCommand(swerve, superstructure),
+            finishGyro(swerve, "mid"));
     }
 
     public static Command twoNoteAmp(Swerve swerve, Superstructure superstructure){
@@ -51,7 +51,6 @@ public class Autos {
             intakeIn(swerve, superstructure, traj),
             requestAmpShoot(superstructure),
             idleCommand(swerve, superstructure)
-
         );
     }
 
@@ -145,7 +144,7 @@ public class Autos {
 
     public static Command resetGyroAuto(Swerve swerve, String startingPos) {
         if (startingPos.equals("mid")){
-            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 0 : 180));
+            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180: 180));
         }
         else if (startingPos.equals("source")) {
             return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
@@ -159,17 +158,31 @@ public class Autos {
 
     public static Command intakeIn(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj) {
         BooleanSupplier bool = () -> {
-            return superstructure.getState() == SuperstructureStates.AUTO_POST_INDEX;
+            return superstructure.getState() == SuperstructureStates.NOTE;
         };
         return new SequentialCommandGroup(
-            new InstantCommand(() -> superstructure.requestAutoIntake()),
+            new InstantCommand(() -> superstructure.requestIntake()),
             swerve.runChoreoTrajStandard(traj),
             new WaitUntilCommand(bool).withTimeout(3)
             );
     }
 
     public static Command idleCommand(Swerve swerve, Superstructure superstructure){
-        return Commands.runOnce(() -> superstructure.requestIdle()).andThen(() -> swerve.setGyro180());
+        return Commands.runOnce(() -> superstructure.requestIdle());
+    }
+
+    public static Command finishGyro(Swerve swerve, String startingPos) {
+        if (startingPos.equals("mid")){
+            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180:0));
+        }
+        else if (startingPos.equals("source")) {
+            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -120 : 120));
+        }
+        else if (startingPos.equals("amp")){
+            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
+        }
+
+        return Commands.none();
     }
     
 
