@@ -280,6 +280,13 @@ public class Superstructure extends SubsystemBase{
         setState(SuperstructureStates.PASS);
     }    
 
+    public void requestLowPass(){
+        shooterVelocity[0] = 40;
+        shooterVelocity[1] = 1;
+        armAngleDegrees = 0;
+        setState(SuperstructureStates.PREPARE_SHOOT);
+    }
+
     public void setState(SuperstructureStates next){
         systemState=next;
         stateStartTime = RobotController.getFPGATime() / 1E6;

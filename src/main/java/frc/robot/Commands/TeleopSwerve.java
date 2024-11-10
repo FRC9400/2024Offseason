@@ -15,18 +15,16 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private DoubleSupplier brakeSup; 
 
 
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup) {
+    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
-        this.brakeSup = brakeSup; 
     }
 
     @Override
@@ -39,11 +37,6 @@ public class TeleopSwerve extends Command {
         double x_speed = translationVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
         double y_speed = strafeVal * swerveConstants.moduleConstants.maxSpeedMeterPerSecond;
         double rot_speed = rotationVal * swerveConstants.moduleConstants.maxAngularVelocity;
-
-        double brakeFactor = 1.0 - brakeSup.getAsDouble(); 
-        x_speed *= brakeFactor;
-        y_speed *= brakeFactor;
-        rot_speed *= brakeFactor;
 
         /* Drive */
         s_Swerve.requestDesiredState(

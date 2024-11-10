@@ -64,8 +64,7 @@ public class RobotContainer {
                 swerve, 
                 () -> -driver.getRawAxis(XboxController.Axis.kLeftY.value),
                 () -> -driver.getRawAxis(XboxController.Axis.kLeftX.value), 
-                () -> -driver.getRawAxis(XboxController.Axis.kRightX.value),
-                () -> driver.getRawAxis(XboxController.Axis.kLeftTrigger.value)
+                () -> -driver.getRawAxis(XboxController.Axis.kRightX.value)
               
             )
         );
@@ -85,8 +84,11 @@ public class RobotContainer {
     driver.rightBumper().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     
     driver.rightTrigger().whileTrue(new PassAssistCommand(swerve, superstructure));
-      
+    
+    driver.leftTrigger().onTrue(new InstantCommand(() -> superstructure.requestLowPass()));
+
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
+    
     driver.x().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
     
     new JoystickButton(controller, Button.kA.value).onTrue(
@@ -107,6 +109,7 @@ public class RobotContainer {
     new JoystickButton(controller, Button.kB.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.OUTTAKE))
     );
+    
   }
   public modes getAutoCommand() {
     return selector.get();
