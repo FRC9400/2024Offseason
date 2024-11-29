@@ -91,6 +91,13 @@ public class Swerve extends SubsystemBase{
              this)
         );
 
+    LoggedTunableNumber XkP = new LoggedTunableNumber("Autos/X Controller kP", 3);
+    LoggedTunableNumber XkD = new LoggedTunableNumber("Autos/X Controller kD", 0);
+    LoggedTunableNumber YkP = new LoggedTunableNumber("Autos/Y Controller kP", 3);
+    LoggedTunableNumber YkD = new LoggedTunableNumber("Autos/Y Controller kD", 0);
+    LoggedTunableNumber ThetakP = new LoggedTunableNumber("Autos/Theta Controller kP", 3);
+    LoggedTunableNumber ThetakD = new LoggedTunableNumber("Autos/Theta Controller kD", 0);
+
     public Swerve() {
 
         moduleIOs[0] = new ModuleIOTalonFX(canIDConstants.driveMotor[0], canIDConstants.steerMotor[0], canIDConstants.CANcoder[0],swerveConstants.moduleConstants.CANcoderOffsets[0],
@@ -333,9 +340,9 @@ public class Swerve extends SubsystemBase{
             trajectory,
             () -> poseRaw,
             Choreo.choreoSwerveController(
-                    AutoConstants.choreoTransController,
-                    AutoConstants.choreoTransController,
-                    AutoConstants.choreoRotController),
+                    new PIDController(XkP.get(), 0, XkD.get()),
+                    new PIDController(YkP.get(), 0, YkD.get()),
+                    new PIDController(ThetakP.get(), 0, ThetakD.get())),
             (ChassisSpeeds speeds) -> {
             Logger.recordOutput("Auto req X", speeds.vxMetersPerSecond);
             Logger.recordOutput("Auto req Y", speeds.vyMetersPerSecond);

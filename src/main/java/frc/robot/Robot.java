@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.choreo.lib.Choreo;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
@@ -33,6 +34,9 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
 
   Command do_nothing;
+  Command tuneX;
+  Command tuneY;
+  Command tuneTheta;
 
   Command preload_mid;
   Command preload_amp;
@@ -83,15 +87,9 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     if (DriverStation.getAlliance().isPresent() && !built){
       do_nothing = new InstantCommand();
-      preload_mid = Autos.preloadMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      preload_amp = Autos.preloadAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      preload_source = Autos.preloadSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      four_note_mid = Autos.fourNoteMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      four_note_amp = Autos.fourNoteAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      four_note_source = Autos.fourNoteSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      two_note_mid = Autos.twoNoteMid(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      two_note_amp = Autos.twoNoteAmp(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
-      two_note_source = Autos.twoNoteSource(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure());
+      tuneX = Autos.tune(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure(), Choreo.getTrajectory("TuneX"));
+      tuneY = Autos.tune(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure(), Choreo.getTrajectory("TuneY"));
+      tuneTheta = Autos.tune(m_robotContainer.getSwerve(), m_robotContainer.getSuperstructure(), Choreo.getTrajectory("TuneTheta"));
       built = true;
     }
   }
@@ -107,7 +105,19 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand = do_nothing;
     }
 
-    if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
+    if(m_robotContainer.getAutoCommand() == modes.tuneX){
+      m_autonomousCommand = tuneX;
+    }
+
+    if(m_robotContainer.getAutoCommand() == modes.tuneY){
+      m_autonomousCommand = tuneY;
+    }
+
+    if(m_robotContainer.getAutoCommand() == modes.tuneTheta){
+      m_autonomousCommand = tuneTheta;
+    }
+
+    /*if(m_robotContainer.getAutoCommand() == modes.PRELOAD_MID){
       m_autonomousCommand = preload_mid;
     }
     if(m_robotContainer.getAutoCommand() == modes.PRELOAD_AMP){
@@ -133,7 +143,7 @@ public class Robot extends LoggedRobot {
     }
     if(m_robotContainer.getAutoCommand() == modes.TWO_NOTE_SOURCE){
       m_autonomousCommand = two_note_source;
-    }
+    }*/
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

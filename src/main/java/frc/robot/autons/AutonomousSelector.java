@@ -12,7 +12,7 @@ public class AutonomousSelector {
     String mode;
         public enum modes{
             DO_NOTHING,
-            PRELOAD_AMP,
+            /*PRELOAD_AMP,
             PRELOAD_MID,
             PRELOAD_SOURCE,
             FOUR_NOTE_MID,
@@ -20,7 +20,10 @@ public class AutonomousSelector {
             FOUR_NOTE_SOURCE,
             TWO_NOTE_MID,
             TWO_NOTE_AMP,
-            TWO_NOTE_SOURCE
+            TWO_NOTE_SOURCE*/
+            tuneX,
+            tuneY,
+            tuneTheta
 
         };
     
@@ -30,7 +33,11 @@ public class AutonomousSelector {
             "Do Nothing", modes.DO_NOTHING
         );
 
-        autonomousSelector.addOption("Preload Amp", modes.PRELOAD_AMP);
+        autonomousSelector.addOption("Tune X", modes.tuneX);
+        autonomousSelector.addOption("Tune Y", modes.tuneY);
+        autonomousSelector.addOption("Tune Theta", modes.tuneTheta);
+
+       /*  autonomousSelector.addOption("Preload Amp", modes.PRELOAD_AMP);
 
         autonomousSelector.addOption("Preload Mid", modes.PRELOAD_MID);
 
@@ -47,7 +54,7 @@ public class AutonomousSelector {
         autonomousSelector.addOption("Four Note Amp", modes.FOUR_NOTE_AMP);
 
         autonomousSelector.addOption("Four Note Source", modes.FOUR_NOTE_SOURCE);
-
+*/
         SmartDashboard.putData("Auto Choices", autonomousSelector);
     }
 

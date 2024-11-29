@@ -19,6 +19,11 @@ import frc.robot.Subsystems.Swerve.Swerve;
 
 public class Autos {
 
+    public static Command tune(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj){
+        return resetPoseAuto(traj, swerve)
+            .andThen(swerve.runChoreoTrajStandard(traj));
+    }
+
     public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("MidA2");
         return Commands.sequence(
@@ -27,14 +32,13 @@ public class Autos {
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
             requestMidShoot(superstructure),
-            idleCommand(swerve, superstructure),
-            finishGyro(swerve, "mid"));
-    }
+            idleCommand(swerve, superstructure)
+        ); 
+        }
 
     public static Command twoNoteAmp(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("AmpA");
         return Commands.sequence(
-            resetGyroAuto(swerve, "amp"),
             resetPoseAuto(traj, swerve),
             requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
@@ -45,7 +49,6 @@ public class Autos {
     public static Command twoNoteSource(Swerve swerve, Superstructure superstructure){
         ChoreoTrajectory traj = Choreo.getTrajectory("SourceA");
         return Commands.sequence(
-            resetGyroAuto(swerve, "source"),
             resetPoseAuto(traj, swerve),
             requestSourceSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, traj),
@@ -83,7 +86,6 @@ public class Autos {
         ChoreoTrajectory trajB = Choreo.getTrajectory("AmpB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("AmpC");
         return Commands.sequence(
-            resetGyroAuto(swerve, "mid"),
             resetPoseAuto(trajA, swerve),
             requestMidSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
@@ -101,7 +103,6 @@ public class Autos {
         ChoreoTrajectory trajB = Choreo.getTrajectory("AmpB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("AmpC");
         return Commands.sequence(
-            resetGyroAuto(swerve, "amp"),
             resetPoseAuto(trajA, swerve),
             requestAmpSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
@@ -119,7 +120,6 @@ public class Autos {
         ChoreoTrajectory trajB = Choreo.getTrajectory("SourceB");
         ChoreoTrajectory trajC = Choreo.getTrajectory("SourceC");
         return Commands.sequence(
-            resetGyroAuto(swerve, "source"),
             resetPoseAuto(trajA, swerve),
             requestSourceSubwooferShoot(superstructure),
             intakeIn(swerve, superstructure, trajA),
@@ -144,7 +144,7 @@ public class Autos {
 
     public static Command resetGyroAuto(Swerve swerve, String startingPos) {
         if (startingPos.equals("mid")){
-            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180: 180));
+            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180: 0));
         }
         else if (startingPos.equals("source")) {
             return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
@@ -170,21 +170,6 @@ public class Autos {
     public static Command idleCommand(Swerve swerve, Superstructure superstructure){
         return Commands.runOnce(() -> superstructure.requestIdle());
     }
-
-    public static Command finishGyro(Swerve swerve, String startingPos) {
-        if (startingPos.equals("mid")){
-            return Commands.runOnce(() -> swerve. setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 180:0));
-        }
-        else if (startingPos.equals("source")) {
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? -120 : 120));
-        }
-        else if (startingPos.equals("amp")){
-            return Commands.runOnce(() -> swerve.setGyroStartingPosition(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? 120 : -120));
-        }
-
-        return Commands.none();
-    }
-    
 
     public static Command requestMidShoot(Superstructure superstructure){
         BooleanSupplier bool = () -> {
