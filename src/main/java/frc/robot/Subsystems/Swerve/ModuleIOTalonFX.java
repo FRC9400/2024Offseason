@@ -58,10 +58,10 @@ public class ModuleIOTalonFX implements ModuleIO {
     private VoltageOut driveVoltageRequest;
     private VoltageOut steerVoltageRequest;
 
-    LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/kP", 0.14922);
-    LoggedTunableNumber drivekA = new LoggedTunableNumber("Drive/kA", 0.0096859);
-    LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/kS",  0.18123);
-    LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/kV", 0.14061);
+    LoggedTunableNumber drivekP = new LoggedTunableNumber("Drive/kP", 0);
+    LoggedTunableNumber drivekA = new LoggedTunableNumber("Drive/kA", 0);
+    LoggedTunableNumber drivekS = new LoggedTunableNumber("Drive/kS",  0);
+    LoggedTunableNumber drivekV = new LoggedTunableNumber("Drive/kV", 0.140499);
 
     LoggedTunableNumber steerkP = new LoggedTunableNumber("Steer/kP", 8);
     LoggedTunableNumber steerkD = new LoggedTunableNumber("Steer/kD", 0);
@@ -127,7 +127,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveSlot0Configs.kI = 0.0;
         driveSlot0Configs.kD = 0.0;
         driveSlot0Configs.kS = 0.181230; //0.21146; //  0.011412
-        driveSlot0Configs.kV = 0.140500; //0.12209;// 0.12125
+        driveSlot0Configs.kV = 0.140493; //0.12209;// 0.12125
         driveSlot0Configs.kA = 0.009686;// 0.013607; // 0.042716*/
 
         // STEER
