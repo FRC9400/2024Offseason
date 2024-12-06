@@ -89,8 +89,7 @@ public class RobotContainer {
 
     driver.b().onTrue(new InstantCommand(() -> superstructure.setState(SuperstructureStates.AUTO_INTAKE)));
     
-    driver.x().onTrue(new InstantCommand(() -> superstructure.requestPreShoot(AutoConstants.VelM, AutoConstants.RatioM, AutoConstants.DegM)));
-    
+driver.x().onTrue(swerve.driveSysIdCmd());    
     new JoystickButton(controller, Button.kA.value).onTrue(
       new InstantCommand(() -> superstructure.setState(SuperstructureStates.IDLE))
       );

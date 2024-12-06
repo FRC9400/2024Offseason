@@ -21,7 +21,7 @@ public class Autos {
 
     public static Command tune(Swerve swerve, Superstructure superstructure, ChoreoTrajectory traj){
         return resetPoseAuto(traj, swerve)
-            .andThen(swerve.runChoreoTrajStandard(traj));
+           .andThen(swerve.runChoreoTrajStandard(traj));
     }
 
     public static Command twoNoteMid(Swerve swerve, Superstructure superstructure){

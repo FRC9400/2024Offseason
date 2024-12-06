@@ -71,8 +71,8 @@ public class Swerve extends SubsystemBase{
     private double[] lastModulePositionsMeters = new double[] { 0.0, 0.0, 0.0, 0.0 };
     private final SysIdRoutine driveRoutine = new SysIdRoutine(new SysIdRoutine.Config(
         null, 
-        Volts.of(3), 
-        Seconds.of(2), 
+        Volts.of(4), 
+        Seconds.of(1), 
         (state) -> SignalLogger.writeString("state", state.toString())), 
         new SysIdRoutine.Mechanism((
             Measure<Voltage> volts) -> driveVoltage(volts.in(Volts)),
