@@ -22,11 +22,16 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,6 +60,9 @@ public class Swerve extends SubsystemBase{
             new ModuleIOInputsAutoLogged(),
             new ModuleIOInputsAutoLogged()
     };
+
+    private final SwerveDrivePoseEstimator poseEstimator;
+
     private Pose2d poseRaw = new Pose2d();
     private Rotation2d lastGyroYaw = new Rotation2d();
     private final boolean fieldRelatve;
@@ -110,12 +118,18 @@ public class Swerve extends SubsystemBase{
             moduleIOs[i].setTurnBrakeMode(false);
         }
         this.fieldRelatve = true;
+
+        var stateStdDevs = VecBuilder.fill(0,0,0);//placeholder values
+        var visionStdDevs = VecBuilder.fill(0,0,0);
+
+        poseEstimator = new SwerveDrivePoseEstimator(kinematics, getRotation2d(), getSwerveModulePositions(), new Pose2d(), stateStdDevs, visionStdDevs);
       }
 
 
     @Override
     public void periodic(){
         gyroIO.updateInputs(gyroInputs);
+        poseEstimator.update(getRotation2d(), getSwerveModulePositions());
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (int i = 0; i < 4; i++){
             moduleIOs[i].updateInputs(moduleInputs[i]);
@@ -197,12 +211,13 @@ public class Swerve extends SubsystemBase{
     }
 
     public Pose2d getPoseRaw(){
-        return odometry.getPoseMeters();
+        return poseEstimator.getEstimatedPosition();
     }
 
     public void resetPose(Pose2d pose){
         odometry.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
         poseRaw = pose;
+        poseEstimator.resetPosition(getRotation2d(), getSwerveModulePositions(), pose);
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
@@ -348,5 +363,11 @@ public class Swerve extends SubsystemBase{
               this);
     }  
 
- 
+    public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds){
+        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+    }
+
+    public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds, Matrix<N3,N1> stdDevs){
+        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+    }
 }
